@@ -1,5 +1,5 @@
 {
-  "name": "dubovik-boris-web",
+  "name": "wirenboardclient",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -19,7 +19,6 @@
     "@angular/platform-browser": "~8.1.2",
     "@angular/platform-browser-dynamic": "~8.1.2",
     "@angular/router": "~8.1.2",
-    "bootstrap": "^4.3.1",
     "buffer": "^5.4.3",
     "font-awesome": "^4.7.0",
     "ngx-mqtt": "^6.12.0",
