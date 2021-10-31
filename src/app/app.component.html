@@ -1,12 +1,18 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div class="container-fluid  bg-dark">
+<div class="container-fluid bg-dark">
   <div class="row header">
     <app-header></app-header>
   </div>
   <div class="row body">
-    <div class="col menu bg-dark" [@MinExpan]="isExpandMenu ? 'expan' : 'min'"
-      (@MinExpan.done)="doneAnimate()">
-      <app-menu (expandMenuEvent)="isExpandMenu = $event" [isEndAnimateExpand]="isEndAnimateExpand"></app-menu>
+    <div
+      class="col menu bg-dark"
+      [@MinExpan]="isExpandMenu ? 'expan' : 'min'"
+      (@MinExpan.done)="doneAnimate()"
+    >
+      <app-menu
+        (expandMenuEvent)="isExpandMenu = $event"
+        [isEndAnimateExpand]="isEndAnimateExpand"
+      ></app-menu>
     </div>
     <div class="col content">
       <router-outlet></router-outlet>

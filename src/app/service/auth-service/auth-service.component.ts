@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { DialogService } from 'primeng/api';
-import { AuthComponent } from 'src/app/components/auth/auth.component';
+import { Component, OnInit } from "@angular/core";
+import { DialogService } from "primeng/dynamicdialog";
+import { AuthComponent } from "src/app/components/auth/auth.component";
 
-const localSrgKey = 'Auth';
+const localSrgKey = "Auth";
 
 @Component({
-  templateUrl: './auth-service.component.html',
-  providers: [DialogService]
+  templateUrl: "./auth-service.component.html",
+  providers: [DialogService],
 })
 export class AuthServiceComponent implements OnInit {
-  private _passwordValid = '1234987';
+  private _passwordValid = "1234987";
 
   public get IsAuth(): boolean {
     const auth = JSON.parse(localStorage.getItem(localSrgKey));
@@ -20,21 +20,20 @@ export class AuthServiceComponent implements OnInit {
     return false;
   }
 
-  constructor(public dialogService: DialogService) { }
+  constructor(public dialogService: DialogService) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
   private show(isError?: boolean) {
     const ref = this.dialogService.open(AuthComponent, {
       data: {
-        hasError: isError
+        hasError: isError,
       },
-      header: 'Авторизируйтесь',
-      style:{ 'max-height': '350px', 'max-width': '350px' }
+      header: "Авторизируйтесь",
+      style: { "max-height": "350px", "max-width": "350px" },
     });
 
     ref.onClose.subscribe((pass: string) => {
-      if (typeof (pass) === 'undefined') {
+      if (typeof pass === "undefined") {
         return;
       }
       if (pass === this._passwordValid) {
@@ -47,5 +46,4 @@ export class AuthServiceComponent implements OnInit {
   setAuth() {
     localStorage.setItem(localSrgKey, JSON.stringify(true));
   }
-
 }

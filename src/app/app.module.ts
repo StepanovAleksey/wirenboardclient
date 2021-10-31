@@ -1,24 +1,23 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgxMqttClientModule } from 'ngx-mqtt-client';
-import { ButtonModule } from 'primeng/button';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
-import {InputTextModule} from 'primeng/inputtext';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { NgxMqttClientModule } from "ngx-mqtt-client";
+import { ButtonModule } from "primeng/button";
+import { DialogService, DynamicDialogModule } from "primeng/dynamicdialog";
+import { InputTextModule } from "primeng/inputtext";
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { MenuComponent } from './components/menu/menu.component';
-import { BasePageComponent } from './pages/base-page/base-page.component';
-import { environment } from 'src/environments/environment';
-import { InputSwitchModule } from 'primeng/inputswitch';
-import { PanelModule } from 'primeng/panel';
-import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from './components/header/header.component';
-import { RulesComponent } from './pages/rules/rules.component';
-import { AuthComponent } from './components/auth/auth.component';
-import { AuthServiceComponent } from './service/auth-service/auth-service.component';
-import { DialogService } from 'primeng/api';
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { MenuComponent } from "./components/menu/menu.component";
+import { BasePageComponent } from "./pages/base-page/base-page.component";
+import { environment } from "src/environments/environment";
+import { InputSwitchModule } from "primeng/inputswitch";
+import { PanelModule } from "primeng/panel";
+import { FormsModule } from "@angular/forms";
+import { HeaderComponent } from "./components/header/header.component";
+import { RulesComponent } from "./pages/rules/rules.component";
+import { AuthComponent } from "./components/auth/auth.component";
+import { AuthServiceComponent } from "./service/auth-service/auth-service.component";
 
 @NgModule({
   declarations: [
@@ -35,20 +34,22 @@ import { DialogService } from 'primeng/api';
     AppRoutingModule,
     BrowserAnimationsModule,
     NgxMqttClientModule.withOptions({
-      host: environment.production ? window.location.hostname : environment.host,
-      protocol: environment.production ? 'ws' : 'wss',
+      host: environment.production
+        ? window.location.hostname
+        : environment.host,
+      protocol: environment.production ? "ws" : "wss",
       port: environment.port,
-      clientId: 'SmartHouse: ' + Math.ceil(Math.random() * 10)
+      clientId: "SmartHouse: " + Math.ceil(Math.random() * 10),
     }),
     InputSwitchModule,
     PanelModule,
     FormsModule,
     ButtonModule,
     DynamicDialogModule,
-    InputTextModule
+    InputTextModule,
   ],
   providers: [AuthServiceComponent, DialogService],
   bootstrap: [AppComponent],
-  entryComponents: [AuthComponent]
+  entryComponents: [AuthComponent],
 })
-export class AppModule { }
+export class AppModule {}
