@@ -1,0 +1,15 @@
+<nav class="navbar navbar-dark bg-dark">
+    <div class="navbar-nav">
+        <a class="nav-item nav-link" href="#" *ngFor="let menuItem of MenuItems" [routerLink]="menuItem.Route" routerLinkActive="active">
+            <ng-container>
+                <span [innerHtml]="menuItem.Icon"></span>
+            </ng-container>
+            <ng-container *ngIf="isExpand && isEndAnimateExpand">
+                - {{menuItem.Name}}
+            </ng-container>
+        </a>
+        <a class="nav-item nav-link" (click)="expandMenu()">
+            <i class="fa fa-angle-double-right" aria-hidden="true" [ngClass]="{'fa-rotate-180': isExpand}"></i>
+        </a>
+    </div>
+</nav>

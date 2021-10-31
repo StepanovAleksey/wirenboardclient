@@ -1,0 +1,44 @@
+:host ::ng-deep {
+    .ui-widget-header {
+        display: flex;
+    }
+}
+
+.item {
+    padding-top: 5px;
+
+    .header {
+        display        : flex;
+        justify-content: space-between;
+        width          : 100%;
+    }
+
+    .coil-item {
+        display        : flex;
+        justify-content: space-between;
+        cursor         : pointer;
+
+        h4 {
+            margin-right: 10px;
+        }
+        i{
+            &.active{
+                color: greenyellow;
+            }
+        }
+    }
+}
+
+button {
+    width : 65px;
+    height: 24px;
+}
+
+.green {
+    color: green;
+}
+
+.icon {
+    padding: 0 5px;
+    cursor : pointer;
+}
