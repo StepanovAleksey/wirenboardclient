@@ -1,54 +1,65 @@
-import { environment } from 'src/environments/environment';
-import { MenuItemEnum } from './menuItems';
+import { environment } from "src/environments/environment";
+import { MenuItemEnum } from "./menuItems";
 
 export class ItemCoil {
-    static counter = 0;
-    get TopicON() {
-        return this.Topic + (environment.production ? '/on' : '');
-    }
+  static counter = 0;
 
-    /** need UI */
-    controlValue: boolean;
-    Index = 0;
+  /** need UI */
+  controlValue: boolean;
+  Index = 0;
 
-    get Description(): string {
-        return this._Description || this.Name;
-    }
+  get Description(): string {
+    return this._description || this.Name;
+  }
 
-    constructor(
-        public Name: string = null,
-        public Topic: string = null,
-        public _Description: string = null,
-        public Value = false
-    ) {
-        this.controlValue = Value;
-        this.Index = ItemCoil.counter++;
-    }
+  constructor(
+    public Name: string,
+    public TopicLamp: string,
+    public TopicSwitch: string,
+    private _description: string = null,
+    public Value = false
+  ) {
+    this.controlValue = Value;
+    this.Index = ItemCoil.counter++;
+  }
 }
-export class IGroupItem {
-    static counter = 0;
-    Index = 0;
+export class GroupItem {
+  static counter = 0;
+  Index = 0;
 
-    constructor(
-        public Name: string = null,
-        public MenuItemValue: MenuItemEnum,
-        public Items: ItemCoil[] = []
-    ) {
-        this.Index = IGroupItem.counter++;
-    }
+  constructor(
+    public Name: string = null,
+    public MenuItemValue: MenuItemEnum,
+    public Items: ItemCoil[] = []
+  ) {
+    this.Index = GroupItem.counter++;
+  }
 }
-export const GroupItems: IGroupItem[] = [
-    //#region Цоколь
-    new IGroupItem('Зал', MenuItemEnum.Cap, [
-        new ItemCoil('Основной 1', '/devices/wb-mr6c_1/controls/K4'),
-        new ItemCoil('Основной 2', '/devices/wb-mr6c_1/controls/K2'),
-        new ItemCoil('Полки', '/devices/wb-mr6c_1/controls/K3'),
-        new ItemCoil('Подсветка 1', '/devices/ld2-r8d_2/controls/Q1'),
-        new ItemCoil('Подсветка 2', '/devices/ld2-r8d_2/controls/Q2'),
-        new ItemCoil('Подсветка 3', '/devices/ld2-r8d_2/controls/Q3'),
-        new ItemCoil('Душ. Основной', '/devices/ld2-r8d_2/controls/Q4'),
-        new ItemCoil('Душ. Подсветка', '/devices/ld2-r8d_2/controls/Q5'),
-    ]),
+
+export const ALARMS: ItemCoil[] = [
+  new ItemCoil("Охрана", "/devices/app_alarms/controls/security", null),
+  new ItemCoil("1 команта", "/devices/app_alarms/controls/alarm1", null),
+  new ItemCoil("2 команта", "/devices/app_alarms/controls/alarm2", null),
+  new ItemCoil("ошибка по питанию", "/devices/app_alarms/controls/errorpower", null),
+  new ItemCoil("протечка 1", "/devices/app_alarms/controls/water1", null),
+  new ItemCoil("протечка 2", "/devices/app_alarms/controls/water2", null),
+  new ItemCoil("протечка 3", "/devices/app_alarms/controls/water3", null),
+];
+export const GroupItems: GroupItem[] = [
+  //#region Цоколь
+  new GroupItem("Зал", MenuItemEnum.FirstLevel, [
+    new ItemCoil(
+      "Основной 1",
+      "/devices/lyght_out/controls/lamp_1",
+      "/devices/lyght_in/controls/in_1"
+    ),
+    new ItemCoil(
+      "Основной 2",
+      "/devices/lyght_out/controls/lamp_2",
+      "/devices/lyght_in/controls/in_2"
+    ),
+  ]),
+  /*
     new IGroupItem('Прачечная', MenuItemEnum.Cap, [
         new ItemCoil('Основной', '/devices/ld2-r8d_2/controls/Q6'),
     ]),
@@ -191,5 +202,5 @@ export const GroupItems: IGroupItem[] = [
     new IGroupItem('Ворота', MenuItemEnum.Street, [
         new ItemCoil('Вход/Забор (Гараж, Ворота)', '/devices/ld2-r8d_7/controls/Q5'),
         new ItemCoil('Колонны (Гараж, Ворота)', '/devices/ld2-r8d_7/controls/Q4'),
-    ]),
+    ]),*/
 ];

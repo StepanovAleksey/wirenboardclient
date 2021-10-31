@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { GroupItems, ItemCoil, IGroupItem } from "src/app/models/items";
+import { GroupItems, ItemCoil, GroupItem } from "src/app/models/items";
 import { Subscription, Subject } from "rxjs";
 import { ActivatedRoute } from "@angular/router";
 import { AuthServiceComponent } from "src/app/service/auth-service/auth-service.component";
@@ -15,7 +15,7 @@ import { IMqttMessage, MqttService } from "ngx-mqtt";
 export class BasePageComponent implements OnInit, OnDestroy {
   isOnlyActiveItems = false;
   items = GroupItems;
-  filterItems: IGroupItem[] = [];
+  filterItems: GroupItem[] = [];
   localSubscription = new Subscription();
   updateAcitveEvent$ = new Subject();
 
@@ -39,11 +39,11 @@ export class BasePageComponent implements OnInit, OnDestroy {
       group.Items.forEach((item) => {
         this.localSubscription.add(
           this.mqttService
-            .observe(item.Topic)
+            .observe(item.TopicLamp)
             .subscribe((message: IMqttMessage) => {
               this.coilEventHandler(
                 parseInt(message.payload.toString()) === 1 ? true : false,
-                item.Topic
+                item.TopicLamp
               );
               this.updateAcitveEvent$.next();
             })
@@ -53,7 +53,7 @@ export class BasePageComponent implements OnInit, OnDestroy {
     this.localSubscription.add(
       this.updateAcitveEvent$
         .pipe(
-          debounceTime(1000),
+          debounceTime(500),
           filter((_) => this.isOnlyActiveItems)
         )
         .subscribe((_) => {
@@ -76,7 +76,7 @@ export class BasePageComponent implements OnInit, OnDestroy {
       return;
     }
     this.localSubscription.add(
-      this.mqttService.unsafePublish(item.TopicON, value ? "1" : "0", {
+      this.mqttService.unsafePublish(item.TopicSwitch, value ? "1" : "0", {
         qos: 1,
         retain: true,
       })
@@ -94,7 +94,7 @@ export class BasePageComponent implements OnInit, OnDestroy {
 
   private coilEventHandler(value: boolean, topic: string) {
     GroupItems.forEach((group) => {
-      group.Items.filter((item) => item.Topic === topic).forEach(
+      group.Items.filter((item) => item.TopicLamp === topic).forEach(
         (item) => (item.Value = value)
       );
     });

@@ -1,34 +1,32 @@
 @headHeigth: 30px;
-@border    : solid 2px black;
-@widthMenu : 60px;
+@border: solid 2px black;
+@widthMenu: 60px;
 
 .container-fluid {
-    overflow: hidden;
-    .header {
-        height       : @headHeigth;
-        border-bottom: @border;
+  overflow: hidden;
+  .header {
+    height: @headHeigth;
+    border-bottom: @border;
+  }
+
+  .body {
+    height: calc(100vh - @headHeigth);
+
+    > .menu {
+      top: @headHeigth;
+      left: 0;
+      position: absolute;
+      padding: 0;
+      border-right: @border;
+      z-index: 1;
+      height: 100%;
     }
 
-    .body {
-        height: calc(100vh - @headHeigth);
-
-        >.menu {
-            top         : @headHeigth;
-            left        : 0;
-            position    : absolute;
-            padding     : 0;
-            border-right: @border;
-            z-index     : 1;
-            height      : 100%;
-
-        }
-
-        >.content {
-            height      : 100%;
-            overflow    : auto;
-            padding-left: @widthMenu;
-            z-index     : 0;
-
-        }
+    > .content {
+      height: 100%;
+      overflow: auto;
+      padding-left: @widthMenu;
+      z-index: 0;
     }
+  }
 }

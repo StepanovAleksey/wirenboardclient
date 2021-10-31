@@ -18,6 +18,7 @@ import { RulesComponent } from "./pages/rules/rules.component";
 import { AuthComponent } from "./components/auth/auth.component";
 import { AuthServiceComponent } from "./service/auth-service/auth-service.component";
 import { MqttModule } from "ngx-mqtt";
+import { AlarmsComponent } from './components/alarms/alarms.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { MqttModule } from "ngx-mqtt";
     RulesComponent,
     AuthComponent,
     AuthServiceComponent,
+    AlarmsComponent,
   ],
   imports: [
     BrowserModule,
