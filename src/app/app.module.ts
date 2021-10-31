@@ -1,7 +1,6 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { NgxMqttClientModule } from "ngx-mqtt-client";
 import { ButtonModule } from "primeng/button";
 import { DialogService, DynamicDialogModule } from "primeng/dynamicdialog";
 import { InputTextModule } from "primeng/inputtext";
@@ -18,6 +17,7 @@ import { HeaderComponent } from "./components/header/header.component";
 import { RulesComponent } from "./pages/rules/rules.component";
 import { AuthComponent } from "./components/auth/auth.component";
 import { AuthServiceComponent } from "./service/auth-service/auth-service.component";
+import { MqttModule } from "ngx-mqtt";
 
 @NgModule({
   declarations: [
@@ -33,11 +33,11 @@ import { AuthServiceComponent } from "./service/auth-service/auth-service.compon
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    NgxMqttClientModule.withOptions({
-      host: environment.production
+    MqttModule.forRoot({
+      hostname: environment.production
         ? window.location.hostname
         : environment.host,
-      protocol: environment.production ? "ws" : "wss",
+      protocol: "ws",
       port: environment.port,
       clientId: "SmartHouse: " + Math.ceil(Math.random() * 10),
     }),

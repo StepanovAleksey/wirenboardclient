@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   host: 'test.mosquitto.org',
-  port: 8081
+  port: 8080
 };
 
 /*
