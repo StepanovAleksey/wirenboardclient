@@ -82,55 +82,55 @@ export const GroupItems: IGroupItem[] = [
     //#endregion
 
     //#region 1-й этаж
-    new IGroupItem('Столовая', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Столовая', MenuItemEnum.watering, [
         new ItemCoil('Основной', '/devices/ld2-r8d_4/controls/Q1'),
         new ItemCoil('Стол', '/devices/ld2-r8d_4/controls/Q2')
     ]),
-    new IGroupItem('Кухня', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Кухня', MenuItemEnum.watering, [
         new ItemCoil('Основной', '/devices/ld2-r8d_4/controls/Q3'),
         new ItemCoil('Подсветка', '/devices/ld2-r8d_4/controls/Q4'),
     ]),
-    new IGroupItem('Гостинная', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Гостинная', MenuItemEnum.watering, [
         new ItemCoil('Основной', '/devices/ld2-r8d_4/controls/Q5'),
         new ItemCoil('Люстра', '/devices/ld2-r8d_4/controls/Q6'),
         new ItemCoil('Бра 1', '/devices/ld2-r8d_4/controls/Q7'),
         new ItemCoil('Бра 2', '/devices/ld2-r8d_4/controls/Q8'),
     ]),
-    new IGroupItem('Коридор', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Коридор', MenuItemEnum.watering, [
         new ItemCoil('Основной 1', '/devices/ld2-r8d_5/controls/Q1'),
         new ItemCoil('Основной 2', '/devices/ld2-r8d_5/controls/Q2'),
         new ItemCoil('Зеркало', '/devices/ld2-r8d_5/controls/Q3'),
     ]),
-    new IGroupItem('Прихожая', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Прихожая', MenuItemEnum.watering, [
         new ItemCoil('Основной', '/devices/ld2-r8d_5/controls/Q4'),
         new ItemCoil('Зеркало', '/devices/ld2-r8d_5/controls/Q5'),
     ]),
-    new IGroupItem('Гардероб', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Гардероб', MenuItemEnum.watering, [
         new ItemCoil('Основной', '/devices/ld2-r8d_5/controls/Q6'),
     ]),
-    new IGroupItem('Лестница', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Лестница', MenuItemEnum.watering, [
         new ItemCoil('Основной', '/devices/ld2-r8d_5/controls/Q7'),
         new ItemCoil('Подсветка', '/devices/ld2-r8d_6/controls/Q1'),
     ]),
-    new IGroupItem('Терасса', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Терасса', MenuItemEnum.watering, [
         new ItemCoil('Основной 1', '/devices/ld2-r8d_3/controls/Q7'),
         new ItemCoil('Основной 2', '/devices/ld2-r8d_3/controls/Q8'),
     ]),
-    new IGroupItem('Баня', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Баня', MenuItemEnum.watering, [
         new ItemCoil('Переход', '/devices/ld2-r8d_5/controls/Q8'),
         new ItemCoil('Общий', '/devices/ld2-r8d_10/controls/Q8'),
     ]),
-    new IGroupItem('Туалет', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Туалет', MenuItemEnum.watering, [
         new ItemCoil('Основной', '/devices/ld2-r8d_6/controls/Q2'),
         new ItemCoil('Зеркало', '/devices/ld2-r8d_6/controls/Q3'),
         new ItemCoil('Подсветка', '/devices/ld2-r8d_6/controls/Q4'),
     ]),
-    new IGroupItem('Кабинет', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Кабинет', MenuItemEnum.watering, [
         new ItemCoil('Основной', '/devices/ld2-r8d_6/controls/Q5'),
         new ItemCoil('Подсветка', '/devices/ld2-r8d_6/controls/Q6'),
         new ItemCoil('Бра', '/devices/ld2-r8d_6/controls/Q7'),
     ]),
-    new IGroupItem('Гараж', MenuItemEnum.FirstLevel, [
+    new IGroupItem('Гараж', MenuItemEnum.watering, [
         new ItemCoil('Основной 1', '/devices/ld2-r8d_7/controls/Q1'),
         new ItemCoil('Основной 2', '/devices/ld2-r8d_7/controls/Q2'),
         new ItemCoil('Уличные бра', '/devices/ld2-r8d_7/controls/Q3'),

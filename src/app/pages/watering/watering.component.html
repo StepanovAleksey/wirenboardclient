@@ -1,0 +1,92 @@
+<div *ngFor="let station of stations | keyvalue" class="p-grid p-mb-2">
+  <ng-container
+    *ngTemplateOutlet="stationRef; context: { station: station }"
+  ></ng-container>
+</div>
+
+<ng-template #stationRef let-station="station">
+  <div class="p-col-1"></div>
+  <div class="p-col-10">
+    <p-panel [toggleable]="true">
+      <p-header class="header">
+        <div>
+          <h4>{{ station.key }}</h4>
+        </div>
+      </p-header>
+      <div class="p-grid">
+        <div class="p-col day" *ngFor="let dayKey of daysArr">
+          <ng-container
+            *ngTemplateOutlet="
+              dayRef;
+              context: {
+                day: station.value[dayKey],
+                dayKey: dayKey,
+                stationKey: station.key
+              }
+            "
+          ></ng-container>
+        </div>
+      </div>
+    </p-panel>
+  </div>
+  <div class="p-col-1"></div>
+</ng-template>
+
+<ng-template
+  #dayRef
+  let-day="day"
+  let-dayKey="dayKey"
+  let-stationKey="stationKey"
+>
+  <div class="p-grid">
+    <div class="p-col-12 day-header">
+      <strong>{{ DaysName[dayKey] }}</strong>
+      <span>
+        <i
+          *ngIf="!isEditMap[stationKey + dayKey]"
+          class="pi pi-pencil"
+          style="font-size: 2rem"
+          (click)="isEditMap[stationKey + dayKey] = true"
+        ></i>
+        <i
+          *ngIf="isEditMap[stationKey + dayKey]"
+          class="pi pi-plus"
+          style="font-size: 2rem; color: green"
+          (click)="isEditMap[stationKey + dayKey] = true"
+        ></i>
+        <i
+          *ngIf="isEditMap[stationKey + dayKey]"
+          class="pi pi-save"
+          style="font-size: 2rem"
+          (click)="isEditMap[stationKey + dayKey] = false"
+        ></i>
+      </span>
+    </div>
+    <ng-container *ngFor="let workTime of day">
+      <div
+        *ngIf="isEditMap[stationKey + dayKey]"
+        class="p-col-fixed p-p-0 time-remove"
+        style="width: 25px"
+      >
+        <i class="pi pi-trash" style="font-size: 2rem; color: red"></i>
+      </div>
+      <div class="p-col-fixed" style="width: 80px">
+        <p-calendar
+          [disabled]="!isEditMap[stationKey + dayKey]"
+          [(ngModel)]="workTime.startTime"
+          [timeOnly]="true"
+          inputId="timeonly"
+        ></p-calendar>
+      </div>
+      <div class="p-col day-time">
+        <p-inputNumber
+          [min]="10"
+          [max]="50"
+          [disabled]="!isEditMap[stationKey + dayKey]"
+          [(ngModel)]="workTime.timeWork"
+        >
+        </p-inputNumber>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

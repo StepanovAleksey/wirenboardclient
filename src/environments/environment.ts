@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  host: 'test.mosquitto.org',
-  port: 8080
+  host: "192.168.1.105",
+  port: 18883,
 };
 
 /*

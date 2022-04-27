@@ -18,6 +18,9 @@ import { RulesComponent } from "./pages/rules/rules.component";
 import { AuthComponent } from "./components/auth/auth.component";
 import { AuthServiceComponent } from "./service/auth-service/auth-service.component";
 import { MqttModule } from "ngx-mqtt";
+import { WateringComponent } from "./pages/watering/watering.component";
+import { InputNumberModule } from "primeng/inputnumber";
+import { CalendarModule } from "primeng/calendar";
 
 @NgModule({
   declarations: [
@@ -28,6 +31,7 @@ import { MqttModule } from "ngx-mqtt";
     RulesComponent,
     AuthComponent,
     AuthServiceComponent,
+    WateringComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,6 +51,8 @@ import { MqttModule } from "ngx-mqtt";
     ButtonModule,
     DynamicDialogModule,
     InputTextModule,
+    InputNumberModule,
+    CalendarModule,
   ],
   providers: [AuthServiceComponent, DialogService],
   bootstrap: [AppComponent],

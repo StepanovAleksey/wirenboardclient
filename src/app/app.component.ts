@@ -38,7 +38,7 @@ export class AppComponent {
   isEndAnimateExpand = false;
   constructor(private mqttService: MqttService) {
     this.mqttService.onConnect.subscribe((s: IOnConnectEvent) => {
-      console.log("status MQTT: " + status);
+      console.log("status MQTT: ", s);
     });
     this.mqttService.onError.subscribe((error) => {
       console.error(error);
