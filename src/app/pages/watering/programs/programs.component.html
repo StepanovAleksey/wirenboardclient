@@ -1,0 +1,47 @@
+<div class="p-grid">
+  <div class="p-col" *ngFor="let program of programs">
+    <ng-container
+      *ngTemplateOutlet="programRef; context: { program: program }"
+    ></ng-container>
+  </div>
+</div>
+
+<ng-template #programRef let-program="program">
+  <p-panel [toggleable]="true">
+    <p-header class="header">
+      <div>
+        <h4>
+          Программа <strong>{{ program.name }}</strong>
+        </h4>
+      </div>
+    </p-header>
+    <div class="p-grid center">
+      <table class="styled-table">
+        <tbody>
+          <tr>
+            <td>Время начала полива</td>
+            <td *ngFor="let item of program.options; let i = index">
+              <p-calendar
+                [ngModel]="item.startTime"
+                (ngModelChange)="changeTime($event, program, item)"
+                [timeOnly]="true"
+              ></p-calendar>
+            </td>
+          </tr>
+          <tr>
+            <td>Длительность полива</td>
+            <td *ngFor="let item of program.options; let i = index">
+              <p-inputNumber
+                [min]="10"
+                [max]="50"
+                [(ngModel)]="item.workTime"
+                (ngModelChange)="programChange.emit(program)"
+              >
+              </p-inputNumber>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </p-panel>
+</ng-template>

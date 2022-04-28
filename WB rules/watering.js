@@ -38,12 +38,7 @@ function initStation(obj) {
   for (station in obj) {
     obj[station] = obj[station] || {};
     for (day in Days) {
-      obj[station][day] = [
-        {
-          startTime: "00:00",
-          timeWork: 20,
-        },
-      ];
+      obj[station][day] = "";
     }
   }
 }

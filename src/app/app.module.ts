@@ -21,6 +21,10 @@ import { MqttModule } from "ngx-mqtt";
 import { WateringComponent } from "./pages/watering/watering.component";
 import { InputNumberModule } from "primeng/inputnumber";
 import { CalendarModule } from "primeng/calendar";
+import { ProgramsComponent } from "./pages/watering/programs/programs.component";
+import { AccordionModule } from "primeng/accordion";
+import { ZonesComponent } from "./pages/watering/zones/zones.component";
+import { DropdownModule } from "primeng/dropdown";
 
 @NgModule({
   declarations: [
@@ -32,6 +36,8 @@ import { CalendarModule } from "primeng/calendar";
     AuthComponent,
     AuthServiceComponent,
     WateringComponent,
+    ProgramsComponent,
+    ZonesComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,6 +59,8 @@ import { CalendarModule } from "primeng/calendar";
     InputTextModule,
     InputNumberModule,
     CalendarModule,
+    AccordionModule,
+    DropdownModule,
   ],
   providers: [AuthServiceComponent, DialogService],
   bootstrap: [AppComponent],
