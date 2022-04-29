@@ -8,54 +8,24 @@ export interface IProgram {
   options: IProgramOption[];
 }
 
-export const mockProgram: IProgram[] = [
-  {
-    name: "A",
-    options: [
-      { startTime: "14:00", workTime: 20 },
-      { startTime: "00:00", workTime: 20 },
-      { startTime: "00:00", workTime: 20 },
-      { startTime: "00:00", workTime: 20 },
-    ],
-  },
-  {
-    name: "B",
-    options: [
-      { startTime: "00:00", workTime: 20 },
-      { startTime: "00:00", workTime: 20 },
-      { startTime: "00:00", workTime: 20 },
-      { startTime: "00:00", workTime: 20 },
-    ],
-  },
-  {
-    name: "C",
-    options: [
-      { startTime: "00:00", workTime: 20 },
-      { startTime: "00:00", workTime: 20 },
-      { startTime: "00:00", workTime: 20 },
-      { startTime: "00:00", workTime: 20 },
-    ],
-  },
-];
-
 export enum Days {
-  Monday = "Monday",
-  Tuesday = "Tuesday",
-  Wednesday = "Wednesday",
-  Thursday = "Thursday",
-  Friday = "Friday",
-  Saturday = "Saturday",
-  Sunday = "Sunday",
+  Monday = 'Monday',
+  Tuesday = 'Tuesday',
+  Wednesday = 'Wednesday',
+  Thursday = 'Thursday',
+  Friday = 'Friday',
+  Saturday = 'Saturday',
+  Sunday = 'Sunday',
 }
 
 export const DaysName: Record<Days, string> = {
-  [Days.Monday]: "Понедельник",
-  [Days.Tuesday]: "Вторник",
-  [Days.Wednesday]: "Среда",
-  [Days.Thursday]: "Четверг",
-  [Days.Friday]: "Пятница",
-  [Days.Saturday]: "Суббота",
-  [Days.Sunday]: "Воскресенье",
+  [Days.Monday]: 'Понедельник',
+  [Days.Tuesday]: 'Вторник',
+  [Days.Wednesday]: 'Среда',
+  [Days.Thursday]: 'Четверг',
+  [Days.Friday]: 'Пятница',
+  [Days.Saturday]: 'Суббота',
+  [Days.Sunday]: 'Воскресенье',
 };
 
 export const daysArr = [
@@ -73,3 +43,20 @@ export interface IStation extends Record<Days, string> {}
 
 /** расписание для узлов */
 export interface IStations extends Record<string, IStation> {}
+
+export interface IOption {
+  /** датчик дождя */
+  rainDetector: boolean;
+
+  /** датчик температуры */
+  tempDetector: boolean;
+
+  /** нижний порог срабатывания по температуре */
+  tempLow: number;
+
+  /** верхний порог срабатывания по температуре */
+  tempHight: number;
+
+  /** коэфициент времени */
+  timeRatio: number;
+}

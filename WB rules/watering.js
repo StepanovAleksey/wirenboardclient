@@ -35,9 +35,9 @@ var stations = {
 
 /** инициализация станций */
 function initStation(obj) {
-  for (station in obj) {
+  for (var station in obj) {
     obj[station] = obj[station] || {};
-    for (day in Days) {
+    for (var day in Days) {
       obj[station][day] = "";
     }
   }

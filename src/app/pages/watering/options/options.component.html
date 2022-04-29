@@ -1,0 +1,44 @@
+<div class="p-grid">
+    <div class="p-col form" [formGroup]="optionForm">
+        <div class="p-grid p-shadow-1">
+            <div class="p-col-fixed label">учитывать датчик дождя</div>
+            <div class="p-col">
+                <p-inputSwitch formControlName="rainDetector"></p-inputSwitch>
+            </div>
+        </div>
+        <div class="p-grid p-shadow-1">
+            <div class="p-col-fixed label">учитывать датчик температуры</div>
+            <div class="p-col">
+                <p-inputSwitch formControlName="tempDetector"></p-inputSwitch>
+            </div>
+
+            <div class="p-col-fixed w-100 p-p-0"></div>
+
+            <div class="p-col-fixed label">
+                нижний порог срабатывания по температуре
+            </div>
+            <div class="p-col">
+                <p-inputNumber formControlName="tempLow"></p-inputNumber>
+            </div>
+
+            <div class="p-col-fixed w-100 p-p-0"></div>
+
+            <div class="p-col-fixed label">
+                верхний порог срабатывания по температуре
+            </div>
+            <div class="p-col">
+                <p-inputNumber formControlName="tempHight"></p-inputNumber>
+            </div>
+        </div>
+        <div class="p-grid p-shadow-1">
+            <div class="p-col-fixed label">коэфициент длительности полива</div>
+            <div class="p-col">
+                <p-inputNumber
+                    min="10"
+                    max="100"
+                    formControlName="timeRatio"
+                ></p-inputNumber>
+            </div>
+        </div>
+    </div>
+</div>

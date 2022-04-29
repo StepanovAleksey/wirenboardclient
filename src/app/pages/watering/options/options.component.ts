@@ -1,0 +1,49 @@
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { IOption } from '../model';
+
+@Component({
+  selector: 'app-options',
+  templateUrl: './options.component.html',
+  styleUrls: ['./options.component.less'],
+})
+export class OptionsComponent implements OnInit {
+  @Input() set options(value: IOption) {
+    this.optionForm.setValue(value);
+  }
+
+  @Output() optionChange = new EventEmitter<IOption>();
+
+  optionForm = this._fb.group({
+    rainDetector: [null, Validators.required],
+    tempDetector: [null, Validators.required],
+    tempLow: [null, Validators.required],
+    tempHight: [null, Validators.required],
+    timeRatio: [null, Validators.required],
+  });
+
+  get tempDetectorControl() {
+    return this.optionForm.get('tempDetector');
+  }
+
+  get tempLowControl() {
+    return this.optionForm.get('tempLow');
+  }
+
+  get tempHightControl() {
+    return this.optionForm.get('tempHight');
+  }
+
+  constructor(private _fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.optionForm.valueChanges.subscribe((event: IOption) => {
+      this.optionChange.emit(event);
+    });
+
+    this.tempDetectorControl.valueChanges.subscribe((event) => {
+      event ? this.tempLowControl.enable() : this.tempLowControl.disable();
+      event ? this.tempHightControl.enable() : this.tempHightControl.disable();
+    });
+  }
+}

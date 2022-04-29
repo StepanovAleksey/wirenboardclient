@@ -1,14 +1,20 @@
 <div class="p-grid">
-  <div class="col-12">
-    <p-accordion [multiple]="true">
-      <p-accordionTab header="Программы">
-        <app-programs [programs]="programs"></app-programs>
-      </p-accordionTab>
-      <p-accordionTab header="Зоны" [selected]="true">
-        <app-zones [stations]="stations" [programs]="programs"></app-zones>
-      </p-accordionTab>
-    </p-accordion>
-  </div>
+    <div class="col-12">
+        <p-accordion [multiple]="true">
+            <p-accordionTab header="Программы">
+                <app-programs [programs]="programs"></app-programs>
+            </p-accordionTab>
+            <p-accordionTab header="Зоны">
+                <app-zones
+                    [stations]="stations"
+                    [programs]="programs"
+                ></app-zones>
+            </p-accordionTab>
+            <p-accordionTab header="Настройки" [selected]="true">
+                <app-options [options]="options"></app-options>
+            </p-accordionTab>
+        </p-accordion>
+    </div>
 </div>
 
 <!-- <ng-template #stationRef let-station="station">
