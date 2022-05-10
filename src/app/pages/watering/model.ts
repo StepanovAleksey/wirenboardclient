@@ -1,21 +1,25 @@
+interface IValueChange<T> {
+  key: string;
+  value: T;
+}
+
 export interface IProgramOption {
   startTime: string;
   workTime: number;
 }
 
-export interface IProgram {
-  name;
-  options: IProgramOption[];
-}
+export interface IPrograms extends Record<string, Array<IProgramOption>> {}
+
+export interface IProgramChange extends IValueChange<Array<IProgramOption>> {}
 
 export enum Days {
-  Monday = 'Monday',
-  Tuesday = 'Tuesday',
-  Wednesday = 'Wednesday',
-  Thursday = 'Thursday',
-  Friday = 'Friday',
-  Saturday = 'Saturday',
-  Sunday = 'Sunday',
+  Monday = 1,
+  Tuesday = 2,
+  Wednesday = 3,
+  Thursday = 4,
+  Friday = 5,
+  Saturday = 6,
+  Sunday = 0,
 }
 
 export const DaysName: Record<Days, string> = {
@@ -40,6 +44,8 @@ export const daysArr = [
 
 /** расписание для узла */
 export interface IStation extends Record<Days, string> {}
+
+export interface IStationChange extends IValueChange<IStation> {}
 
 /** расписание для узлов */
 export interface IStations extends Record<string, IStation> {}

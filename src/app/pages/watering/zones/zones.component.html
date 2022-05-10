@@ -1,25 +1,25 @@
 <div class="p-grid content">
-  <div class="p-col center">
-    <table class="styled-table">
-      <thead>
-        <th>Станция</th>
-        <th *ngFor="let day of daysArr" width="60px">
-          {{ DaysName[day] }}
-        </th>
-      </thead>
-      <tbody>
-        <tr *ngFor="let station of stations | keyvalue">
-          <td>{{ station.key }}</td>
-          <td *ngFor="let day of daysArr">
-            <p-dropdown
-              [options]="programsKey"
-              [(ngModel)]="station.value[day]"
-              [showClear]="true"
-              (ngModelChange)="stationChange.emit(station)"
-            ></p-dropdown>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="p-col center">
+        <table class="styled-table">
+            <thead>
+                <th>Станция</th>
+                <th *ngFor="let day of daysArr" width="60px">
+                    {{ DaysName[day] }}
+                </th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let station of stations | keyvalue">
+                    <td>{{ station.key }}</td>
+                    <td *ngFor="let day of daysArr">
+                        <p-dropdown
+                            [options]="programsKey"
+                            [(ngModel)]="station.value[day]"
+                            [showClear]="true"
+                            (ngModelChange)="stationChange.emit(station)"
+                        ></p-dropdown>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

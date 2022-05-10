@@ -2,17 +2,27 @@ import { Component, OnInit } from '@angular/core';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { map } from 'rxjs/operators';
 import { mockProgram, optionMock, stationsMock } from './mock';
-import { IOption, IProgram, IStations } from './model';
+import {
+  IOption,
+  IProgramChange,
+  IPrograms,
+  IStationChange,
+  IStations,
+} from './model';
 
 const subTopic = '/ui-client/sub';
 const pubTopic = '/ui-client/pub';
 /** команды от UI */
 export enum EcommandSubNames {
   getStations = 'getStations',
+  getPrograms = 'getPrograms',
+  stationChange = 'stationChange',
+  programChange = 'programChange',
 }
 /** команды на UI */
 export enum EcommandPubNames {
   stationsRes = 'stationsRes',
+  programsRes = 'programsRes',
 }
 
 export interface ICommand<T> {
@@ -26,15 +36,21 @@ export interface ICommand<T> {
   styleUrls: ['./watering.component.less'],
 })
 export class WateringComponent implements OnInit {
-  stations: IStations = stationsMock;
-  programs: Array<IProgram> = mockProgram;
+  stations: IStations;
+  programs: IPrograms = mockProgram;
   options: IOption = optionMock;
 
   constructor(private mqttService: MqttService) {
+    this.sendCommand(EcommandSubNames.getStations);
+    this.sendCommand(EcommandSubNames.getPrograms);
+  }
+
+  private sendCommand<T>(name: EcommandSubNames, payload?: T) {
     this.mqttService.unsafePublish(
       subTopic,
       JSON.stringify({
-        name: 'getStations',
+        name,
+        payload,
       }),
       {
         qos: 1,
@@ -54,10 +70,24 @@ export class WateringComponent implements OnInit {
           case EcommandPubNames.stationsRes:
             this.stations = message.payload;
             break;
+          case EcommandPubNames.programsRes:
+            this.programs = message.payload;
+            break;
           default:
             console.warn('неизвестный тип команды', message);
             break;
         }
       });
+  }
+  programChange(program: IProgramChange) {
+    this.sendCommand(EcommandSubNames.programChange, program);
+  }
+
+  stationChange(stationChange: IStationChange) {
+    this.sendCommand(EcommandSubNames.stationChange, stationChange);
+  }
+
+  optionChange(option: IOption) {
+    console.log('optionChange: ', option);
   }
 }

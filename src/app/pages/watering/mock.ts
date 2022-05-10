@@ -1,40 +1,31 @@
-import { Days, IOption, IProgram } from './model';
+import { Days, IOption, IPrograms } from './model';
 
-export const mockProgram: IProgram[] = [
-  {
-    name: 'A',
-    options: [
-      { startTime: '14:00', workTime: 20 },
-      { startTime: '00:00', workTime: 20 },
-      { startTime: '00:00', workTime: 20 },
-      { startTime: '00:00', workTime: 20 },
-    ],
-  },
-  {
-    name: 'B',
-    options: [
-      { startTime: '00:00', workTime: 20 },
-      { startTime: '00:00', workTime: 20 },
-      { startTime: '00:00', workTime: 20 },
-      { startTime: '00:00', workTime: 20 },
-    ],
-  },
-  {
-    name: 'C',
-    options: [
-      { startTime: '00:00', workTime: 20 },
-      { startTime: '00:00', workTime: 20 },
-      { startTime: '00:00', workTime: 20 },
-      { startTime: '00:00', workTime: 20 },
-    ],
-  },
-];
+export const mockProgram: IPrograms = {
+  A: [
+    { startTime: '14:00', workTime: 20 },
+    { startTime: null, workTime: 20 },
+    { startTime: null, workTime: 20 },
+    { startTime: null, workTime: 20 },
+  ],
+  B: [
+    { startTime: '14:00', workTime: 20 },
+    { startTime: null, workTime: 20 },
+    { startTime: null, workTime: 20 },
+    { startTime: null, workTime: 20 },
+  ],
+  C: [
+    { startTime: '14:00', workTime: 20 },
+    { startTime: null, workTime: 20 },
+    { startTime: null, workTime: 20 },
+    { startTime: null, workTime: 20 },
+  ],
+};
 
 function initStation(obj) {
   for (let station in obj) {
     obj[station] = obj[station] || {};
     for (let day in Days) {
-      obj[station][day] = null;
+      obj[station][day] = 'A';
     }
   }
   return obj;

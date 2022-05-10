@@ -2,54 +2,24 @@
     <div class="col-12">
         <p-accordion [multiple]="true">
             <p-accordionTab header="Программы">
-                <app-programs [programs]="programs"></app-programs>
+                <app-programs
+                    [programs]="programs"
+                    (programChange)="programChange($event)"
+                ></app-programs>
             </p-accordionTab>
-            <p-accordionTab header="Зоны">
+            <p-accordionTab header="Зоны" [selected]="true">
                 <app-zones
                     [stations]="stations"
                     [programs]="programs"
+                    (stationChange)="stationChange($event)"
                 ></app-zones>
             </p-accordionTab>
-            <p-accordionTab header="Настройки" [selected]="true">
-                <app-options [options]="options"></app-options>
+            <p-accordionTab header="Настройки">
+                <app-options
+                    [options]="options"
+                    (optionChange)="optionChange($event)"
+                ></app-options>
             </p-accordionTab>
         </p-accordion>
     </div>
 </div>
-
-<!-- <ng-template #stationRef let-station="station">
-  <div class="p-col-1"></div>
-  <div class="p-col-10">
-    <p-panel [toggleable]="true">
-      <p-header class="header">
-        <div>
-          <h4>{{ station.key }}</h4>
-        </div>
-      </p-header>
-      <div class="p-grid">
-        <div class="p-col day" *ngFor="let dayKey of daysArr">
-          <ng-container
-            *ngTemplateOutlet="
-              dayRef;
-              context: {
-                day: station.value[dayKey],
-                dayKey: dayKey,
-                stationKey: station.key
-              }
-            "
-          ></ng-container>
-        </div>
-      </div>
-    </p-panel>
-  </div>
-  <div class="p-col-1"></div>
-</ng-template>
-
-<ng-template
-  #dayRef
-  let-day="day"
-  let-dayKey="dayKey"
-  let-stationKey="stationKey"
->
-  <div class="p-grid"></div>
-</ng-template> -->

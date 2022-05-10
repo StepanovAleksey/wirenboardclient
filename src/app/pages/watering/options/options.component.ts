@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 import { IOption } from '../model';
 
 @Component({
@@ -37,9 +38,11 @@ export class OptionsComponent implements OnInit {
   constructor(private _fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.optionForm.valueChanges.subscribe((event: IOption) => {
-      this.optionChange.emit(event);
-    });
+    this.optionForm.valueChanges
+      .pipe(debounceTime(100))
+      .subscribe((event: IOption) => {
+        this.optionChange.emit(event);
+      });
 
     this.tempDetectorControl.valueChanges.subscribe((event) => {
       event ? this.tempLowControl.enable() : this.tempLowControl.disable();
