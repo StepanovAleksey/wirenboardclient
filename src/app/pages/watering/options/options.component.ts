@@ -10,7 +10,7 @@ import { IOption } from '../model';
 })
 export class OptionsComponent implements OnInit {
   @Input() set options(value: IOption) {
-    this.optionForm.setValue(value);
+    this.optionForm.setValue(value, { emitEvent: false });
   }
 
   @Output() optionChange = new EventEmitter<IOption>();

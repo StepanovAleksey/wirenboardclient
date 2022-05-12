@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
+import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { mockProgram, optionMock, stationsMock } from './mock';
 import {
@@ -16,13 +17,16 @@ const pubTopic = '/ui-client/pub';
 export enum EcommandSubNames {
   getStations = 'getStations',
   getPrograms = 'getPrograms',
+  getOptions = 'getOptions',
   stationChange = 'stationChange',
   programChange = 'programChange',
+  optionChange = 'optionChange',
 }
 /** команды на UI */
 export enum EcommandPubNames {
   stationsRes = 'stationsRes',
   programsRes = 'programsRes',
+  optionsRes = 'optionsRes',
 }
 
 export interface ICommand<T> {
@@ -42,7 +46,12 @@ export class WateringComponent implements OnInit {
 
   constructor(private mqttService: MqttService) {
     this.sendCommand(EcommandSubNames.getStations);
-    this.sendCommand(EcommandSubNames.getPrograms);
+    timer(500).subscribe(() => {
+      this.sendCommand(EcommandSubNames.getPrograms);
+    });
+    timer(1000).subscribe(() => {
+      this.sendCommand(EcommandSubNames.getOptions);
+    });
   }
 
   private sendCommand<T>(name: EcommandSubNames, payload?: T) {
@@ -73,6 +82,9 @@ export class WateringComponent implements OnInit {
           case EcommandPubNames.programsRes:
             this.programs = message.payload;
             break;
+          case EcommandPubNames.optionsRes:
+            this.options = message.payload;
+            break;
           default:
             console.warn('неизвестный тип команды', message);
             break;
@@ -88,6 +100,6 @@ export class WateringComponent implements OnInit {
   }
 
   optionChange(option: IOption) {
-    console.log('optionChange: ', option);
+    this.sendCommand(EcommandSubNames.optionChange, option);
   }
 }

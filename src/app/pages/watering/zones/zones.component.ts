@@ -14,7 +14,7 @@ import {
   styleUrls: ['./zones.component.less'],
 })
 export class ZonesComponent implements OnInit {
-  @Input() stations: Array<IStation>;
+  @Input() stations: IStation;
 
   programsKey: Array<SelectItem<string>>;
   @Input() set programs(value: IPrograms) {

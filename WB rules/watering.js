@@ -1,6 +1,6 @@
 var subTopic = '/ui-client/sub';
 var pubTopic = '/ui-client/pub';
-
+var isDebug = true;
 /** storage */
 var wateringStorage = new PersistentStorage('watering-storage', {
   global: true,
@@ -12,10 +12,14 @@ var commandSubNames = {
   getStations: 'getStations',
   /** получить настройки всех программ */
   getPrograms: 'getPrograms',
+  /** получить настройки  */
+  getOptions: 'getOptions',
   /** изменение станций */
   stationChange: 'stationChange',
   /** изменение програмы */
   programChange: 'programChange',
+  /** изменение опций */
+  optionChange: 'optionChange',
 };
 
 /** команды на UI */
@@ -24,6 +28,8 @@ var commandPubNames = {
   stationsRes: 'stationsRes',
   /** все программы */
   programsRes: 'programsRes',
+  /** опции */
+  optionsRes: 'optionsRes',
 };
 
 var Days = {
@@ -43,7 +49,7 @@ var stations;
 var programs;
 
 /** Опции */
-var options;
+var wateringOptions;
 
 /** сохранение станций */
 function saveSation() {
@@ -55,8 +61,12 @@ function savePrograms() {
   wateringStorage['programs'] = JSON.stringify(programs);
 }
 
+/** сохранение станций */
+function saveWateringOptions() {
+  wateringStorage['watering_options'] = JSON.stringify(wateringOptions);
+}
 /** проверка на наличие сохранённых станций в flash памяти */
-if (wateringStorage['stations']) {
+if (isDebug || !wateringStorage['stations']) {
   /** инициализация станций */
   var initStation = function (obj) {
     for (var station in obj) {
@@ -82,7 +92,7 @@ if (wateringStorage['stations']) {
 }
 
 /** проверка на наличие программ */
-if (wateringStorage['programs']) {
+if (isDebug || !wateringStorage['programs']) {
   function emptyProgram() {
     return [
       { startTime: null, workTime: 20 },
@@ -100,8 +110,21 @@ if (wateringStorage['programs']) {
   savePrograms();
 }
 
+/** проверка на наличие опций */
+if (isDebug || !wateringStorage['watering_options']) {
+  wateringOptions = {
+    rainDetector: false,
+    tempDetector: false,
+    tempLow: null,
+    tempHight: null,
+    timeRatio: 100,
+  };
+  saveWateringOptions();
+}
+
 stations = JSON.parse(wateringStorage['stations']);
 programs = JSON.parse(wateringStorage['programs']);
+wateringOptions = JSON.parse(wateringStorage['watering_options']);
 
 /** отправка команд на UI */
 function sendCommand(commandName, payload) {
@@ -125,6 +148,9 @@ trackMqtt(subTopic, function (message) {
     case commandSubNames.getPrograms:
       sendCommand(commandPubNames.programsRes, programs);
       break;
+    case commandSubNames.getOptions:
+      sendCommand(commandPubNames.optionsRes, wateringOptions);
+      break;
     case commandSubNames.stationChange:
       stations[payload.key] = payload.value;
       saveSation();
@@ -133,6 +159,9 @@ trackMqtt(subTopic, function (message) {
       programs[payload.key] = payload.value;
       savePrograms();
       break;
+    case commandSubNames.optionChange:
+      wateringOptions = payload;
+      saveWateringOptions();
     default:
       break;
   }

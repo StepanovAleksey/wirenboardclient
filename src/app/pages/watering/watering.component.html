@@ -1,13 +1,16 @@
 <div class="p-grid">
     <div class="col-12">
         <p-accordion [multiple]="true">
+            <p-accordionTab header="Ручное управление" [selected]="true">
+                <app-manual-run [stations]="stations"></app-manual-run>
+            </p-accordionTab>
             <p-accordionTab header="Программы">
                 <app-programs
                     [programs]="programs"
                     (programChange)="programChange($event)"
                 ></app-programs>
             </p-accordionTab>
-            <p-accordionTab header="Зоны" [selected]="true">
+            <p-accordionTab header="Зоны">
                 <app-zones
                     [stations]="stations"
                     [programs]="programs"

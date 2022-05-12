@@ -27,6 +27,7 @@ import { ZonesComponent } from './pages/watering/zones/zones.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { OptionsComponent } from './pages/watering/options/options.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ManualRunComponent } from './pages/watering/manual-run/manual-run.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     ProgramsComponent,
     ZonesComponent,
     OptionsComponent,
+    ManualRunComponent,
   ],
   imports: [
     BrowserModule,
