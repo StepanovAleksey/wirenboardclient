@@ -41,7 +41,7 @@ export class OptionsComponent implements OnInit {
     this.optionForm.valueChanges
       .pipe(debounceTime(100))
       .subscribe((event: IOption) => {
-        this.optionChange.emit(event);
+        this.optionChange.emit(this.optionForm.getRawValue());
       });
 
     this.tempDetectorControl.valueChanges.subscribe((event) => {

@@ -2,7 +2,11 @@
     <div class="col-12">
         <p-accordion [multiple]="true">
             <p-accordionTab header="Ручное управление" [selected]="true">
-                <app-manual-run [stations]="stations"></app-manual-run>
+                <app-manual-run
+                    [stations]="stations"
+                    [zoneRelayTopicsMaps]="zoneRelayTopicsMaps"
+                    (sendCommand)="manualSendCommand($event)"
+                ></app-manual-run>
             </p-accordionTab>
             <p-accordionTab header="Программы">
                 <app-programs

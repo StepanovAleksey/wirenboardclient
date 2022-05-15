@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
-import { timer } from 'rxjs';
+import { Subject, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { IManualAction } from './manual-run/manual-run.component';
 import { mockProgram, optionMock, stationsMock } from './mock';
 import {
   IOption,
@@ -9,24 +10,25 @@ import {
   IPrograms,
   IStationChange,
   IStations,
+  IZoneTopicSettings,
 } from './model';
 
 const subTopic = '/ui-client/sub';
 const pubTopic = '/ui-client/pub';
 /** команды от UI */
 export enum EcommandSubNames {
-  getStations = 'getStations',
-  getPrograms = 'getPrograms',
-  getOptions = 'getOptions',
+  init = 'init',
   stationChange = 'stationChange',
   programChange = 'programChange',
   optionChange = 'optionChange',
+  manualSendCommand = 'manualSendCommand',
 }
 /** команды на UI */
 export enum EcommandPubNames {
   stationsRes = 'stationsRes',
   programsRes = 'programsRes',
   optionsRes = 'optionsRes',
+  initRes = 'initRes',
 }
 
 export interface ICommand<T> {
@@ -43,15 +45,15 @@ export class WateringComponent implements OnInit {
   stations: IStations;
   programs: IPrograms = mockProgram;
   options: IOption = optionMock;
+  zoneRelayTopicsMaps: IZoneTopicSettings = {};
+  destroy$ = new Subject();
 
   constructor(private mqttService: MqttService) {
-    this.sendCommand(EcommandSubNames.getStations);
-    timer(500).subscribe(() => {
-      this.sendCommand(EcommandSubNames.getPrograms);
-    });
-    timer(1000).subscribe(() => {
-      this.sendCommand(EcommandSubNames.getOptions);
-    });
+    this.sendCommand(EcommandSubNames.init);
+  }
+
+  manualSendCommand(command: IManualAction) {
+    this.sendCommand(EcommandSubNames.manualSendCommand, command);
   }
 
   private sendCommand<T>(name: EcommandSubNames, payload?: T) {
@@ -76,14 +78,13 @@ export class WateringComponent implements OnInit {
       )
       .subscribe((message: ICommand<any>) => {
         switch (message.name) {
-          case EcommandPubNames.stationsRes:
-            this.stations = message.payload;
-            break;
-          case EcommandPubNames.programsRes:
-            this.programs = message.payload;
-            break;
-          case EcommandPubNames.optionsRes:
-            this.options = message.payload;
+          case EcommandPubNames.initRes:
+            const { stations, programs, options, zoneRelayTopicsMaps } =
+              message.payload;
+            this.stations = stations;
+            this.programs = programs;
+            this.options = options;
+            this.zoneRelayTopicsMaps = zoneRelayTopicsMaps;
             break;
           default:
             console.warn('неизвестный тип команды', message);

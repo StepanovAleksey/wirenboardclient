@@ -1,28 +1,13 @@
 <div class="p-grid">
-    <div class="p-col-12" *ngFor="let station of stations | keyvalue">
+    <div
+        class="p-col-12 field p-shadow-1"
+        *ngFor="let station of stations | keyvalue"
+    >
         <div class="p-grid">
-            <div class="p-col">
-                {{ station.key }}
-            </div>
-            <div class="p-col">
-                <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Старт"
-                    class="p-button-success p-mr-1"
-                ></button>
-                <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Стоп"
-                    class="p-button-warning"
-                ></button>
-            </div>
-            <div class="col">
-                <label for="integeronly">Время полива</label>
+            <div class="p-col" style="max-width: 320px">
+                <label> {{ station.key }} (мин.)</label><br />
                 <p-inputNumber
+                    [disabled]="relayStatus[station.key]"
                     [(ngModel)]="times[station.key]"
                     [showButtons]="true"
                     buttonLayout="horizontal"
@@ -37,6 +22,26 @@
                     max="40"
                 >
                 </p-inputNumber>
+            </div>
+            <div class="p-col-12 p-md-3 actions">
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Старт"
+                    class="p-button-success p-mr-1"
+                    [disabled]="relayStatus[station.key]"
+                    (click)="start(station.key)"
+                ></button>
+                <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Стоп"
+                    class="p-button-warning"
+                    [disabled]="!relayStatus[station.key]"
+                    (click)="stop(station.key)"
+                ></button>
             </div>
         </div>
     </div>

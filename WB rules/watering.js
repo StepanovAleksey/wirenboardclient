@@ -1,25 +1,51 @@
 var subTopic = '/ui-client/sub';
 var pubTopic = '/ui-client/pub';
 var isDebug = true;
+
 /** storage */
 var wateringStorage = new PersistentStorage('watering-storage', {
   global: true,
 });
 
+var zoneRelayTopicsMaps = {
+  'деревья-ели': {
+    deviceName: 'wb-mr6c_52',
+    control: 'K1',
+  },
+  'деревья-берёзы': {
+    deviceName: 'wb-mr6c_52',
+    control: 'K2',
+  },
+  'газон за домом': {
+    deviceName: 'wb-mr6c_52',
+    control: 'K3',
+  },
+  'газон перед домом': {
+    deviceName: 'wb-mr6c_52',
+    control: 'K4',
+  },
+  кустарники: {
+    deviceName: 'wb-mr6c_52',
+    control: 'K5',
+  },
+  плодовые: {
+    deviceName: 'wb-mr6c_52',
+    control: 'K6',
+  },
+};
+
 /** команды от UI */
 var commandSubNames = {
-  /** получить настройки всех станций */
-  getStations: 'getStations',
-  /** получить настройки всех программ */
-  getPrograms: 'getPrograms',
-  /** получить настройки  */
-  getOptions: 'getOptions',
+  /** инициализация */
+  init: 'init',
   /** изменение станций */
   stationChange: 'stationChange',
   /** изменение програмы */
   programChange: 'programChange',
   /** изменение опций */
   optionChange: 'optionChange',
+  /** ручное управление */
+  manualSendCommand: 'manualSendCommand',
 };
 
 /** команды на UI */
@@ -30,6 +56,8 @@ var commandPubNames = {
   programsRes: 'programsRes',
   /** опции */
   optionsRes: 'optionsRes',
+  /** ответ на заапрос инициализации */
+  initRes: 'initRes',
 };
 
 var Days = {
@@ -48,7 +76,14 @@ var stations;
 /** программы */
 var programs;
 
-/** Опции */
+/** Опции
+ * @type {Object} IWateringOptions
+ * @property {boolean} rainDetector - датчик дождя
+ * @property {boolean} tempDetector - датчик температуры
+ * @property {number} tempLow - нижний порог срабатывания по температуре
+ * @property {number} tempHight - верхний порог срабатывания по температуре
+ * @property {number} timeRatio -  коэфициент времени 0-100
+ */
 var wateringOptions;
 
 /** сохранение станций */
@@ -65,6 +100,7 @@ function savePrograms() {
 function saveWateringOptions() {
   wateringStorage['watering_options'] = JSON.stringify(wateringOptions);
 }
+
 /** проверка на наличие сохранённых станций в flash памяти */
 if (isDebug || !wateringStorage['stations']) {
   /** инициализация станций */
@@ -73,19 +109,16 @@ if (isDebug || !wateringStorage['stations']) {
       obj[station] = obj[station] || {};
       for (var dayKey in Days) {
         obj[station][Days[dayKey]] = null;
+        if (isDebug && Days[dayKey] === Days.Sunday) {
+          obj[station][Days[dayKey]] = 'A';
+        }
       }
     }
   };
-  var defaultStation = {
-    'деревья-ели': {},
-    'деревья-берёзы': {},
-    'газон за домом': {},
-    'газон перед домом': {},
-    кустарники: {},
-    плодовые: {},
-    резерв1: {},
-    резерв2: {},
-  };
+  var defaultStation = Object.keys(zoneRelayTopicsMaps).reduce(function (a, b) {
+    a[b] = {};
+    return a;
+  }, {});
   initStation(defaultStation);
   stations = defaultStation;
   saveSation();
@@ -126,30 +159,116 @@ stations = JSON.parse(wateringStorage['stations']);
 programs = JSON.parse(wateringStorage['programs']);
 wateringOptions = JSON.parse(wateringStorage['watering_options']);
 
-/** отправка команд на UI */
+/** отправка команд на UI
+ * @param {string} commandName - имя команды
+ * @param {any} payload - данные
+ */
 function sendCommand(commandName, payload) {
-  publish(
-    pubTopic,
-    JSON.stringify({
-      name: commandName,
-      payload: payload,
-    }),
-  );
+  payload = JSON.stringify({
+    name: commandName,
+    payload: payload,
+  });
+  publish(pubTopic, payload);
 }
+
+/**
+ * Управление ручным поливом
+ */
+var manualCommandWorker = (function () {
+  var timers = {};
+
+  /**
+   * команада "стоп"
+   * @param {string} zoneKey
+   */
+  var stopFunc = function (zoneKey) {
+    var device = zoneRelayTopicsMaps[zoneKey];
+    dev[device.deviceName][device.control] = false;
+    if (timers[zoneKey]) {
+      clearTimeout(timers[zoneKey]);
+      timers[zoneKey] = null;
+    }
+  };
+
+  /**
+   * команада "старт"
+   * @param {string} zoneKey - ID зоны
+   * @param {number} time - время работы
+   */
+  var startFunc = function (zoneKey, time) {
+    var device = zoneRelayTopicsMaps[zoneKey];
+    dev[device.deviceName][device.control] = true;
+    timers[zoneKey] = setTimeout(function () {
+      stopFunc(zoneKey);
+    }, time * 1000 * (isDebug ? 1 : 60));
+  };
+
+  return {
+    Start: startFunc,
+    Stop: stopFunc,
+  };
+})();
+
+/**
+ * worker для работы с запуском по расписанию
+ */
+var timeZoneWorker = (function (programs, manualCommandWorker) {
+  /**
+   * старт полива
+   * @param {string} programKey - ID программы
+   * @param {number} timeWork - время работы
+   */
+  var runRelay = function (programKey, timeWork) {
+    var currentDay = new Date().getDay();
+    Object.keys(stations).forEach(function (zoneKey) {
+      if (stations[zoneKey][currentDay] !== programKey) {
+        return;
+      }
+      manualCommandWorker.Start(
+        zoneKey,
+        (timeWork * wateringOptions.timeRatio) / 100,
+      );
+    });
+  };
+  /** запускаем джобу с интервалом 1мин для проверки станций */
+  defineRule('crone_1min_interval', {
+    when: cron('0 * * * * *'),
+    then: function () {
+      var curentTime = new Date();
+      var currentTimeWork = [
+        curentTime.getHours(),
+        curentTime.getMinutes(),
+      ].join(':');
+      Object.keys(programs).forEach(function (programKey) {
+        programs[programKey]
+          .filter(function (programOption) {
+            return programOption.startTime === currentTimeWork;
+          })
+          .forEach(function (programOption) {
+            runRelay(programKey, programOption.workTime);
+          });
+      });
+    },
+  });
+
+  return {};
+})(programs, manualCommandWorke);
 
 /** отслеживание команд с UI */
 trackMqtt(subTopic, function (message) {
+  if (isDebug) {
+    log('command', message.value);
+  }
   var command = JSON.parse(message.value);
   var payload = command.payload;
   switch (command.name) {
-    case commandSubNames.getStations:
-      sendCommand(commandPubNames.stationsRes, stations);
-      break;
-    case commandSubNames.getPrograms:
-      sendCommand(commandPubNames.programsRes, programs);
-      break;
-    case commandSubNames.getOptions:
-      sendCommand(commandPubNames.optionsRes, wateringOptions);
+    case commandSubNames.init:
+      sendCommand(commandPubNames.initRes, {
+        stations: stations,
+        programs: programs,
+        options: wateringOptions,
+        zoneRelayTopicsMaps: zoneRelayTopicsMaps,
+      });
       break;
     case commandSubNames.stationChange:
       stations[payload.key] = payload.value;
@@ -162,6 +281,11 @@ trackMqtt(subTopic, function (message) {
     case commandSubNames.optionChange:
       wateringOptions = payload;
       saveWateringOptions();
+    case commandSubNames.manualSendCommand:
+      if (typeof manualCommandWorker[payload.commnad] == 'function') {
+        manualCommandWorker[payload.commnad](payload.zoneKey, payload.timeSec);
+      }
+      break;
     default:
       break;
   }

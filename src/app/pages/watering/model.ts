@@ -66,3 +66,12 @@ export interface IOption {
   /** коэфициент времени */
   timeRatio: number;
 }
+
+export interface IZoneTopicSettings
+  extends Record<
+    string,
+    {
+      deviceName: string;
+      control: string;
+    }
+  > {}
