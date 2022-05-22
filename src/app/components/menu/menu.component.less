@@ -1,11 +1,29 @@
 :host {
-    font-size: 24px;
+  font-size: 24px;
 
-    a {
-        cursor: pointer;
+  a {
+    cursor: pointer;
+  }
+  .navbar {
+    padding-left: 10px;
+    padding-right: 5px;
+  }
+}
+.item {
+  align-items: center;
+  .expand-icon {
+    width: 15px;
+    color: white;
+    cursor: pointer;
+  }
+}
+::ng-deep {
+  .p-treenode {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
     }
-    .navbar{
-        padding-left: 10px;
-        padding-right: 5px;
-    }
+  }
+}
+.w-100 {
+  width: 100%;
 }

@@ -1,25 +1,24 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { MenuItemEnum } from "./models/menuItems";
-import { WateringComponent } from "./pages/watering/watering.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { DeveloperPageComponent } from './pages/developer-page/developer-page.component';
+import { WateringComponent } from './pages/watering/watering.component';
+import { AuthGuard } from './service/auth.guard';
 
 const routes: Routes = [
   {
-    path: "",
-    redirectTo: "/watering",
-    pathMatch: "full",
+    path: 'watering',
+    component: WateringComponent,
+    canActivate: [AuthGuard],
   },
   {
-    path: "watering",
-    component: WateringComponent,
-    data: {
-      filter: MenuItemEnum.watering,
-    },
+    path: '**',
+    pathMatch: 'full',
+    component: DeveloperPageComponent,
   },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: "legacy" })],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

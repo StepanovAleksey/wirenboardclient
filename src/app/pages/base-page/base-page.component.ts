@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { GroupItems, ItemCoil, IGroupItem } from "src/app/models/items";
-import { Subscription, Subject } from "rxjs";
-import { ActivatedRoute } from "@angular/router";
-import { AuthServiceComponent } from "src/app/service/auth-service/auth-service.component";
-import { MenuItemEnum } from "src/app/models/menuItems";
-import { debounceTime, filter } from "rxjs/operators";
-import { IMqttMessage, MqttService } from "ngx-mqtt";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { GroupItems, ItemCoil, IGroupItem } from 'src/app/models/items';
+import { Subscription, Subject } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/service/auth.service';
+import { MenuItemEnum } from 'src/app/models/menuItems';
+import { debounceTime, filter } from 'rxjs/operators';
+import { IMqttMessage, MqttService } from 'ngx-mqtt';
 
 @Component({
-  selector: "app-base-page",
-  templateUrl: "./base-page.component.html",
-  styleUrls: ["./base-page.component.less"],
+  selector: 'app-base-page',
+  templateUrl: './base-page.component.html',
+  styleUrls: ['./base-page.component.less'],
 })
 export class BasePageComponent implements OnInit, OnDestroy {
   isOnlyActiveItems = false;
@@ -22,7 +22,7 @@ export class BasePageComponent implements OnInit, OnDestroy {
   constructor(
     private mqttService: MqttService,
     route: ActivatedRoute,
-    private authServiceComponent: AuthServiceComponent
+    private authServiceComponent: AuthService,
   ) {
     route.data.subscribe((d) => {
       const routeData: MenuItemEnum = d.filter;
@@ -43,10 +43,10 @@ export class BasePageComponent implements OnInit, OnDestroy {
             .subscribe((message: IMqttMessage) => {
               this.coilEventHandler(
                 parseInt(message.payload.toString()) === 1 ? true : false,
-                item.Topic
+                item.Topic,
               );
               this.updateAcitveEvent$.next();
-            })
+            }),
         );
       });
     });
@@ -54,11 +54,11 @@ export class BasePageComponent implements OnInit, OnDestroy {
       this.updateAcitveEvent$
         .pipe(
           debounceTime(1000),
-          filter((_) => this.isOnlyActiveItems)
+          filter((_) => this.isOnlyActiveItems),
         )
         .subscribe((_) => {
           this._filterActiveItems();
-        })
+        }),
     );
     this.updateAcitveEvent$.next();
   }
@@ -72,21 +72,15 @@ export class BasePageComponent implements OnInit, OnDestroy {
   }
 
   coilChange(item: ItemCoil, value: boolean | number) {
-    if (!this.authServiceComponent.IsAuth) {
-      return;
-    }
     this.localSubscription.add(
-      this.mqttService.unsafePublish(item.TopicON, value ? "1" : "0", {
+      this.mqttService.unsafePublish(item.TopicON, value ? '1' : '0', {
         qos: 1,
         retain: true,
-      })
+      }),
     );
   }
 
   sendMassCmd(items: ItemCoil[], value: number) {
-    if (!this.authServiceComponent.IsAuth) {
-      return;
-    }
     items.forEach((item) => {
       this.coilChange(item, value);
     });
@@ -95,14 +89,14 @@ export class BasePageComponent implements OnInit, OnDestroy {
   private coilEventHandler(value: boolean, topic: string) {
     GroupItems.forEach((group) => {
       group.Items.filter((item) => item.Topic === topic).forEach(
-        (item) => (item.Value = value)
+        (item) => (item.Value = value),
       );
     });
   }
 
   private _filterActiveItems() {
     this.filterItems = GroupItems.filter((item) =>
-      item.Items.some((childitem) => childitem.Value)
+      item.Items.some((childitem) => childitem.Value),
     );
   }
 }

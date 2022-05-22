@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from './components/header/header.component';
 import { RulesComponent } from './pages/rules/rules.component';
 import { AuthComponent } from './components/auth/auth.component';
-import { AuthServiceComponent } from './service/auth-service/auth-service.component';
+import { AuthService } from './service/auth.service';
 import { MqttModule } from 'ngx-mqtt';
 import { WateringComponent } from './pages/watering/watering.component';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -28,22 +28,10 @@ import { DropdownModule } from 'primeng/dropdown';
 import { OptionsComponent } from './pages/watering/options/options.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ManualRunComponent } from './pages/watering/manual-run/manual-run.component';
+import { DeveloperPageComponent } from './pages/developer-page/developer-page.component';
+import { TreeModule } from 'primeng/tree';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    MenuComponent,
-    BasePageComponent,
-    HeaderComponent,
-    RulesComponent,
-    AuthComponent,
-    AuthServiceComponent,
-    WateringComponent,
-    ProgramsComponent,
-    ZonesComponent,
-    OptionsComponent,
-    ManualRunComponent,
-  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -67,8 +55,23 @@ import { ManualRunComponent } from './pages/watering/manual-run/manual-run.compo
     AccordionModule,
     DropdownModule,
     ReactiveFormsModule,
+    TreeModule,
   ],
-  providers: [AuthServiceComponent, DialogService],
+  declarations: [
+    AppComponent,
+    MenuComponent,
+    BasePageComponent,
+    HeaderComponent,
+    RulesComponent,
+    WateringComponent,
+    ProgramsComponent,
+    ZonesComponent,
+    OptionsComponent,
+    ManualRunComponent,
+    DeveloperPageComponent,
+    AuthComponent
+  ],
+  providers: [AuthService, DialogService],
   bootstrap: [AppComponent],
   entryComponents: [AuthComponent],
 })

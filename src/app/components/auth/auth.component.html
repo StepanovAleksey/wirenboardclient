@@ -3,10 +3,28 @@
         <div class="col">
             <div class="form-group">
                 <label>Пароль</label>
-                <input pInputText type="password" class="form-control" placeholder="введите пароль"
-                    [(ngModel)]="password" name="something" [ngClass]="{'is-invalid': isError}">
+                <input
+                    pInputText
+                    type="password"
+                    class="form-control"
+                    placeholder="введите пароль"
+                    [(ngModel)]="password"
+                    name="something"
+                    [ngClass]="{ 'is-invalid': isError }"
+                />
             </div>
-            <button class="btn btn-primary" (click)="ok()">Ок</button>
+        </div>
+    </div>
+    <div class="row p-mt-2">
+        <div class="col-12">
+            <button
+                [disabled]="!password?.length"
+                style="width: 100%"
+                class="btn btn-primary"
+                (click)="ok()"
+            >
+                Ок
+            </button>
         </div>
     </div>
 </div>

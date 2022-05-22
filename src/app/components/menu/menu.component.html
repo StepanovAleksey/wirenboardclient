@@ -1,15 +1,60 @@
-<nav class="navbar navbar-dark bg-dark">
+<div class="navbar navbar-dark bg-dark">
     <div class="navbar-nav">
-        <a class="nav-item nav-link" href="#" *ngFor="let menuItem of MenuItems" [routerLink]="menuItem.Route" routerLinkActive="active">
-            <ng-container>
-                <span [innerHtml]="menuItem.Icon"></span>
-            </ng-container>
-            <ng-container *ngIf="isExpand && isEndAnimateExpand">
-                - {{menuItem.Name}}
-            </ng-container>
-        </a>
+        <ng-container
+            *ngTemplateOutlet="children; context: { menuItems: MenuItems }"
+        ></ng-container>
         <a class="nav-item nav-link" (click)="expandMenu()">
-            <i class="fa fa-angle-double-right" aria-hidden="true" [ngClass]="{'fa-rotate-180': isExpand}"></i>
+            <i
+                class="fa fa-angle-double-right"
+                aria-hidden="true"
+                [ngClass]="{ 'fa-rotate-180': isExpand }"
+            ></i>
         </a>
     </div>
-</nav>
+</div>
+
+<ng-template #children let-menuItems="menuItems">
+    <div class="item p-grid p-nogutter" *ngFor="let menuItem of menuItems">
+        <div
+            *ngIf="isExpand && isEndAnimateExpand"
+            class="expand-icon p-col-fixed p-nogutter p-mr-2"
+            (click)="menuItem.isExpand = !menuItem.isExpand"
+        >
+            <i
+                *ngIf="menuItem.children?.length"
+                class="fa fa-angle-down"
+                [ngClass]="{ 'fa-rotate-180': menuItem.isExpand }"
+                aria-hidden="true"
+            ></i>
+        </div>
+        <div class="content p-col p-nogutter">
+            <a
+                class="nav-item nav-link"
+                [routerLink]="menuItem.Route"
+                routerLinkActive="active"
+            >
+                <i [ngClass]="menuItem.Icon"></i>
+                <ng-container *ngIf="isExpand && isEndAnimateExpand">
+                    {{ menuItem.Name }}</ng-container
+                >
+            </a>
+        </div>
+        <div class="w-100"></div>
+        <div
+            *ngIf="menuItem.children?.length && menuItem.isExpand && isExpand"
+            class="col-12 p-nogutter"
+        >
+            <div class="p-grid p-nogutter">
+                <div class="col-1"></div>
+                <div class="col-11">
+                    <ng-container
+                        *ngTemplateOutlet="
+                            children;
+                            context: { menuItems: menuItem.children }
+                        "
+                    ></ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

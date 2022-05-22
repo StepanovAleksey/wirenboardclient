@@ -1,44 +1,44 @@
-import { Component, Inject } from "@angular/core";
-import { environment } from "src/environments/environment";
+import { Component, Inject } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import {
   trigger,
   state,
   style,
   transition,
   animate,
-} from "@angular/animations";
-import { IOnConnectEvent, MqttService } from "ngx-mqtt";
+} from '@angular/animations';
+import { IOnConnectEvent, MqttService } from 'ngx-mqtt';
+import { AuthService } from './service/auth.service';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.less"],
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.less'],
   animations: [
-    trigger("MinExpan", [
+    trigger('MinExpan', [
       state(
-        "min",
+        'min',
         style({
-          width: "60px",
-        })
+          width: '60px',
+        }),
       ),
       state(
-        "expan",
+        'expan',
         style({
-          width: "220px",
-        })
+          width: '220px',
+        }),
       ),
-      transition("min => expan", [animate("0.3s")]),
-      transition("expan => min", [animate("0.3s")]),
+      transition('min => expan', [animate('0.3s')]),
+      transition('expan => min', [animate('0.3s')]),
     ]),
   ],
 })
 export class AppComponent {
-  title = "Умный дом";
   isExpandMenu = false;
   isEndAnimateExpand = false;
-  constructor(private mqttService: MqttService) {
+  constructor(private mqttService: MqttService, public authSrv: AuthService) {
     this.mqttService.onConnect.subscribe((s: IOnConnectEvent) => {
-      console.log("status MQTT: ", s);
+      console.log('status MQTT: ', s);
     });
     this.mqttService.onError.subscribe((error) => {
       console.error(error);
