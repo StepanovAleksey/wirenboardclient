@@ -9,6 +9,9 @@ import {
 } from '@angular/animations';
 import { IOnConnectEvent, MqttService } from 'ngx-mqtt';
 import { AuthService } from './service/auth.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { MenuHelper } from './models/menuItems';
 
 @Component({
   selector: 'app-root',
@@ -36,13 +39,24 @@ import { AuthService } from './service/auth.service';
 export class AppComponent {
   isExpandMenu = false;
   isEndAnimateExpand = false;
-  constructor(private mqttService: MqttService, public authSrv: AuthService) {
+  pageName: string;
+  constructor(
+    private mqttService: MqttService,
+    public authSrv: AuthService,
+    private router: Router,
+  ) {
     this.mqttService.onConnect.subscribe((s: IOnConnectEvent) => {
       console.log('status MQTT: ', s);
     });
     this.mqttService.onError.subscribe((error) => {
       console.error(error);
     });
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const menu = MenuHelper.getMenuItemByPath(event.url);
+        this.pageName = menu?.Name;
+      });
   }
   doneAnimate() {
     this.isEndAnimateExpand = this.isExpandMenu;

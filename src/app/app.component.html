@@ -15,7 +15,14 @@
             ></app-menu>
         </div>
         <div class="col content">
-            <router-outlet></router-outlet>
+            <div class="row">
+                <div class="col-12 page-name center" *ngIf="pageName">
+                    <h4>{{ pageName }}</h4>
+                </div>
+                <div class="col-12">
+                    <router-outlet></router-outlet>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -30,6 +30,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ManualRunComponent } from './pages/watering/manual-run/manual-run.component';
 import { DeveloperPageComponent } from './pages/developer-page/developer-page.component';
 import { TreeModule } from 'primeng/tree';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   imports: [
@@ -56,6 +57,12 @@ import { TreeModule } from 'primeng/tree';
     DropdownModule,
     ReactiveFormsModule,
     TreeModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
   ],
   declarations: [
     AppComponent,
