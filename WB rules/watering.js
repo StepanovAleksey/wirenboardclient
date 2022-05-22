@@ -34,6 +34,20 @@ var zoneRelayTopicsMaps = {
   },
 };
 
+/**
+ * конфигурация датчиков
+ */
+var detectsDevices = {
+  temperature: {
+    deviceName: 'wb-ms_58',
+    control: 'Temperature',
+  },
+  rain: {
+    deviceName: 'wb-mr6c_52',
+    control: 'Input 6',
+  },
+};
+
 /** команды от UI */
 var commandSubNames = {
   /** инициализация */
@@ -148,8 +162,8 @@ if (isDebug || !wateringStorage['watering_options']) {
   wateringOptions = {
     rainDetector: false,
     tempDetector: false,
-    tempLow: null,
-    tempHight: null,
+    tempLow: 10,
+    tempHight: 50,
     timeRatio: 100,
   };
   saveWateringOptions();
@@ -214,22 +228,48 @@ var manualCommandWorker = (function () {
  */
 var timeZoneWorker = (function (programs, manualCommandWorker) {
   /**
+   * Проверка датчиков
+   * @returns результат проверки
+   */
+  var chekDetectors = function () {
+    var rainControlValue =
+      dev[detectsDevices.rain.deviceName][detectsDevices.rain.control];
+    var tempControlValue =
+      dev[detectsDevices.temperature.deviceName][
+        detectsDevices.temperature.control
+      ];
+    if (wateringOptions.rainDetector && !rainControlValue) {
+      return false;
+    }
+    if (
+      wateringOptions.tempDetector &&
+      (wateringOptions.tempLow > tempControlValue ||
+        wateringOptions.tempHight < tempControlValue)
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  /**
    * старт полива
    * @param {string} programKey - ID программы
    * @param {number} timeWork - время работы
    */
   var runRelay = function (programKey, timeWork) {
+    if (!chekDetectors()) {
+      return;
+    }
     var currentDay = new Date().getDay();
     Object.keys(stations).forEach(function (zoneKey) {
       if (stations[zoneKey][currentDay] !== programKey) {
         return;
       }
-      manualCommandWorker.Start(
-        zoneKey,
-        (timeWork * wateringOptions.timeRatio) / 100,
-      );
+      timeWork = (timeWork * wateringOptions.timeRatio) / 100;
+      manualCommandWorker.Start(zoneKey, timeWork);
     });
   };
+
   /** запускаем джобу с интервалом 1мин для проверки станций */
   defineRule('crone_1min_interval', {
     when: cron('0 * * * * *'),
@@ -252,7 +292,7 @@ var timeZoneWorker = (function (programs, manualCommandWorker) {
   });
 
   return {};
-})(programs, manualCommandWorke);
+})(programs, manualCommandWorker);
 
 /** отслеживание команд с UI */
 trackMqtt(subTopic, function (message) {
@@ -268,6 +308,7 @@ trackMqtt(subTopic, function (message) {
         programs: programs,
         options: wateringOptions,
         zoneRelayTopicsMaps: zoneRelayTopicsMaps,
+        detectsDevices: detectsDevices,
       });
       break;
     case commandSubNames.stationChange:

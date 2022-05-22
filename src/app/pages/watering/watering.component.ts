@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { IMqttMessage, MqttService } from 'ngx-mqtt';
-import { Subject, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subject, timer } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
 import { IManualAction } from './manual-run/manual-run.component';
 import { mockProgram, optionMock, stationsMock } from './mock';
 import {
+  IControlSetting,
   IOption,
   IProgramChange,
   IPrograms,
@@ -48,6 +49,9 @@ export class WateringComponent implements OnInit {
   zoneRelayTopicsMaps: IZoneTopicSettings = {};
   destroy$ = new Subject();
 
+  temperature$ = new Observable<number>();
+  rainDetected$ = new Observable<string>();
+
   constructor(private mqttService: MqttService) {
     this.sendCommand(EcommandSubNames.init);
   }
@@ -79,12 +83,21 @@ export class WateringComponent implements OnInit {
       .subscribe((message: ICommand<any>) => {
         switch (message.name) {
           case EcommandPubNames.initRes:
-            const { stations, programs, options, zoneRelayTopicsMaps } =
-              message.payload;
+            const {
+              stations,
+              programs,
+              options,
+              zoneRelayTopicsMaps,
+              detectsDevices,
+            } = message.payload;
             this.stations = stations;
             this.programs = programs;
             this.options = options;
             this.zoneRelayTopicsMaps = zoneRelayTopicsMaps;
+            this.temperature$ = this.subControl(detectsDevices.temperature);
+            this.rainDetected$ = this.subControl(detectsDevices.rain).pipe(
+              map((isRain) => (isRain ? 'нет дождя' : 'дождь')),
+            );
             break;
           default:
             console.warn('неизвестный тип команды', message);
@@ -102,5 +115,19 @@ export class WateringComponent implements OnInit {
 
   optionChange(option: IOption) {
     this.sendCommand(EcommandSubNames.optionChange, option);
+  }
+
+  private subControl<T>(controlSetting: IControlSetting) {
+    return this.mqttService
+      .observe(
+        `/devices/${controlSetting.deviceName}/controls/${controlSetting.control}`,
+      )
+      .pipe(
+        takeUntil(this.destroy$),
+        map(
+          (message: IMqttMessage) =>
+            JSON.parse(message.payload.toString()) as T,
+        ),
+      );
   }
 }

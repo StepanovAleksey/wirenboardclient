@@ -11,6 +11,10 @@ import { IOption } from '../model';
 export class OptionsComponent implements OnInit {
   @Input() set options(value: IOption) {
     this.optionForm.setValue(value, { emitEvent: false });
+    if (!value.tempDetector) {
+      this.tempLowControl.disable();
+      this.tempHightControl.disable();
+    }
   }
 
   @Output() optionChange = new EventEmitter<IOption>();
