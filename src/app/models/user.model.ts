@@ -8,7 +8,8 @@ export enum EUser {
 }
 
 /**
- * Список паролей
+ * Список паролей,
+ * пароли не должны совпадать
  */
 export const Users: Record<EUser, string> = {
   [EUser.Admin]: '0123456789',

@@ -7,6 +7,7 @@ var wateringStorage = new PersistentStorage('watering-storage', {
   global: true,
 });
 
+/** адреса зон для полива */
 var zoneRelayTopicsMaps = {
   'деревья-ели': {
     deviceName: 'wb-mr6c_52',
@@ -31,6 +32,14 @@ var zoneRelayTopicsMaps = {
   плодовые: {
     deviceName: 'wb-mr6c_52',
     control: 'K6',
+  },
+  Резерв1: {
+    deviceName: '',
+    control: '',
+  },
+  Резерв2: {
+    deviceName: '',
+    control: '',
   },
 };
 
