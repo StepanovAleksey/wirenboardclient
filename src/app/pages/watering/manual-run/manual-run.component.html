@@ -1,10 +1,10 @@
-<div class="p-grid">
+<div class="grid">
     <div
-        class="p-col-12 field p-shadow-1"
+        class="col-12 field p-shadow-1"
         *ngFor="let station of stations | keyvalue"
     >
-        <div class="p-grid">
-            <div class="p-col" style="max-width: 320px">
+        <div class="grid">
+            <div class="col-12 md:col-6 lg:col-3">
                 <label> {{ station.key }} (мин.)</label><br />
                 <p-inputNumber
                     [disabled]="relayStatus[station.key]"
@@ -23,7 +23,7 @@
                 >
                 </p-inputNumber>
             </div>
-            <div class="p-col-12 p-md-3 actions">
+            <div class="col-12 md:col-6 lg:col-3 actions">
                 <button
                     pButton
                     pRipple

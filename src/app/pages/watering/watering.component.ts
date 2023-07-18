@@ -43,7 +43,7 @@ export interface ICommand<T> {
   styleUrls: ['./watering.component.less'],
 })
 export class WateringComponent implements OnInit {
-  stations: IStations;
+  stations: IStations = stationsMock;
   programs: IPrograms = mockProgram;
   options: IOption = optionMock;
   zoneRelayTopicsMaps: IZoneTopicSettings = {};
