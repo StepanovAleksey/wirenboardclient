@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1653241377291,
+  "timestamp": 1689702300944,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -13,14 +13,10 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main-es2015.45e98e2ed6bdff0f713d.js",
-        "/main-es5.45e98e2ed6bdff0f713d.js",
-        "/manifest.webmanifest",
-        "/polyfills-es2015.f61dd3a2bffb9337695e.js",
-        "/polyfills-es5.161ac46c9236a080f53b.js",
-        "/runtime-es2015.a51adfe51d26f82f31fa.js",
-        "/runtime-es5.a51adfe51d26f82f31fa.js",
-        "/styles.951a4edd4496794e4b9f.css"
+        "/main.ec0334492b34c039.js",
+        "/polyfills.1d4e466a3f377930.js",
+        "/runtime.e1b833ecb9a9e1ff.js",
+        "/styles.ef36feb951397dc7.css"
       ],
       "patterns": []
     },
@@ -40,15 +36,16 @@
         "/assets/icons/icon-512x512.png",
         "/assets/icons/icon-72x72.png",
         "/assets/icons/icon-96x96.png",
-        "/color.6441e63a57ccc5105bad.png",
-        "/fontawesome-webfont.1e59d2330b4c6deb84b3.ttf",
-        "/fontawesome-webfont.20fd1704ea223900efa9.woff2",
-        "/fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg",
-        "/fontawesome-webfont.f691f37e57f04c152e23.woff",
-        "/hue.f8505bd4d6f3e3aa435b.png",
-        "/primeicons.04701ca33ce96d325419.ttf",
-        "/primeicons.1d79a0559e5f13294dee.woff",
-        "/primeicons.fa2c83d2f35244bb10dc.svg"
+        "/color.dae87a04d07ca92b.png",
+        "/fontawesome-webfont.8a7cb27d142e3e19.ttf",
+        "/fontawesome-webfont.cf011583fb81df9f.woff",
+        "/fontawesome-webfont.da909aa098b0ee2d.svg",
+        "/fontawesome-webfont.e9955780856cf8aa.woff2",
+        "/hue.8b1818380241e6ac.png",
+        "/primeicons.0112589c5695a9ed.ttf",
+        "/primeicons.943ab24c43224d29.svg",
+        "/primeicons.ba3f916dfb64be8c.woff2",
+        "/primeicons.f8b9e8a4e401b603.woff"
       ],
       "patterns": []
     }
@@ -63,25 +60,22 @@
     "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
     "/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
     "/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
-    "/color.6441e63a57ccc5105bad.png": "ff4c4bcb2207891b292f544edb4da9d2df5d45cf",
+    "/color.dae87a04d07ca92b.png": "ff4c4bcb2207891b292f544edb4da9d2df5d45cf",
     "/favicon.ico": "84161b857f5c547e3699ddfbffc6d8d737542e01",
-    "/fontawesome-webfont.1e59d2330b4c6deb84b3.ttf": "13b1eab65a983c7a73bc7997c479d66943f7c6cb",
-    "/fontawesome-webfont.20fd1704ea223900efa9.woff2": "d6f48cba7d076fb6f2fd6ba993a75b9dc1ecbf0c",
-    "/fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg": "98a8aa5cf7d62c2eff5f07ede8d844b874ef06ed",
-    "/fontawesome-webfont.f691f37e57f04c152e23.woff": "28b782240b3e76db824e12c02754a9731a167527",
-    "/hue.f8505bd4d6f3e3aa435b.png": "f81ae627637a684614aa726e206c73ce099a01fd",
-    "/index.html": "b000e9de265b2209d65d215b23069d10bde4c2a5",
-    "/main-es2015.45e98e2ed6bdff0f713d.js": "5eabdf68f724bd98040508bc0b9411ca76672505",
-    "/main-es5.45e98e2ed6bdff0f713d.js": "8e90fbfdffa7d612d6a481b9569a1835fa7eacec",
-    "/manifest.webmanifest": "afa375169dc758766a1c10fb41914d7b954e3c8e",
-    "/polyfills-es2015.f61dd3a2bffb9337695e.js": "8514b2b26f1c1714d825cbe40c1e5f924d8ffd02",
-    "/polyfills-es5.161ac46c9236a080f53b.js": "5d4dbad11c40eb67235bd9080acc6a052c2ca7a7",
-    "/primeicons.04701ca33ce96d325419.ttf": "5695d34fc4ebc0bbd2fcb0babe238c3023638a7d",
-    "/primeicons.1d79a0559e5f13294dee.woff": "c4b44a9b0bc025f62101936b37de1977cd25e3fd",
-    "/primeicons.fa2c83d2f35244bb10dc.svg": "98255677416ed656903e9190e976c00fb2ac862d",
-    "/runtime-es2015.a51adfe51d26f82f31fa.js": "6056256f49ac16c13590444f8d14b36e80807bf4",
-    "/runtime-es5.a51adfe51d26f82f31fa.js": "6056256f49ac16c13590444f8d14b36e80807bf4",
-    "/styles.951a4edd4496794e4b9f.css": "bc57637a811c369def53f073a6c65e555f294054"
+    "/fontawesome-webfont.8a7cb27d142e3e19.ttf": "13b1eab65a983c7a73bc7997c479d66943f7c6cb",
+    "/fontawesome-webfont.cf011583fb81df9f.woff": "28b782240b3e76db824e12c02754a9731a167527",
+    "/fontawesome-webfont.da909aa098b0ee2d.svg": "98a8aa5cf7d62c2eff5f07ede8d844b874ef06ed",
+    "/fontawesome-webfont.e9955780856cf8aa.woff2": "d6f48cba7d076fb6f2fd6ba993a75b9dc1ecbf0c",
+    "/hue.8b1818380241e6ac.png": "f81ae627637a684614aa726e206c73ce099a01fd",
+    "/index.html": "ff550affc9ef06616842daef3ab537a496631302",
+    "/main.ec0334492b34c039.js": "907cfcb14ccf51110cdb18369c3c7ef96e9828cc",
+    "/polyfills.1d4e466a3f377930.js": "f700299eb6ab04202d1478b3cf606e23ddf74bf5",
+    "/primeicons.0112589c5695a9ed.ttf": "ceeb46d594fde5cc507cdf8b70e38e78fe47653c",
+    "/primeicons.943ab24c43224d29.svg": "d3332a45242b8f6edbf3f3c7176a280e7edcd961",
+    "/primeicons.ba3f916dfb64be8c.woff2": "55a4b2a5f02e362405d8d874903af0b5f6a6c15d",
+    "/primeicons.f8b9e8a4e401b603.woff": "b1648b50be13350fde8b5d9a6fe78354ddcc43e4",
+    "/runtime.e1b833ecb9a9e1ff.js": "8ef74c66aaf70cdad6884e9ad42b7171ae643ef3",
+    "/styles.ef36feb951397dc7.css": "1bde7bed523d0e56104aa3d52c7847dbd35e2654"
   },
   "navigationUrls": [
     {
