@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { IOption } from '../model';
 
@@ -39,7 +39,7 @@ export class OptionsComponent implements OnInit {
     return this.optionForm.get('tempHight');
   }
 
-  constructor(private _fb: FormBuilder) {}
+  constructor(private _fb: UntypedFormBuilder) {}
 
   ngOnInit(): void {
     this.optionForm.valueChanges
