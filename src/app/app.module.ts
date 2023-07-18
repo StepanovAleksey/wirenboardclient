@@ -40,7 +40,7 @@ import { TreeModule } from 'primeng/tree';
             hostname: environment.production
                 ? window.location.hostname
                 : environment.host,
-            protocol: 'ws',
+            protocol: 'wss',
             port: environment.port,
             clientId: 'SmartHouse: ' + Math.ceil(Math.random() * 10),
         }),
