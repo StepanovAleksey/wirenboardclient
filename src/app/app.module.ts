@@ -30,48 +30,54 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ManualRunComponent } from './pages/watering/manual-run/manual-run.component';
 import { DeveloperPageComponent } from './pages/developer-page/developer-page.component';
 import { TreeModule } from 'primeng/tree';
+import { CurtainsComponent } from './pages/curtains/curtains.component';
+import { SliderModule } from 'primeng/slider';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MqttModule.forRoot({
-            hostname: environment.production
-                ? window.location.hostname
-                : environment.host,
-            protocol: 'wss',
-            port: environment.port,
-            clientId: 'SmartHouse: ' + Math.ceil(Math.random() * 10),
-        }),
-        InputSwitchModule,
-        PanelModule,
-        FormsModule,
-        ButtonModule,
-        DynamicDialogModule,
-        InputTextModule,
-        InputNumberModule,
-        CalendarModule,
-        AccordionModule,
-        DropdownModule,
-        ReactiveFormsModule,
-        TreeModule,
-    ],
-    declarations: [
-        AppComponent,
-        MenuComponent,
-        BasePageComponent,
-        HeaderComponent,
-        RulesComponent,
-        WateringComponent,
-        ProgramsComponent,
-        ZonesComponent,
-        OptionsComponent,
-        ManualRunComponent,
-        DeveloperPageComponent,
-        AuthComponent,
-    ],
-    providers: [AuthService, DialogService],
-    bootstrap: [AppComponent]
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MqttModule.forRoot({
+      hostname: environment.production
+        ? window.location.hostname
+        : environment.host,
+      protocol: 'wss',
+      port: environment.port,
+      clientId: 'SmartHouse: ' + Math.ceil(Math.random() * 10),
+    }),
+    InputSwitchModule,
+    PanelModule,
+    FormsModule,
+    ButtonModule,
+    DynamicDialogModule,
+    InputTextModule,
+    InputNumberModule,
+    CalendarModule,
+    AccordionModule,
+    DropdownModule,
+    ReactiveFormsModule,
+    TreeModule,
+    SliderModule,
+    HttpClientModule,
+  ],
+  declarations: [
+    AppComponent,
+    MenuComponent,
+    BasePageComponent,
+    HeaderComponent,
+    RulesComponent,
+    WateringComponent,
+    ProgramsComponent,
+    ZonesComponent,
+    OptionsComponent,
+    ManualRunComponent,
+    DeveloperPageComponent,
+    AuthComponent,
+    CurtainsComponent,
+  ],
+  providers: [AuthService, DialogService],
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

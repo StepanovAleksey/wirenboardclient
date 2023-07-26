@@ -1,0 +1,24 @@
+<div class="grid">
+    <div class="col-12" style="color: white">
+        заданное положение {{ setPercent }}<br />
+        текущее положение {{ percent }}
+    </div>
+    <div class="col-12">
+        <p-slider
+            [(ngModel)]="setPercent"
+            (onSlideEnd)="endSlider()"
+        ></p-slider>
+    </div>
+    <div class="col-12">
+        <p-button
+            label="Up"
+            styleClass="p-button-success"
+            (click)="sendCommand('down')"
+        ></p-button>
+        <p-button
+            label="Down"
+            styleClass="p-button-danger"
+            (click)="sendCommand('up')"
+        ></p-button>
+    </div>
+</div>
