@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host=127.0.0.1",
+    "start": "ng serve --host=0.0.0.0",
     "build": "ng build --configuration production --output-path www",
-    "build:git-hub": "ng build --configuration production --output-path docs --deploy-url wirenboardclient/",
+    "build:git-hub": "ng build --configuration production --output-path docs --deploy-url wirenboardclient/ --base-href wirenboardclient",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

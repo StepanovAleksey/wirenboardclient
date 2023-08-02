@@ -1,24 +1,52 @@
-<div class="grid">
-    <div class="col-12" style="color: white">
-        заданное положение {{ setPercent }}<br />
-        текущее положение {{ percent }}
+<div class="grid h-full overflow-auto">
+    <div class="col-6 h-full overflow-auto">
+        <app-curtains-group
+            *ngFor="let group of groups"
+            [group]="group"
+        ></app-curtains-group>
     </div>
-    <div class="col-12">
-        <p-slider
-            [(ngModel)]="setPercent"
-            (onSlideEnd)="endSlider()"
-        ></p-slider>
-    </div>
-    <div class="col-12">
-        <p-button
-            label="Up"
-            styleClass="p-button-success"
-            (click)="sendCommand('down')"
-        ></p-button>
-        <p-button
-            label="Down"
-            styleClass="p-button-danger"
-            (click)="sendCommand('up')"
-        ></p-button>
+    <div class="col-6">
+        <div class="grid">
+            <div class="col-12 center slider">
+                <p-slider
+                    orientation="vertical"
+                    [(ngModel)]="setPercent"
+                    (onSlideEnd)="endSlider()"
+                ></p-slider>
+            </div>
+            <div class="col-12 center input-number">
+                <p-inputNumber
+                    [(ngModel)]="setPercent"
+                    [showButtons]="true"
+                    buttonLayout="horizontal"
+                    inputId="horizontal"
+                    spinnerMode="horizontal"
+                    [step]="10"
+                    decrementButtonClass="p-button-danger"
+                    incrementButtonClass="p-button-success"
+                    incrementButtonIcon="pi pi-plus"
+                    decrementButtonIcon="pi pi-minus"
+                    min="0"
+                    max="100"
+                ></p-inputNumber>
+            </div>
+            <div class="col-12 center flex flex-column buttons">
+                <p-button
+                    label="Up"
+                    styleClass="p-button-success"
+                    (click)="sendCommand('down')"
+                ></p-button>
+                <p-button
+                    label="Stop"
+                    styleClass="p-button-warning"
+                    (click)="sendCommand('stop')"
+                ></p-button>
+                <p-button
+                    label="Down"
+                    styleClass="p-button-danger"
+                    (click)="sendCommand('up')"
+                ></p-button>
+            </div>
+        </div>
     </div>
 </div>

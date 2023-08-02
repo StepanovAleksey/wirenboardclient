@@ -33,6 +33,7 @@ import { TreeModule } from 'primeng/tree';
 import { CurtainsComponent } from './pages/curtains/curtains.component';
 import { SliderModule } from 'primeng/slider';
 import { HttpClientModule } from '@angular/common/http';
+import { CurtainsGroupComponent } from './pages/curtains/curtains-group/curtains-group.component';
 
 @NgModule({
   imports: [
@@ -76,6 +77,7 @@ import { HttpClientModule } from '@angular/common/http';
     DeveloperPageComponent,
     AuthComponent,
     CurtainsComponent,
+    CurtainsGroupComponent,
   ],
   providers: [AuthService, DialogService],
   bootstrap: [AppComponent],

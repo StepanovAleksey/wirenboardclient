@@ -1,11 +1,15 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div class="container-fluid bg-dark" *ngIf="authSrv.isAutorize$ | async">
-    <div class="row header">
+<div
+    class="bg-dark flex flex-column h-full overflow-hidden"
+    *ngIf="authSrv.isAutorize$ | async"
+>
+    <div class="header">
         <app-header></app-header>
     </div>
-    <div class="row body">
+    <div class="content grid flex-grow-1">
         <div
-            class="col menu bg-dark"
+            class="col-fixed menu bg-dark"
+            style="width: 60px"
             [@MinExpan]="isExpandMenu ? 'expan' : 'min'"
             (@MinExpan.done)="doneAnimate()"
         >
@@ -14,12 +18,12 @@
                 [isEndAnimateExpand]="isEndAnimateExpand"
             ></app-menu>
         </div>
-        <div class="col content">
-            <div class="row">
+        <div class="col h-full">
+            <div class="grid flex flex-column h-full">
                 <div class="col-12 page-name center" *ngIf="pageName">
-                    <h4>{{ pageName }}</h4>
+                    {{ pageName }}
                 </div>
-                <div class="col-12">
+                <div class="col-12 flex-grow-1">
                     <router-outlet></router-outlet>
                 </div>
             </div>

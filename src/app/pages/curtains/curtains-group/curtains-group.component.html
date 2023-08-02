@@ -1,0 +1,19 @@
+<div class="grid border-500 hover:border-700 border-3 border-round border-3">
+    <div
+        class="col-6 flex align-items-center justify-content-center pointer text-xs"
+        (click)="selectGroup()"
+    >
+        {{ group.name }}
+    </div>
+    <div class="col-6 border-left hover:border-700 pointer">
+        <div
+            class="grid"
+            *ngFor="let curtain of group.curtains"
+            [class]="{ selected: curtain.isSelected }"
+            (click)="curtain.isSelected = !curtain.isSelected"
+        >
+            <div class="col-6">{{ curtain.adress }}</div>
+            <div class="col-6">{{ curtain.position }}</div>
+        </div>
+    </div>
+</div>
