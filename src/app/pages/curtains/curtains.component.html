@@ -1,9 +1,10 @@
 <div class="grid h-full overflow-auto">
     <div class="col-6 h-full overflow-auto">
-        <app-curtains-group
-            *ngFor="let group of groups"
-            [group]="group"
-        ></app-curtains-group>
+        <div class="grid">
+            <div class="col-12" *ngFor="let group of groups">
+                <app-curtains-group [group]="group"></app-curtains-group>
+            </div>
+        </div>
     </div>
     <div class="col-6">
         <div class="grid">

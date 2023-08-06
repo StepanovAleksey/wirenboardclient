@@ -4,7 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
@@ -15,7 +14,7 @@ import { PanelModule } from 'primeng/panel';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from './components/header/header.component';
 import { RulesComponent } from './pages/rules/rules.component';
-import { AuthComponent } from './components/auth/auth.component';
+import { AuthComponent } from './pages/auth/auth.component';
 import { AuthService } from './service/auth.service';
 import { MqttModule } from 'ngx-mqtt';
 import { WateringComponent } from './pages/watering/watering.component';
@@ -34,6 +33,9 @@ import { CurtainsComponent } from './pages/curtains/curtains.component';
 import { SliderModule } from 'primeng/slider';
 import { HttpClientModule } from '@angular/common/http';
 import { CurtainsGroupComponent } from './pages/curtains/curtains-group/curtains-group.component';
+import { PasswordModule } from 'primeng/password';
+import { LayoutComponent } from './pages/layout/layout.component';
+import { RippleModule } from 'primeng/ripple';
 
 @NgModule({
   imports: [
@@ -62,6 +64,8 @@ import { CurtainsGroupComponent } from './pages/curtains/curtains-group/curtains
     TreeModule,
     SliderModule,
     HttpClientModule,
+    PasswordModule,
+    RippleModule
   ],
   declarations: [
     AppComponent,
@@ -78,8 +82,9 @@ import { CurtainsGroupComponent } from './pages/curtains/curtains-group/curtains
     AuthComponent,
     CurtainsComponent,
     CurtainsGroupComponent,
+    LayoutComponent,
   ],
   providers: [AuthService, DialogService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

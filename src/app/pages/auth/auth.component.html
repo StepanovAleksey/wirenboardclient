@@ -1,0 +1,18 @@
+<div class="center h-full">
+    <div class="auth-form">
+        <div class="flex flex-column gap-2 mt-2">
+            <label>Пароль</label>
+            <p-password [(ngModel)]="password" [feedback]="false"></p-password>
+        </div>
+        <div class="flex flex-column gap-2 mt-2">
+            <button
+                [disabled]="!password?.length"
+                pButton
+                pRipple
+                label="Войти"
+                class="w-full"
+                (click)="login()"
+            ></button>
+        </div>
+    </div>
+</div>

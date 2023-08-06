@@ -3,7 +3,7 @@ import { MenuItems } from 'src/app/models/menuItems';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from 'src/app/service/auth.service';
-import { EUser } from 'src/app/models/user.model';
+import { EUserRole } from 'src/app/models/user.model';
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
@@ -28,13 +28,7 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authSrv.user$.subscribe((user) => {
-      if (this.authSrv.checkUser(EUser.Admin)) {
-        this.MenuItems = MenuItems;
-        return;
-      }
-      this.MenuItems = MenuItems.filter((m) => m.userAcces.includes(user));
-    });
+
   }
 
   expandMenu() {

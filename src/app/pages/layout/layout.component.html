@@ -1,0 +1,16 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div class="grid h-full overflow-hidden">
+    <div class="col-12 px-0 pt-0">
+        <app-header></app-header>
+    </div>
+    <div class="col-12 h-full">
+        <div class="grid h-full">
+            <div class="col-12 page-name center" *ngIf="pageName">
+                {{ pageName }}
+            </div>
+            <div class="col-12 h-full px-3">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
+    </div>
+</div>

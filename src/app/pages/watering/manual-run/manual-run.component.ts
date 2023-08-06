@@ -35,9 +35,9 @@ export class ManualRunComponent implements OnInit, OnChanges, OnDestroy {
   times: Record<string, number> = {};
 
   relayStatus: Record<string, number> = {};
-  destroy$ = new Subject();
+  private destroy$ = new Subject();
 
-  constructor(private mqttService: MqttService) {}
+  constructor(private mqttService: MqttService) { }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -74,7 +74,7 @@ export class ManualRunComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   start(zoneKey: string) {
     this.sendCommand.emit({

@@ -1,4 +1,4 @@
-import { EUser } from './user.model';
+import { EUserRole } from './user.model';
 
 export enum MenuItemEnum {
   watering = 1,
@@ -19,10 +19,10 @@ export class MenuItem {
     public Icon: string = null,
     public Route: string = 'develop',
     public children: Array<MenuItem> = [],
-    public userAcces: Array<EUser> = [],
+    public userAcces: Array<EUserRole> = [],
   ) {}
 
-  chekAcces(user: EUser) {
+  chekAcces(user: EUserRole) {
     return this.userAcces.includes(user);
   }
 }
@@ -43,7 +43,7 @@ export const MenuItems: MenuItem[] = [
     new MenuItem('3 этаж'),
     new MenuItem('Улица'),
   ]),
-  new MenuItem('Полив', 'fa fa-shower', '/watering', [], [EUser.Shower]),
+  new MenuItem('Полив', 'fa fa-shower', '/watering', [], [EUserRole.Shower]),
   new MenuItem('Шторы', 'fa fa-shower', '/curtains'),
 ];
 

@@ -16,6 +16,7 @@ import {
 
 const subTopic = '/ui-client/sub';
 const pubTopic = '/ui-client/pub';
+
 /** команды от UI */
 export enum EcommandSubNames {
   init = 'init',
@@ -24,6 +25,7 @@ export enum EcommandSubNames {
   optionChange = 'optionChange',
   manualSendCommand = 'manualSendCommand',
 }
+
 /** команды на UI */
 export enum EcommandPubNames {
   stationsRes = 'stationsRes',
@@ -47,7 +49,7 @@ export class WateringComponent implements OnInit {
   programs: IPrograms = mockProgram;
   options: IOption = optionMock;
   zoneRelayTopicsMaps: IZoneTopicSettings = {};
-  destroy$ = new Subject();
+  private destroy$ = new Subject();
 
   temperature$ = new Observable<number>();
   rainDetected$ = new Observable<string>();
@@ -78,6 +80,7 @@ export class WateringComponent implements OnInit {
     this.mqttService
       .observe(pubTopic)
       .pipe(
+        takeUntil(this.destroy$),
         map((message: IMqttMessage) => JSON.parse(message.payload.toString())),
       )
       .subscribe((message: ICommand<any>) => {
