@@ -22,6 +22,8 @@ export class Command {
     isEqualTypeCommand(command: Command) {
         return this.isEqualType(command.commandType);
     }
+    
+    /** сравнение команд */
     isEqualCommand(command: Command) {
         return this.payload.every((v, index) => v === command.payload[index]);
     }
