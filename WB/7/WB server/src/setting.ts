@@ -1,3 +1,3 @@
 export const Settings = {
-    needLog: true
-}
+  needLog: true,
+};
