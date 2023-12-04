@@ -23,25 +23,29 @@
                 >
                 </p-inputNumber>
             </div>
-            <div class="col-12 md:col-6 lg:col-3 actions">
-                <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Старт"
-                    class="p-button-success p-mr-1"
-                    [disabled]="relayStatus[station.key]"
-                    (click)="start(station.key)"
-                ></button>
-                <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Стоп"
-                    class="p-button-warning"
-                    [disabled]="!relayStatus[station.key]"
-                    (click)="stop(station.key)"
-                ></button>
+            <div
+                class="col-12 md:col-6 lg:col-3 actions flex flex-column justify-content-center"
+            >
+                <div>
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        label="Старт"
+                        class="p-button-success p-mr-1"
+                        [disabled]="relayStatus[station.key]"
+                        (click)="start(station.key)"
+                    ></button>
+                    <button
+                        pButton
+                        pRipple
+                        type="button"
+                        label="Стоп"
+                        class="p-button-warning"
+                        [disabled]="!relayStatus[station.key]"
+                        (click)="stop(station.key)"
+                    ></button>
+                </div>
             </div>
         </div>
     </div>

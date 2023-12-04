@@ -1,27 +1,10 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-3 col-md-6 col-sm-12 item" *ngFor="let item of filterItems">
-            <p-panel [toggleable]="true">
-                <p-header class="header">
-                    <div>
-                        <h4>{{item.Name}}</h4>
-                    </div>
-                    <div>
-                        <span class="icon" (click)="sendMassCmd(item.Items,1)"> <i
-                                class="fa fa-check-square fa-2x green"></i></span>
-                        <span class="icon" (click)="sendMassCmd(item.Items,0)"> <i
-                                class="fa fa-check-square fa-2x"></i></span>
-                    </div>
-                </p-header>
-                <div class="row" *ngFor="let coil of item.Items">
-                    <div class="col-12 coil-item" (click)="coilChange(coil,!coil.Value)" *ngIf="!isOnlyActiveItems || isActiveElem(coil)">
-                        <h5>{{coil.Description}}</h5>
-                        <i class="fa fa-lightbulb-o fa-2x" aria-hidden="true" [ngClass]="{'active': coil.Value}"></i>
-                        <!-- <p-inputSwitch [ngModel]="coil.Value" (onChange)="coilChange(coil, $event.checked)">
-                        </p-inputSwitch> -->
-                    </div>
-                </div>
-            </p-panel>
-        </div>
+<div class="grid">
+    <div class="col-fixed w-9rem m-2" *ngFor="let coil of coils">
+        <app-coil [coil]="coil"></app-coil>
+    </div>
+</div>
+<div class="grid">
+    <div class="col-12">
+        {{ childTags | json }}
     </div>
 </div>

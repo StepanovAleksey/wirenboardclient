@@ -1,61 +1,87 @@
+import { ETags, TAGS_INHERITANCE, TAG_TRANSLATE } from './tags';
 import { EUserRole } from './user.model';
+import { MenuItem } from 'primeng/api';
 
-export enum MenuItemEnum {
-  watering = 1,
-  SecondLevel = 1 << 1,
-  Cap = 1 << 2,
-  Street = 1 << 3,
-  Rules = 1 << 4,
-  Active = MenuItemEnum.watering |
-    MenuItemEnum.SecondLevel |
-    MenuItemEnum.Cap |
-    MenuItemEnum.Street,
+class TagMenuItem implements MenuItem {
+  queryParams: Record<string, any> = {};
+  historyTags: Array<ETags> = [];
+  items: Array<TagMenuItem>;
+
+  constructor(
+    public routerLink: string,
+    public label: string,
+    tags: Array<ETags>,
+    tag: ETags,
+  ) {
+    this.historyTags = [...tags, tag];
+    this.queryParams = {
+      tags: this.historyTags,
+    };
+    this.items = TAGS_INHERITANCE[tag]?.map((childTag) => {
+      const menuApp = new TagMenuItem(
+        routerLink,
+        TAG_TRANSLATE[childTag],
+        this.historyTags,
+        childTag,
+      );
+      return menuApp;
+    });
+  }
 }
 
-export class MenuItem {
+export class AppMenuItem implements MenuItem {
   isExpand = false;
+  items: Array<TagMenuItem>;
+  tagsHistory: Array<ETags> = [];
+
   constructor(
-    public Name: string = null,
-    public Icon: string = null,
-    public Route: string = 'develop',
-    public children: Array<MenuItem> = [],
+    public label: string = null,
+    public icon: string = null,
+    public routerLink: string = '/main/develop',
     public userAcces: Array<EUserRole> = [],
-  ) {}
+    tag: ETags = null,
+  ) {
+    if (tag) {
+      this.items = TAGS_INHERITANCE[tag]?.map((childTag) => {
+        const menuApp = new TagMenuItem(
+          routerLink,
+          TAG_TRANSLATE[childTag],
+          [],
+          childTag,
+        );
+        return menuApp;
+      });
+    }
+  }
 
   chekAcces(user: EUserRole) {
     return this.userAcces.includes(user);
   }
 }
 
-export const MenuItems: MenuItem[] = [
-  new MenuItem('Освещение', 'fa fa-sun-o', '/sun', [
-    new MenuItem('Гараж'),
-    new MenuItem('Погреб'),
-    new MenuItem('1 этаж', null, 'develop', [
-      new MenuItem('Табмбур'),
-      new MenuItem('Холл'),
-      new MenuItem('Гостинная'),
-      new MenuItem('Столовая'),
-      new MenuItem('Кухня'),
-      new MenuItem('Бассейн'),
-    ]),
-    new MenuItem('2 этаж'),
-    new MenuItem('3 этаж'),
-    new MenuItem('Улица'),
+export const MenuItems: AppMenuItem[] = [
+  new AppMenuItem(
+    'Освещение',
+    'pi pi-sun',
+    '/main/lighting',
+    [EUserRole.Admin],
+    ETags.Lighting,
+  ),
+  new AppMenuItem('Полив', 'pi pi-calendar', '/main/watering', [
+    EUserRole.Shower,
   ]),
-  new MenuItem('Полив', 'fa fa-shower', '/watering', [], [EUserRole.Shower]),
-  new MenuItem('Шторы', 'fa fa-shower', '/curtains'),
+  new AppMenuItem('Шторы', 'pi pi-th-large', '/main/curtains'),
 ];
 
 export class MenuHelper {
   static getMenuItemByPath(path: string) {
     let menus = MenuItems;
     while (menus?.length) {
-      const menu = menus.find((m) => m.Route === path);
+      const menu = menus.find((m) => m.routerLink === path);
       if (menu) {
         return menu;
       }
-      menus = menus.reduce((a, b) => a.concat(b.children || []), []);
+      menus = menus.reduce((a, b) => a.concat(b.items || []), []);
     }
     return null;
   }

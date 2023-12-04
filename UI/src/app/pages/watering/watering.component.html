@@ -1,12 +1,12 @@
-<div class="row">
-    <div class="col-12">
+<div class="flex flex-column h-full overflow-auto">
+    <div>
         датчик температуры:<span class="control">
             {{ temperature$ | async }}</span
         >
         <br />
         датчик дождя: <span class="control">{{ rainDetected$ | async }}</span>
     </div>
-    <div class="col-12 p-mt-1">
+    <div class="flex-grow-1 overflow-auto mt-2 px-2">
         <p-accordion [multiple]="true">
             <p-accordionTab header="Ручное управление" [selected]="true">
                 <app-manual-run

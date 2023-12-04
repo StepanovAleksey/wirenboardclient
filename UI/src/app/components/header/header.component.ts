@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from 'src/app/service/auth.service';
 
@@ -9,6 +9,8 @@ import { AuthService } from 'src/app/service/auth.service';
 })
 export class HeaderComponent {
   appName = 'О-Азис';
+  @Output() toggleMenu: EventEmitter<void> = new EventEmitter();
+
   constructor(private authSrv: AuthService, private titleService: Title) {
     this.titleService.setTitle(this.appName);
   }

@@ -1,15 +1,17 @@
-import { BehaviorSubject, filter, interval, skip, switchMap, takeUntil, tap, timer } from 'rxjs';
+import { Subject, debounceTime, interval, switchMap, takeUntil, tap, timer } from 'rxjs';
 import { ECommandType } from '../const';
 import { SerialBus } from '../serialBus';
 import { Command } from './model';
 import { IMqttWbClient } from './contracts';
 import { DriverCommandBuilder } from './driverCommandBuilder';
 
+const TOPIC_TEMPLATE = '/devices/curtain_drive/{groupId}/{chanleId}';
+
 export class Driver {
   commandBuilder: DriverCommandBuilder;
 
   /** последний статус мотора штор */
-  lastDriverStatus$ = new BehaviorSubject<number>(null);
+  lastDriverStatus$ = new Subject<number>();
 
   constructor(
     public groupId: number,
@@ -19,27 +21,24 @@ export class Driver {
   ) {
     this.commandBuilder = new DriverCommandBuilder(this.groupId, this.chanleId);
 
-    this.serialBus
-      .subDeviceAnswer$(groupId, chanleId)
-      .pipe(
-        tap((data) => {
-          this.lastDriverStatus$.next(data[7]);
-        }),
-        switchMap(() => timer(1000)),
-      )
-      .subscribe(() => {
-        this.updateStatus();
-      });
+    this.serialBus.subDeviceAnswer$(groupId, chanleId).subscribe((data) => {
+      this.lastDriverStatus$.next(data[7]);
+    });
+
     this.updateStatus();
 
     this.lastDriverStatus$.subscribe((d) => {
-      mqqtWbClient.send(`/devices/curtain_drive/${groupId}/${chanleId}`, d);
+      mqqtWbClient.send(`${this.getBaseTopic()}/position`, d);
     });
+
     this.subCommand();
   }
 
-  sendCommand(commandType: ECommandType) {
-    this._writeCommand(new Command(commandType, this.commandBuilder.getBufferCommand(commandType)));
+  sendCommand(command: ECommandType) {
+    if (!Object.keys(ECommandType).includes(command)) {
+      return;
+    }
+    this._writeCommand(new Command(command, this.commandBuilder.getBufferCommand(command)));
   }
 
   goToPercent(percent = 0) {
@@ -48,25 +47,33 @@ export class Driver {
     );
   }
 
+  /** подписка на управляющие команды */
   private subCommand() {
-    this.mqqtWbClient
-      .subscribe$(`/devices/curtain_drive/${this.groupId}/${this.chanleId}/drive`)
-      .pipe(filter((payload) => Object.keys(ECommandType).includes(payload)))
-      .subscribe((payload) => {
-        this.sendCommand(payload as ECommandType);
-      });
+    this.mqqtWbClient.subscribe$(`${this.getBaseTopic()}/position/on`).subscribe((payload) => {
+      this.goToPercent(JSON.parse(payload));
+    });
+
+    this.mqqtWbClient.subscribe$(`${this.getBaseTopic()}/command/on`).subscribe((payload) => {
+      this.sendCommand(JSON.parse(payload));
+    });
   }
 
+  /** команда на обновление статуса */
   private updateStatus() {
-    this.sendCommand(ECommandType.statusDriver);
-    interval(500)
-      .pipe(takeUntil(this.lastDriverStatus$.pipe(skip(1))))
-      .subscribe(() => {
-        this.sendCommand(ECommandType.statusDriver);
-      });
+    interval(500).subscribe(() => {
+      this.sendCommand(ECommandType.statusDriver);
+    });
   }
 
   private _writeCommand(command: Command) {
     this.serialBus.sendData$.next(command);
+  }
+
+  /** главный топик для устройства */
+  private getBaseTopic() {
+    return TOPIC_TEMPLATE.replace('{groupId}', this.groupId.toString()).replace(
+      '{chanleId}',
+      this.chanleId.toString(),
+    );
   }
 }

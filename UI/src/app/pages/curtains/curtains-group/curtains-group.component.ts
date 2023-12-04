@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { Group } from '../model';
+import { Group } from '../curtain.model';
 
 @Component({
   selector: 'app-curtains-group',

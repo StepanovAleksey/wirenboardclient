@@ -8,7 +8,6 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { IStation, IZoneTopicSettings } from '../model';
@@ -37,7 +36,7 @@ export class ManualRunComponent implements OnInit, OnChanges, OnDestroy {
   relayStatus: Record<string, number> = {};
   private destroy$ = new Subject();
 
-  constructor(private mqttService: MqttService) { }
+  constructor() {}
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -57,24 +56,24 @@ export class ManualRunComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private initRelayTopics(topicSetting: IZoneTopicSettings) {
-    Object.keys(topicSetting).forEach((zoneKey) => {
-      this.mqttService
-        .observe(
-          `/devices/${topicSetting[zoneKey].deviceName}/controls/${topicSetting[zoneKey].control}`,
-        )
-        .pipe(
-          takeUntil(this.destroy$),
-          map((message: IMqttMessage) =>
-            JSON.parse(message.payload.toString()),
-          ),
-        )
-        .subscribe((event: number) => {
-          this.relayStatus[zoneKey] = event;
-        });
-    });
+    // Object.keys(topicSetting).forEach((zoneKey) => {
+    //   this.mqttService
+    //     .observe(
+    //       `/devices/${topicSetting[zoneKey].deviceName}/controls/${topicSetting[zoneKey].control}`,
+    //     )
+    //     .pipe(
+    //       takeUntil(this.destroy$),
+    //       map((message: IMqttMessage) =>
+    //         JSON.parse(message.payload.toString()),
+    //       ),
+    //     )
+    //     .subscribe((event: number) => {
+    //       this.relayStatus[zoneKey] = event;
+    //     });
+    // });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   start(zoneKey: string) {
     this.sendCommand.emit({

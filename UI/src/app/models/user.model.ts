@@ -4,6 +4,8 @@
 export enum EUserRole {
   /** по умолчанию видит всё */
   Admin = 'Admin',
+
+  /** полив */
   Shower = 'Shower',
 }
 
@@ -13,7 +15,7 @@ export class UserModel {
     public login: string,
     public password: string,
     public role: EUserRole,
-  ) { }
+  ) {}
 }
 
 /**

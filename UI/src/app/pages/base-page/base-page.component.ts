@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { GroupItems, ItemCoil, IGroupItem } from 'src/app/models/items';
-import { Subscription, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/service/auth.service';
-import { MenuItemEnum } from 'src/app/models/menuItems';
-import { debounceTime, filter } from 'rxjs/operators';
-import { IMqttMessage, MqttService } from 'ngx-mqtt';
+import { tap } from 'rxjs/operators';
+import { ItemCoil } from 'src/app/models/itemCoil';
+import { ETags as ETag, TAGS_INHERITANCE } from 'src/app/models/tags';
+import { CoilService } from 'src/app/service/coil.service';
 
 @Component({
   selector: 'app-base-page',
@@ -13,90 +11,47 @@ import { IMqttMessage, MqttService } from 'ngx-mqtt';
   styleUrls: ['./base-page.component.less'],
 })
 export class BasePageComponent implements OnInit, OnDestroy {
-  isOnlyActiveItems = false;
-  items = GroupItems;
-  filterItems: IGroupItem[] = [];
-  localSubscription = new Subscription();
-  updateAcitveEvent$ = new Subject();
+  coils: Array<ItemCoil> = [];
+  childTags: Array<ETag> = TAGS_INHERITANCE[ETag.Lighting];
 
   constructor(
-    private mqttService: MqttService,
-    route: ActivatedRoute,
-    private authServiceComponent: AuthService,
-  ) {
-    route.data.subscribe((d) => {
-      const routeData: MenuItemEnum = d.filter;
-      this.items = GroupItems.filter((gi) => gi.MenuItemValue & routeData);
-      this.isOnlyActiveItems = routeData === MenuItemEnum.Active;
-      if (!this.isOnlyActiveItems) {
-        this.filterItems = this.items;
-      }
-    });
-  }
+    private route: ActivatedRoute,
+    private coilService: CoilService,
+  ) {}
+
+  ngOnDestroy(): void {}
 
   ngOnInit() {
-    this.items.forEach((group) => {
-      group.Items.forEach((item) => {
-        this.localSubscription.add(
-          this.mqttService
-            .observe(item.Topic)
-            .subscribe((message: IMqttMessage) => {
-              this.coilEventHandler(
-                parseInt(message.payload.toString()) === 1 ? true : false,
-                item.Topic,
-              );
-              this.updateAcitveEvent$.next();
-            }),
-        );
-      });
-    });
-    this.localSubscription.add(
-      this.updateAcitveEvent$
-        .pipe(
-          debounceTime(1000),
-          filter((_) => this.isOnlyActiveItems),
-        )
-        .subscribe((_) => {
-          this._filterActiveItems();
+    this.route.queryParams
+      .pipe(
+        tap((params) => {
+          this.clearCoils();
+          this.setChildTags(params);
         }),
-    );
-    this.updateAcitveEvent$.next();
+      )
+      .subscribe((params) => {
+        if (params.tags) {
+          this.setCoils(params.tags);
+        }
+      });
   }
 
-  isActiveElem(item: ItemCoil): boolean {
-    return this.isOnlyActiveItems && item.Value;
-  }
-
-  ngOnDestroy(): void {
-    this.localSubscription.unsubscribe();
-  }
-
-  coilChange(item: ItemCoil, value: boolean | number) {
-    this.localSubscription.add(
-      this.mqttService.unsafePublish(item.TopicON, value ? '1' : '0', {
-        qos: 1,
-        retain: true,
-      }),
-    );
-  }
-
-  sendMassCmd(items: ItemCoil[], value: number) {
-    items.forEach((item) => {
-      this.coilChange(item, value);
+  private setCoils(paramTags: Array<ETag>) {
+    this.coils = this.coilService.getDeviceByTags(paramTags).map((c) => {
+      c.subscribeTopic();
+      return c;
     });
   }
 
-  private coilEventHandler(value: boolean, topic: string) {
-    GroupItems.forEach((group) => {
-      group.Items.filter((item) => item.Topic === topic).forEach(
-        (item) => (item.Value = value),
-      );
-    });
+  private clearCoils() {
+    this.coils.forEach((c) => c.unsub());
+    this.coils = [];
   }
 
-  private _filterActiveItems() {
-    this.filterItems = GroupItems.filter((item) =>
-      item.Items.some((childitem) => childitem.Value),
-    );
+  private setChildTags(params: any) {
+    const tags: Array<ETag> = params.tags || [];
+    this.childTags = tags.length
+      ? TAGS_INHERITANCE[tags.at(-1)] || []
+      : TAGS_INHERITANCE[ETag.Lighting];
   }
 }

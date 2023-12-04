@@ -6,6 +6,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { CurtainsComponent } from './pages/curtains/curtains.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { LayoutComponent } from './pages/layout/layout.component';
+import { BasePageComponent } from './pages/base-page/base-page.component';
 
 const routes: Routes = [
   {
@@ -14,21 +15,27 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
+        path: 'lighting',
+        component: BasePageComponent,
+        title: 'Свет',
+        
+      },
+      {
         path: 'watering',
         component: WateringComponent,
-        title: 'Полив'
+        title: 'Полив',
       },
       {
         path: 'curtains',
         component: CurtainsComponent,
-        title: 'Шторы'
+        title: 'Шторы',
       },
       {
         path: '**',
         pathMatch: 'full',
-        redirectTo: 'curtains'
+        redirectTo: 'lighting',
       },
-    ]
+    ],
   },
   {
     path: 'auth',
@@ -46,4 +53,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

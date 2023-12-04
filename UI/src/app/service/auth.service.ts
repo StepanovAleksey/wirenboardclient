@@ -3,7 +3,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { BehaviorSubject, from, of } from 'rxjs';
 import { Observable } from 'rxjs-compat';
 import { map } from 'rxjs/operators';
-import { EUserRole, USERS, UserModel } from 'src/app/models/user.model';
+import { USERS, UserModel } from 'src/app/models/user.model';
 
 const localSrgKey = 'Auth';
 
@@ -24,7 +24,7 @@ export class AuthService {
 
   private setUser() {
     const userPass = this.getUserPass();
-    const user = USERS.find(u => u.password === userPass);
+    const user = USERS.find((u) => u.password === userPass);
     this.user$.next(user);
   }
 
@@ -36,19 +36,17 @@ export class AuthService {
           this.savePassword(pass);
           this.setUser();
         }
-        return result
-      })
-    )
+        return result;
+      }),
+    );
   }
-
-
 
   private getUserPass(): string {
     return localStorage.getItem(localSrgKey);
   }
 
   private validatePass(pass: string): boolean {
-    return USERS.map(u => u.password).includes(pass);
+    return USERS.map((u) => u.password).includes(pass);
   }
 
   private savePassword(value: string) {

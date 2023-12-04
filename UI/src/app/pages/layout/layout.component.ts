@@ -1,29 +1,18 @@
-import { Component } from '@angular/core';
-import { IOnConnectEvent, MqttService } from 'ngx-mqtt';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { AuthService } from 'src/app/service/auth.service';
 
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.less']
+  styleUrls: ['./layout.component.less'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class LayoutComponent {
   isExpandMenu = false;
   isEndAnimateExpand = false;
   pageName: string;
-
-  constructor(
-    private mqttService: MqttService,
-    public authSrv: AuthService,
-  ) {
-    this.mqttService.onConnect.subscribe((s: IOnConnectEvent) => {
-      console.log('status MQTT: ', s);
-    });
-    this.mqttService.onError.subscribe((error) => {
-      console.error(error);
-    });
-
-  }
+  public menuVisible = false;
+  constructor(public authSrv: AuthService) {}
 
   doneAnimate() {
     this.isEndAnimateExpand = this.isExpandMenu;

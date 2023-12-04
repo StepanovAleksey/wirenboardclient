@@ -4,9 +4,8 @@
 
 export const environment = {
   production: false,
-  host: '192.168.1.104',
-  port: 18883,
-  httpPort: 3000,
+  wb7MqqtAddr: '192.168.1.106',
+  wb6MqqtAddr: '192.168.1.108',
 };
 
 /*

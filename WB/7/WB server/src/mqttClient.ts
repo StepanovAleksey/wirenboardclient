@@ -9,8 +9,8 @@ export class MqttWbClient implements IMqttWbClient {
   client: MqttClient = null;
   mqqtMessage$ = new Subject<IMqqtEvent>();
 
-  constructor(url: string = '127.0.0.1') {
-    this.client = mqtt.connect('mqtt://127.0.0.1');
+  constructor(opts: mqtt.IClientOptions) {
+    this.client = mqtt.connect(opts);
     this.init(WB_TOPICS);
   }
 
@@ -29,6 +29,7 @@ export class MqttWbClient implements IMqttWbClient {
       }
     });
   }
+
   private init(topics: Array<string>) {
     this.client.on('connect', () => {
       topics.forEach((topic) => this.subTopic(topic));

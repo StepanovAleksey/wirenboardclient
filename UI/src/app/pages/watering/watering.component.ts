@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { IMqttMessage, MqttService } from 'ngx-mqtt';
 import { Observable, Subject, timer } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { IManualAction } from './manual-run/manual-run.component';
@@ -54,7 +53,7 @@ export class WateringComponent implements OnInit {
   temperature$ = new Observable<number>();
   rainDetected$ = new Observable<string>();
 
-  constructor(private mqttService: MqttService) {
+  constructor() {
     this.sendCommand(EcommandSubNames.init);
   }
 
@@ -63,50 +62,50 @@ export class WateringComponent implements OnInit {
   }
 
   private sendCommand<T>(name: EcommandSubNames, payload?: T) {
-    this.mqttService.unsafePublish(
-      subTopic,
-      JSON.stringify({
-        name,
-        payload,
-      }),
-      {
-        qos: 1,
-        retain: true,
-      },
-    );
+    // this.mqttService.unsafePublish(
+    //   subTopic,
+    //   JSON.stringify({
+    //     name,
+    //     payload,
+    //   }),
+    //   {
+    //     qos: 1,
+    //     retain: true,
+    //   },
+    // );
   }
 
   ngOnInit(): void {
-    this.mqttService
-      .observe(pubTopic)
-      .pipe(
-        takeUntil(this.destroy$),
-        map((message: IMqttMessage) => JSON.parse(message.payload.toString())),
-      )
-      .subscribe((message: ICommand<any>) => {
-        switch (message.name) {
-          case EcommandPubNames.initRes:
-            const {
-              stations,
-              programs,
-              options,
-              zoneRelayTopicsMaps,
-              detectsDevices,
-            } = message.payload;
-            this.stations = stations;
-            this.programs = programs;
-            this.options = options;
-            this.zoneRelayTopicsMaps = zoneRelayTopicsMaps;
-            this.temperature$ = this.subControl(detectsDevices.temperature);
-            this.rainDetected$ = this.subControl(detectsDevices.rain).pipe(
-              map((isRain) => (isRain ? 'нет дождя' : 'дождь')),
-            );
-            break;
-          default:
-            console.warn('неизвестный тип команды', message);
-            break;
-        }
-      });
+    // this.mqttService
+    //   .observe(pubTopic)
+    //   .pipe(
+    //     takeUntil(this.destroy$),
+    //     map((message: IMqttMessage) => JSON.parse(message.payload.toString())),
+    //   )
+    //   .subscribe((message: ICommand<any>) => {
+    //     switch (message.name) {
+    //       case EcommandPubNames.initRes:
+    //         const {
+    //           stations,
+    //           programs,
+    //           options,
+    //           zoneRelayTopicsMaps,
+    //           detectsDevices,
+    //         } = message.payload;
+    //         this.stations = stations;
+    //         this.programs = programs;
+    //         this.options = options;
+    //         this.zoneRelayTopicsMaps = zoneRelayTopicsMaps;
+    //         this.temperature$ = this.subControl(detectsDevices.temperature);
+    //         this.rainDetected$ = this.subControl(detectsDevices.rain).pipe(
+    //           map((isRain) => (isRain ? 'нет дождя' : 'дождь')),
+    //         );
+    //         break;
+    //       default:
+    //         console.warn('неизвестный тип команды', message);
+    //         break;
+    //     }
+    //   });
   }
   programChange(program: IProgramChange) {
     this.sendCommand(EcommandSubNames.programChange, program);
@@ -121,16 +120,16 @@ export class WateringComponent implements OnInit {
   }
 
   private subControl<T>(controlSetting: IControlSetting) {
-    return this.mqttService
-      .observe(
-        `/devices/${controlSetting.deviceName}/controls/${controlSetting.control}`,
-      )
-      .pipe(
-        takeUntil(this.destroy$),
-        map(
-          (message: IMqttMessage) =>
-            JSON.parse(message.payload.toString()) as T,
-        ),
-      );
+    // return this.mqttService
+    //   .observe(
+    //     `/devices/${controlSetting.deviceName}/controls/${controlSetting.control}`,
+    //   )
+    //   .pipe(
+    //     takeUntil(this.destroy$),
+    //     map(
+    //       (message: IMqttMessage) =>
+    //         JSON.parse(message.payload.toString()) as T,
+    //     ),
+    //   );
   }
 }

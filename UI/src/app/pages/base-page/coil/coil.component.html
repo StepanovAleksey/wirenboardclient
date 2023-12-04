@@ -1,0 +1,16 @@
+<div
+    class="grid cursor-pointer shadow-3 border-round-lg"
+    [ngClass]="{
+        'bg-yellow-300': coil.onOffStatus
+    }"
+    (click)="coil.toggleCoil()"
+>
+    <div class="col flex align-items-center justify-content-center">
+        {{ coil.label }}
+    </div>
+    <div
+        class="col-fixed w-3rem flex align-items-center justify-content-center"
+    >
+        <i class="pi pi-sun" style="font-size: 2rem"></i>
+    </div>
+</div>

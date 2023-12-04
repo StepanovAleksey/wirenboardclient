@@ -8,7 +8,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { BasePageComponent } from './pages/base-page/base-page.component';
-import { environment } from 'src/environments/environment';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { PanelModule } from 'primeng/panel';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +15,6 @@ import { HeaderComponent } from './components/header/header.component';
 import { RulesComponent } from './pages/rules/rules.component';
 import { AuthComponent } from './pages/auth/auth.component';
 import { AuthService } from './service/auth.service';
-import { MqttModule } from 'ngx-mqtt';
 import { WateringComponent } from './pages/watering/watering.component';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { CalendarModule } from 'primeng/calendar';
@@ -36,20 +34,16 @@ import { CurtainsGroupComponent } from './pages/curtains/curtains-group/curtains
 import { PasswordModule } from 'primeng/password';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { RippleModule } from 'primeng/ripple';
+import { SidebarModule } from 'primeng/sidebar';
+import { PanelMenuModule } from 'primeng/panelmenu';
+import { MqqtService } from './service/mqqt.service';
+import { CoilComponent } from './pages/base-page/coil/coil.component';
 
 @NgModule({
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MqttModule.forRoot({
-      hostname: environment.production
-        ? window.location.hostname
-        : environment.host,
-      protocol: 'wss',
-      port: environment.port,
-      clientId: 'SmartHouse: ' + Math.ceil(Math.random() * 10),
-    }),
     InputSwitchModule,
     PanelModule,
     FormsModule,
@@ -65,7 +59,9 @@ import { RippleModule } from 'primeng/ripple';
     SliderModule,
     HttpClientModule,
     PasswordModule,
-    RippleModule
+    RippleModule,
+    SidebarModule,
+    PanelMenuModule,
   ],
   declarations: [
     AppComponent,
@@ -83,8 +79,9 @@ import { RippleModule } from 'primeng/ripple';
     CurtainsComponent,
     CurtainsGroupComponent,
     LayoutComponent,
+    CoilComponent,
   ],
-  providers: [AuthService, DialogService],
+  providers: [AuthService, DialogService, MqqtService],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
