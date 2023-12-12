@@ -1,12 +1,12 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div class="flex flex-column h-full overflow-auto p-2">
+<div class="flex flex-column h-full overflow-auto">
     <div class="header">
         <app-header (toggleMenu)="menuVisible = !menuVisible"></app-header>
     </div>
     <div class="page-name center" *ngIf="pageName">
         {{ pageName }}
     </div>
-    <div class="grid flex-grow-1 mt-2">
+    <div class="grid flex-grow-1 mt-2 mx-1">
         <div class="col-12">
             <router-outlet></router-outlet>
         </div>

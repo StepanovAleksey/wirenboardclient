@@ -1,10 +1,46 @@
 <div class="grid">
-    <div class="col-fixed w-9rem m-2" *ngFor="let coil of coils">
-        <app-coil [coil]="coil"></app-coil>
+    <div class="col-12">
+        <p-breadcrumb class="max-w-full" [model]="hystory"></p-breadcrumb>
     </div>
+</div>
+<div class="grid mt-2">
+    <ng-container
+        *ngTemplateOutlet="chanelsTempalteRef; context: { chanels: chanels }"
+    >
+    </ng-container>
 </div>
 <div class="grid">
-    <div class="col-12">
-        {{ childTags | json }}
+    <div class="col-6" *ngFor="let childMenu of childrenMenu | keyvalue">
+        <p-panel [toggleable]="true">
+            <ng-template pTemplate="header">
+                <a
+                    class="text-primary font-semibold text-xl"
+                    [routerLink]="childMenu.key.routerLink"
+                    [queryParams]="{
+                        tags: childMenu.key.historyTags
+                    }"
+                    >{{ childMenu.key.label }}</a
+                >
+            </ng-template>
+            <div class="grid">
+                <ng-container
+                    *ngTemplateOutlet="
+                        chanelsTempalteRef;
+                        context: { chanels: childMenu.value }
+                    "
+                >
+                </ng-container>
+            </div>
+        </p-panel>
     </div>
 </div>
+
+<ng-template #chanelsTempalteRef let-chanels="chanels">
+    <div class="col-fixed w-9rem m-2" *ngFor="let chanel of chanels">
+        <app-coil *ngIf="isCoilGuard(chanel)" [coil]="chanel"></app-coil>
+        <app-dimmer
+            *ngIf="isDimmGuard(chanel)"
+            [dimmChanel]="chanel"
+        ></app-dimmer>
+    </div>
+</ng-template>

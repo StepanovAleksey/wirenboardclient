@@ -38,6 +38,9 @@ import { SidebarModule } from 'primeng/sidebar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { MqqtService } from './service/mqqt.service';
 import { CoilComponent } from './pages/base-page/coil/coil.component';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { DimmerComponent } from './pages/base-page/dimmer/dimmer.component';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 @NgModule({
   imports: [
@@ -62,6 +65,8 @@ import { CoilComponent } from './pages/base-page/coil/coil.component';
     RippleModule,
     SidebarModule,
     PanelMenuModule,
+    BreadcrumbModule,
+    ProgressBarModule,
   ],
   declarations: [
     AppComponent,
@@ -80,6 +85,7 @@ import { CoilComponent } from './pages/base-page/coil/coil.component';
     CurtainsGroupComponent,
     LayoutComponent,
     CoilComponent,
+    DimmerComponent,
   ],
   providers: [AuthService, DialogService, MqqtService],
   bootstrap: [AppComponent],

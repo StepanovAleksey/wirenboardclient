@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ItemCoil } from 'src/app/models/itemCoil';
+import { WB_MR6C_Q } from 'src/app/models/wbDevice.model';
 
 @Component({
   selector: 'app-coil',
@@ -7,5 +7,5 @@ import { ItemCoil } from 'src/app/models/itemCoil';
   styleUrls: ['./coil.component.less'],
 })
 export class CoilComponent {
-  @Input() coil!: ItemCoil;
+  @Input() coil!: WB_MR6C_Q;
 }
