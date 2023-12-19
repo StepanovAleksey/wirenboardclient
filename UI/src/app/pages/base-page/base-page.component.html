@@ -1,46 +1,64 @@
-<div class="grid">
-    <div class="col-12">
-        <p-breadcrumb class="max-w-full" [model]="hystory"></p-breadcrumb>
-    </div>
-</div>
-<div class="grid mt-2">
-    <ng-container
-        *ngTemplateOutlet="chanelsTempalteRef; context: { chanels: chanels }"
-    >
-    </ng-container>
-</div>
-<div class="grid">
-    <div class="col-6" *ngFor="let childMenu of childrenMenu | keyvalue">
-        <p-panel [toggleable]="true">
-            <ng-template pTemplate="header">
-                <a
-                    class="text-primary font-semibold text-xl"
-                    [routerLink]="childMenu.key.routerLink"
-                    [queryParams]="{
-                        tags: childMenu.key.historyTags
-                    }"
-                    >{{ childMenu.key.label }}</a
-                >
-            </ng-template>
-            <div class="grid">
-                <ng-container
-                    *ngTemplateOutlet="
-                        chanelsTempalteRef;
-                        context: { chanels: childMenu.value }
-                    "
-                >
-                </ng-container>
-            </div>
-        </p-panel>
-    </div>
-</div>
+<div class="h-full flex flex-column overflow-y-auto">
+    <p-breadcrumb class="max-w-full" [model]="hystory"></p-breadcrumb>
 
-<ng-template #chanelsTempalteRef let-chanels="chanels">
-    <div class="col-fixed w-9rem m-2" *ngFor="let chanel of chanels">
-        <app-coil *ngIf="isCoilGuard(chanel)" [coil]="chanel"></app-coil>
-        <app-dimmer
-            *ngIf="isDimmGuard(chanel)"
-            [dimmChanel]="chanel"
-        ></app-dimmer>
+    <div class="flex-grow-1 overflow-y-auto px-2">
+        <div class="flex mt-2 flex-wrap">
+            <ng-container
+                *ngTemplateOutlet="
+                    chanelsTempalteRef;
+                    context: { chanels: menuItem.deviceChanels }
+                "
+            >
+            </ng-container>
+        </div>
+        <div class="grid">
+            <div
+                class="col-12 md:col-6 lg:col-3"
+                *ngFor="let childMenu of menuItem.items"
+            >
+                <p-panel [toggleable]="true">
+                    <ng-template pTemplate="header">
+                        <p-button
+                            label="Выкл"
+                            styleClass="p-button-secondary p-2"
+                            (onClick)="offGroup(childMenu)"
+                        ></p-button>
+                        <a
+                            class="text-primary font-semibold ml-2"
+                            [routerLink]="childMenu.routerLink"
+                            [queryParams]="childMenu.queryParams"
+                            >{{ childMenu.label }}</a
+                        >
+                    </ng-template>
+                    <div class="flex flex-wrap">
+                        <ng-container
+                            *ngTemplateOutlet="
+                                chanelsTempalteRef;
+                                context: { chanels: childMenu.deviceChanels }
+                            "
+                        >
+                        </ng-container>
+                    </div>
+                </p-panel>
+            </div>
+        </div>
     </div>
+</div>
+<ng-template #chanelsTempalteRef let-chanels="chanels">
+    <ng-container *ngFor="let chanel of chanels">
+        <app-coil *ngIf="isCoilGuard(chanel)" [coil]="chanel"></app-coil>
+        <app-dimmer *ngIf="isDimmGuard(chanel)" [dimmer]="chanel"></app-dimmer>
+        <app-light-group
+            *ngIf="isLightGroupGuard(chanel)"
+            [lightGroup]="chanel"
+        ></app-light-group>
+        <app-simple-light-group
+            *ngIf="isSimpleLightGroupGuard(chanel)"
+            [lightGroup]="chanel"
+        ></app-simple-light-group>
+        <app-curtain
+            *ngIf="isCurtainGroupGuard(chanel)"
+            [curtainGroup]="chanel"
+        ></app-curtain>
+    </ng-container>
 </ng-template>

@@ -1,0 +1,22 @@
+<div class="flex flex-column shadow-3 border-round-lg p-2 m-2">
+    <div class="label flex justify-content-center mb-1">
+        {{ curtainGroup.label }}
+    </div>
+    <div class="flex">
+        <p-button
+            label="Открыть"
+            styleClass="flex-1 p-2"
+            (onClick)="sendCommand(ECurtainCommandType.up)"
+        ></p-button>
+        <p-button
+            label="Стоп"
+            styleClass="p-button-secondary flex-1 mx-1 p-2"
+            (onClick)="sendCommand(ECurtainCommandType.stop)"
+        ></p-button>
+        <p-button
+            label="Закрыть"
+            styleClass="flex-1 p-2"
+            (onClick)="sendCommand(ECurtainCommandType.down)"
+        ></p-button>
+    </div>
+</div>

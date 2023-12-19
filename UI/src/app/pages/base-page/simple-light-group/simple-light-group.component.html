@@ -1,0 +1,5 @@
+<app-coillight-simple
+    (changeCoil)="changeCoil()"
+    [label]="lightGroup.label"
+    [onOffStatus]="lightGroup.onOffStatus$ | async"
+></app-coillight-simple>

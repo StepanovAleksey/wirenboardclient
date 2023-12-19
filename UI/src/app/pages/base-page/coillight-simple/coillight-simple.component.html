@@ -1,0 +1,12 @@
+<div
+    class="flex cursor-pointer shadow-3 border-round-lg p-2 w-10rem m-2"
+    [ngClass]="{
+        'bg-yellow-300': onOffStatus
+    }"
+    (click)="changeCoil.emit()"
+>
+    <div class="flex-grow-1 flex align-items-center justify-content-center">
+        {{ label }}
+    </div>
+    <i class="pi pi-sun ml-2" style="font-size: 2rem"></i>
+</div>

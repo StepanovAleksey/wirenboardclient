@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:host": "ng serve --host 0.0.0.0",
     "build": "ng build --configuration production --output-path www",
     "build:git-hub": "ng build --configuration production --output-path docs --deploy-url wirenboardclient/",
     "test": "ng test",

@@ -1,17 +1,17 @@
-<div class="grid shadow-3 border-round-lg">
-    <div class="col-12 brightness">
-        <app-coil [coil]="dimmChanel"></app-coil>
+<div class="flex flex-column shadow-3 border-round-lg w-10rem m-2">
+    <div class="brightness">
+        <app-coil [coil]="dimmer"></app-coil>
         <div
             class="fill-current-brightness border-round-lg bg-blue-300"
             [ngStyle]="{
-                width: dimmChanel.chanelValue + '%'
+                width: dimmer.chanelValue + '%'
             }"
         ></div>
     </div>
-    <div class="col-12 flex flex-column">
+    <div class="flex flex-column mt-1">
         <p-slider
-            [ngModel]="dimmChanel.setBrightness"
-            (onChange)="dimmChanel.setBrightness = $event.value"
+            [ngModel]="setBrightness$.value"
+            (onChange)="setBrightness$.next($event.value)"
         ></p-slider>
     </div>
 </div>

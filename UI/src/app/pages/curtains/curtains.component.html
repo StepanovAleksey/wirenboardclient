@@ -1,57 +1,55 @@
-<div class="grid h-full overflow-auto">
-    <div class="col-6">
-        <div class="grid">
-            <div class="col-12" *ngFor="let group of groups">
-                <app-curtains-group [group]="group"></app-curtains-group>
-            </div>
-        </div>
+<div class="flex h-full overflow-auto mx-2 mt-2">
+    <div class="flex-1">
+        <app-curtains-group
+            *ngFor="let group of groups"
+            [group]="group"
+        ></app-curtains-group>
     </div>
-    <div class="col-6">
-        <div class="grid">
-            <div class="col-12 center slider">
-                <p-slider
-                    orientation="vertical"
-                    [(ngModel)]="setPercent"
-                    [disabled]="!isAnySelected"
-                ></p-slider>
-            </div>
-            <div class="col-12 center input-number">
-                <p-inputNumber
-                    [(ngModel)]="setPercent"
-                    [showButtons]="true"
-                    [disabled]="!isAnySelected"
-                    buttonLayout="horizontal"
-                    inputId="horizontal"
-                    spinnerMode="horizontal"
-                    [step]="10"
-                    decrementButtonClass="p-button-danger"
-                    incrementButtonClass="p-button-success"
-                    incrementButtonIcon="pi pi-plus"
-                    decrementButtonIcon="pi pi-minus"
-                    min="0"
-                    max="100"
-                ></p-inputNumber>
-            </div>
-            <div class="col-12 center flex flex-column buttons">
-                <p-button
-                    label="Up"
-                    [disabled]="!isAnySelected"
-                    styleClass="p-button-success"
-                    (click)="sendCommand(ECommandType.down)"
-                ></p-button>
-                <p-button
-                    label="Stop"
-                    [disabled]="!isAnySelected"
-                    styleClass="p-button-warning"
-                    (click)="sendCommand(ECommandType.stop)"
-                ></p-button>
-                <p-button
-                    label="Down"
-                    [disabled]="!isAnySelected"
-                    styleClass="p-button-danger"
-                    (click)="sendCommand(ECommandType.up)"
-                ></p-button>
-            </div>
+
+    <div class="flex-1 flex flex-column">
+        <div class="center slider mb-1">
+            <p-slider
+                orientation="vertical"
+                [(ngModel)]="setPercent"
+                [disabled]="!isAnySelected"
+            ></p-slider>
+        </div>
+        <div class="center input-number my-1 pl-3">
+            <p-inputNumber
+                [(ngModel)]="setPercent"
+                [showButtons]="true"
+                [disabled]="!isAnySelected"
+                buttonLayout="horizontal"
+                inputId="horizontal"
+                spinnerMode="horizontal"
+                [step]="10"
+                decrementButtonClass="p-button-danger"
+                incrementButtonClass="p-button-success"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
+                min="0"
+                max="100"
+            ></p-inputNumber>
+        </div>
+        <div class="center flex flex-column buttons">
+            <p-button
+                label="Up"
+                [disabled]="!isAnySelected"
+                styleClass="p-button-success"
+                (click)="sendCommand(ECommandType.down)"
+            ></p-button>
+            <p-button
+                label="Stop"
+                [disabled]="!isAnySelected"
+                styleClass="p-button-secondary"
+                (click)="sendCommand(ECommandType.stop)"
+            ></p-button>
+            <p-button
+                label="Down"
+                [disabled]="!isAnySelected"
+                styleClass="p-button-danger"
+                (click)="sendCommand(ECommandType.up)"
+            ></p-button>
         </div>
     </div>
 </div>

@@ -112,28 +112,3 @@ export class MqqtService {
     });
   }
 }
-
-/**
- * базовый класс для всех mqtt устройств
- */
-export abstract class ABaseMqttObj {
-  constructor(
-    private mqqtService: MqqtService,
-    protected destroy$: Subject<void>,
-    protected wbId: EMqqtServer,
-  ) {
-    this.destroy$.pipe(take(1)).subscribe(() => {
-      this.mqqtService.unSubscribeClient(wbId, this);
-    });
-  }
-
-  protected subTopic$<T>(topic: string) {
-    return this.mqqtService
-      .subscribeTopic$<T>(EMqqtServer.wb7, topic, this)
-      .pipe(takeUntil(this.destroy$));
-  }
-
-  protected pubTopic<T>(topic: string, payload: T) {
-    this.mqqtService.publishTopic(this.wbId, topic, payload);
-  }
-}

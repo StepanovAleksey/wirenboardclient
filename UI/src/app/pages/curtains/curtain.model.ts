@@ -1,10 +1,7 @@
 import { Subject } from 'rxjs';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import {
-  ABaseMqttObj,
-  EMqqtServer,
-  MqqtService,
-} from 'src/app/service/mqqt.service';
+import { ABaseMqttObj } from 'src/app/models/wbDevices';
+import { EMqqtServer, MqqtService } from 'src/app/service/mqqt.service';
 
 export class Group {
   isSelected = false;
@@ -12,7 +9,7 @@ export class Group {
 }
 const TOPIC_TEMPLATE = '/devices/curtain_drive/{groupId}/{chanleId}';
 /** список комманд  */
-export enum ECommandType {
+export enum ECurtainCommandType {
   up = 'up',
   stop = 'stop',
   down = 'down',
@@ -32,13 +29,13 @@ export class Curtain extends ABaseMqttObj {
 
   constructor(
     public chanleId: number,
-    mqqtService: MqqtService,
-    destroy$: Subject<void>,
-    private command$: Subject<ECommandType>,
+    private mqqtService: MqqtService,
+    private destroy$: Subject<void>,
+    private command$: Subject<ECurtainCommandType>,
     private possitionCommand$: Subject<number>,
     public groupId = 1,
   ) {
-    super(mqqtService, destroy$, EMqqtServer.wb7);
+    super(EMqqtServer.wb7, 'Штора');
 
     this.subTopic$<number>(`${this.getBaseTopic()}/position`).subscribe(
       (payload) => {
@@ -65,7 +62,7 @@ export class Curtain extends ABaseMqttObj {
     this.pubTopic(`${this.getBaseTopic()}/position/on`, position);
   }
 
-  private sendCommand(command: ECommandType) {
+  private sendCommand(command: ECurtainCommandType) {
     this.pubTopic(`${this.getBaseTopic()}/command/on`, command);
   }
 
@@ -74,5 +71,14 @@ export class Curtain extends ABaseMqttObj {
       '{chanleId}',
       this.chanleId.toString(),
     );
+  }
+  private subTopic$<T>(topic: string) {
+    return this.mqqtService
+      .subscribeTopic$<T>(EMqqtServer.wb7, topic, this)
+      .pipe(takeUntil(this.destroy$));
+  }
+
+  private pubTopic<T>(topic: string, payload: T) {
+    this.mqqtService.publishTopic(this.wbId, topic, payload);
   }
 }

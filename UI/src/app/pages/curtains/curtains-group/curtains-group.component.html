@@ -1,18 +1,27 @@
 <div
-    class="grid border-500 hover:border-700 border-3 border-round border-3 shadow-2"
+    class="flex border-500 hover:border-700 border-3 border-round border-3 shadow-2"
 >
-    <div class="col-6 center pointer text-xl" (click)="selectGroup()">
+    <div
+        class="flex-1 center pointer text-xl"
+        (click)="selectGroup()"
+        style="min-width: 100px"
+    >
         {{ group.name }}
     </div>
-    <div class="col-6 border-left hover:border-700 pointer pb-0">
+    <div
+        class="flex-1 border-left hover:border-700 pointer pb-0"
+        style="min-width: 50px"
+    >
         <div
-            class="grid"
+            class="flex px-2"
             *ngFor="let curtain of group.curtains"
             [class]="{ selected: curtain.isSelected }"
             (click)="curtain.isSelected = !curtain.isSelected"
         >
-            <div class="col-6">{{ curtain.adress }}</div>
-            <div class="col-6">{{ curtain.position }}</div>
+            <div class="flex">{{ curtain.chanleId }}</div>
+            <div class="flex-1 flex justify-content-center">
+                {{ curtain.position }}
+            </div>
         </div>
     </div>
 </div>

@@ -41,6 +41,11 @@ import { CoilComponent } from './pages/base-page/coil/coil.component';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { DimmerComponent } from './pages/base-page/dimmer/dimmer.component';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { LightGroupComponent } from './pages/base-page/light-group/light-group.component';
+import { SimpleLightGroupComponent } from './pages/base-page/simple-light-group/simple-light-group.component';
+import { CurtainComponent } from './pages/base-page/curtain/curtain.component';
+import { CoillightSimpleComponent } from './pages/base-page/coillight-simple/coillight-simple.component';
 
 @NgModule({
   imports: [
@@ -67,6 +72,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
     PanelMenuModule,
     BreadcrumbModule,
     ProgressBarModule,
+    ToggleButtonModule,
   ],
   declarations: [
     AppComponent,
@@ -86,6 +92,10 @@ import { ProgressBarModule } from 'primeng/progressbar';
     LayoutComponent,
     CoilComponent,
     DimmerComponent,
+    LightGroupComponent,
+    SimpleLightGroupComponent,
+    CurtainComponent,
+    CoillightSimpleComponent,
   ],
   providers: [AuthService, DialogService, MqqtService],
   bootstrap: [AppComponent],

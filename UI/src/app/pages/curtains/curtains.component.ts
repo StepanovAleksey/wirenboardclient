@@ -1,5 +1,5 @@
 import { Component, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { Curtain, ECommandType, Group } from './curtain.model';
+import { Curtain, ECurtainCommandType, Group } from './curtain.model';
 import { MqqtService } from 'src/app/service/mqqt.service';
 import { Subject } from 'rxjs';
 
@@ -26,10 +26,10 @@ export class CurtainsComponent implements OnDestroy {
 
   destroy$ = new Subject<void>();
 
-  command$ = new Subject<ECommandType>();
+  command$ = new Subject<ECurtainCommandType>();
   possitionCommand$ = new Subject<number>();
 
-  ECommandType = ECommandType;
+  ECommandType = ECurtainCommandType;
 
   groups: Array<Group> = [
     new Group('Гостинная', [
@@ -52,7 +52,7 @@ export class CurtainsComponent implements OnDestroy {
     this.destroy$.next();
   }
 
-  sendCommand(command: ECommandType) {
+  sendCommand(command: ECurtainCommandType) {
     this.command$.next(command);
   }
 
