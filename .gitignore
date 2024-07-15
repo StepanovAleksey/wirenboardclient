@@ -65,7 +65,6 @@ node_modules/
 # dotenv environment variables file
 .env
 dist/
-/package-lock.json
 www/
 /WB server/build
 /WB/7/WB server/build
