@@ -10,8 +10,11 @@ import { MqqtService } from 'src/app/service/mqqt.service';
   styleUrls: ['./dimmer.component.less'],
 })
 export class DimmerComponent implements OnInit, OnDestroy {
+  
   @Input({ required: true }) dimmer!: WB_MDM3_Q;
-  destrot$ = new Subject<void>();
+
+  destroy$ = new Subject<void>();
+
   setBrightness$ = new BehaviorSubject<number>(0);
 
   constructor(private mqttSrv: MqqtService) {}
@@ -32,7 +35,7 @@ export class DimmerComponent implements OnInit, OnDestroy {
         skip(1),
         debounceTime(500),
         filter((value) => value !== this.dimmer.chanelValue),
-        takeUntil(this.destrot$),
+        takeUntil(this.destroy$),
       )
       .subscribe((value) => {
         this.mqttSrv.publishTopic(
@@ -50,11 +53,11 @@ export class DimmerComponent implements OnInit, OnDestroy {
         this.dimmer.getBrightnessTopic(),
         this,
       )
-      .pipe(takeUntil(this.destrot$));
+      .pipe(takeUntil(this.destroy$));
   }
 
   ngOnDestroy(): void {
-    this.destrot$.next();
+    this.destroy$.next();
     this.mqttSrv.unSubscribeClient(this.dimmer.wbId, this);
   }
 }

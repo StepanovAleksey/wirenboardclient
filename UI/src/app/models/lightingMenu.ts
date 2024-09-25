@@ -3,6 +3,7 @@ import {
   ABaseMqttObj,
   Curtain,
   CurtainGroup,
+  FrequencyConverter,
   SimpleLightGroup,
   WB_MDM3_Q,
   WB_MR6C_Q,
@@ -83,6 +84,7 @@ const FirstFloorMenu = new LightingMenuItem(EPath['1st_floor'], [
   ),
   new WB_MR6C_Q('Дежурный', 'wb-mr6c_82', 4),
   new CurtainGroup('Штора', [new Curtain(1, 1), new Curtain(1, 2)]),
+  new FrequencyConverter('Вытяжка', 5),
 ]).setParent(baseMenuItem);
 
 const TabmburMenu = new LightingMenuItem(EPath.Tabmbur, [

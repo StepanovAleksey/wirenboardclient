@@ -13,6 +13,9 @@ export enum ETypeWbChanel {
 
   /** отправка команды на штору */
   CURTAIN_COMMAND = 'CURTAIN_COMMAND',
+
+  /** отправка команды на штору */
+  FREQUENCY_CONVERTER = 't13_frequency_converter',
 }
 /**
  * базовый класс для всех mqtt устройств
@@ -22,7 +25,7 @@ export abstract class ABaseMqttObj {
 }
 
 /** шаблоны топиков */
-export const TOPIC_TEMPLATE: Record<ETypeWbChanel, string> = {
+export const TOPIC_TEMPLATE: Partial<Record<ETypeWbChanel, string>> = {
   [ETypeWbChanel.WB_MR6C_Q]: '/devices/{mqttDeviceAddr}/controls/K{cNumber}',
   [ETypeWbChanel.WB_MR6C_I]:
     '/devices/{mqttDeviceAddr}/controls/Input {cNumber}',

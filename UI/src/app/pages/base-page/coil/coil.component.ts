@@ -11,6 +11,7 @@ import { MqqtService } from 'src/app/service/mqqt.service';
 })
 export class CoilComponent implements OnInit, OnDestroy {
   @Input({ required: true }) coil!: WB_MR6C_Q;
+  
   destrot$ = new Subject<void>();
 
   constructor(private mqttSrv: MqqtService) {}

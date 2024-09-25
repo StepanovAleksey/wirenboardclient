@@ -46,6 +46,7 @@ import { LightGroupComponent } from './pages/base-page/light-group/light-group.c
 import { SimpleLightGroupComponent } from './pages/base-page/simple-light-group/simple-light-group.component';
 import { CurtainComponent } from './pages/base-page/curtain/curtain.component';
 import { CoillightSimpleComponent } from './pages/base-page/coillight-simple/coillight-simple.component';
+import { FrequencyConverterComponent } from './pages/base-page/frequency-converter/frequency-converter.component';
 
 @NgModule({
   imports: [
@@ -96,6 +97,7 @@ import { CoillightSimpleComponent } from './pages/base-page/coillight-simple/coi
     SimpleLightGroupComponent,
     CurtainComponent,
     CoillightSimpleComponent,
+    FrequencyConverterComponent,
   ],
   providers: [AuthService, DialogService, MqqtService],
   bootstrap: [AppComponent],

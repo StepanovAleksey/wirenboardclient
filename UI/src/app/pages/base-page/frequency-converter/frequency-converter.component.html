@@ -1,0 +1,23 @@
+<div class="flex flex-column shadow-3 border-round-lg w-9rem m-2">
+    <div class="brightness">
+        <app-coillight-simple
+            (changeCoil)="runStop()"
+            [label]="frequencyConverter.label"
+            [onOffStatus]="frequencyConverter.onOffStatus$ | async"
+        ></app-coillight-simple>
+        <div
+            class="fill-current-brightness border-round-lg bg-blue-300"
+            [ngStyle]="{
+                width: frequencyConverter.currentFrequencyPercent + '%'
+            }"
+        ></div>
+    </div>
+    <div class="flex flex-column mt-1">
+        <p-slider
+            [min]="0"
+            [max]="50"
+            [ngModel]="setFrequency$.value"
+            (onChange)="changeFreq($event.value)"
+        ></p-slider>
+    </div>
+</div>

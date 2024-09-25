@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import {
   CurtainGroup,
   ETypeWbChanel,
+  FrequencyConverter,
   SimpleLightGroup,
   WB_MDM3_Q,
   WB_MR6C_Q,
@@ -83,5 +84,9 @@ export class BasePageComponent implements OnInit, OnDestroy {
 
   isCurtainGroupGuard(wbDevice: any): wbDevice is CurtainGroup {
     return wbDevice instanceof CurtainGroup;
+  }
+
+  isFrequencyConverter(wbDevice: any): wbDevice is FrequencyConverter {
+    return wbDevice instanceof FrequencyConverter;
   }
 }

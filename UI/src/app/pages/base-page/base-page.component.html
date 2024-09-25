@@ -60,5 +60,9 @@
             *ngIf="isCurtainGroupGuard(chanel)"
             [curtainGroup]="chanel"
         ></app-curtain>
+        <app-frequency-converter
+            *ngIf="isFrequencyConverter(chanel)"
+            [frequencyConverter]="chanel"
+        ></app-frequency-converter>
     </ng-container>
 </ng-template>
