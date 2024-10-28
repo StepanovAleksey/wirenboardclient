@@ -1,4 +1,4 @@
-import { Subject, debounceTime, interval, switchMap, takeUntil, tap, timer } from 'rxjs';
+import { Subject, interval } from 'rxjs';
 import { ECommandType } from '../const';
 import { SerialBus } from '../serialBus';
 import { Command } from './model';
@@ -7,6 +7,17 @@ import { DriverCommandBuilder } from './driverCommandBuilder';
 
 const TOPIC_TEMPLATE = '/devices/curtain_drive/{groupId}/{chanleId}';
 
+/***
+ * Модель для работы с драйвером штор
+ * Автоматически подписыывется на serial порт и шлёт запросы на статус
+ * Упрвление происходит через топики MQTT 
+ * Пример отрпавки команды на включение для драйвера group=1, chanel=1:
+ * /devices/curtain_drive/1/1/command/on
+ * в это ттопик надо записать команду из списка:ECommandType, в JSON формате т.е. 
+ * /devices/curtain_drive/1/1/command/on -> "up"
+ * 
+ * Управление позицией шторы происходит через топик /devices/curtain_drive/1/1/position/on
+ */
 export class Driver {
   commandBuilder: DriverCommandBuilder;
 
@@ -42,6 +53,9 @@ export class Driver {
   }
 
   goToPercent(percent = 0) {
+    if (percent === null) {
+      return;
+    }
     this._writeCommand(
       new Command(ECommandType.setPercent, this.commandBuilder.getPercentCommand(percent)),
     );
@@ -50,13 +64,22 @@ export class Driver {
   /** подписка на управляющие команды */
   private subCommand() {
     this.mqqtWbClient.subscribe$(`${this.getBaseTopic()}/position/on`).subscribe((payload) => {
-      this.goToPercent(JSON.parse(payload));
+      try {
+        this.goToPercent(JSON.parse(payload));
+      } catch (err: any) {
+        console.warn(`[Driver][mqqtWbClient.subscribe$]. Ошибка по топику :${`${this.getBaseTopic()}/position/on`}. payload:${JSON.stringify(payload)}. error: ${err.message || JSON.stringify(err)}`)
+      }
     });
 
     this.mqqtWbClient.subscribe$(`${this.getBaseTopic()}/command/on`).subscribe((payload) => {
-      this.sendCommand(JSON.parse(payload));
+      try {
+        this.sendCommand(JSON.parse(payload));
+      } catch (err: any) {
+        console.warn(`[Driver][mqqtWbClient.subscribe$]. Ошибка по топику :${`${this.getBaseTopic()}/command/on`}. payload:${JSON.stringify(payload)}. error: ${err.message || JSON.stringify(err)}`)
+      }
     });
   }
+
 
   /** команда на обновление статуса */
   private updateStatus() {

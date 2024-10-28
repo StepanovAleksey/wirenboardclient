@@ -8,13 +8,14 @@ import { SerialPortFacade } from './serialPortFacade';
 const mqqtWbClient: IMqttWbClient = new MqttWbClient({
   port: 18883,
   protocol: 'ws',
-  hostname: '127.0.0.1',
+  // hostname: '127.0.0.1',
   //hostname: '192.168.1.106',
+  hostname: '10.147.17.184', // 6ка
 });
 new SerialPortFacade(serialBus, {
   path: '/dev/ttyRS485-1',
   //path: 'COM3',
-  baudRate: 2400,
+  baudRate: 9600,
   dataBits: 8,
   stopBits: 1,
 });

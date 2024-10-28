@@ -30,7 +30,9 @@ export class SerialPortFacade {
         filter((command) => !!command),
       )
       .subscribe((command) => {
-        this.serialPort.write(Buffer.from(command.payload));
+        this.serialPort.write(Buffer.from(command.payload), (err => {
+          this.errorHandle(err)
+        }));
         this.runTimeoutWatcher(command);
         if (!command.isNeedAnswer) {
           this.sendCommand$.next(null);
@@ -41,7 +43,11 @@ export class SerialPortFacade {
       this.handleCommandQueue();
     });
   }
-
+  private errorHandle(error: any) {
+    if (!!error) {
+      console.log('[SerialPortFacade]. Error on write: ', error.message)
+    }
+  }
   private registerSerialPortData() {
     this.serialPort.on('readable', () => {
       const answer: number[] = [];
@@ -55,6 +61,13 @@ export class SerialPortFacade {
       // console.log('answer', answer);
       serialBus.onData$.next(answer);
       this.sendCommand$.next(null);
+    });
+
+    this.serialPort.on('open', (err) => {
+      this.errorHandle(err);
+      if (!err) {
+        console.log("[SerialPortFacade]. Порт успешно открыт")
+      }
     });
   }
 
