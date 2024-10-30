@@ -1,4 +1,4 @@
-import { Driver } from './models/driverModel';
+import { Driver } from './models/Driver.model';
 import './serialPortFacade';
 import { serialBus } from './serialBus';
 import { MqttWbClient } from './mqttClient';
@@ -13,8 +13,8 @@ const mqqtWbClient: IMqttWbClient = new MqttWbClient({
   hostname: '10.147.17.184', // 6ка
 });
 new SerialPortFacade(serialBus, {
-  path: '/dev/ttyRS485-1',
-  //path: 'COM3',
+  // path: '/dev/ttyRS485-1',
+  path: 'COM4',
   baudRate: 9600,
   dataBits: 8,
   stopBits: 1,

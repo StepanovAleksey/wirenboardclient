@@ -31,6 +31,9 @@ export class MqttWbClient implements IMqttWbClient {
   }
 
   private init(topics: Array<string>) {
+    this.client.on('error', (err) => {
+      console.error(`[MqttWbClient] error`, err);
+    });
     this.client.on('connect', () => {
       topics.forEach((topic) => this.subTopic(topic));
     });

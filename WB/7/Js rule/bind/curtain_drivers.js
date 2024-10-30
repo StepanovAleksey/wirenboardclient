@@ -1,12 +1,26 @@
+"use strict";
 /**
- * Матрица соотнесения входов устройств с chanel lavel в драйверах штор. Все драйверы в 1-й группе
+ * Матрица соотнесения входов устройств с chanel lavel в драйверах штор.
+ * Для "балалайки" т.е. когда входами задаём адреса
+ * Все драйверы в 1-й группе
  */
 var DEVICE_DRIVER_MATRIX = {
+    "wb-gpio/EXT1_IN1": 1,
+    "wb-gpio/EXT1_IN2": 2,
+    "wb-gpio/EXT1_IN3": 3,
+    "wb-gpio/EXT1_IN4": 4,
+    "wb-gpio/EXT1_IN5": 5,
+    "wb-gpio/EXT1_IN6": 13,
+    "wb-gpio/EXT1_IN7": 14,
+    "wb-gpio/EXT1_IN8": 15,
+    "wb-gpio/EXT1_IN9": 16,
     "wb-gpio/EXT2_IN1": 1,
     "wb-gpio/EXT2_IN2": 2,
     "wb-gpio/EXT2_IN3": 3,
     "wb-gpio/EXT2_IN4": 4,
     "wb-gpio/EXT2_IN5": 5,
+    "wb-gpio/EXT2_IN6": 6,
+    "wb-gpio/EXT2_IN7": 7,
 };
 var ECommandRollet;
 (function (ECommandRollet) {
@@ -20,12 +34,14 @@ var ECommandRollet;
 var CURTAIN_DRIVER_LAST_COMMNAD = {};
 /**
  * Подписываемся на последную команду упралвения для устройства
- * @param driverChanell
+ * @param driverChanell канал драйвера
+ * @param topic топик состояние котрого получаем
+ * @param mapa карта для хранения текущей команды
  */
-function trackMqttCurtainDriverCommand(driverChanell) {
-    trackMqtt("/devices/curtain_drive/1/".concat(driverChanell, "/command/on"), function (message) {
+function trackMqttCurtainDriverCommand(driverChanell, topic, mapa) {
+    trackMqtt("/devices/curtain_drive/1/".concat(driverChanell, "/").concat(topic), function (message) {
         try {
-            CURTAIN_DRIVER_LAST_COMMNAD[driverChanell] = JSON.parse(message.value);
+            mapa[driverChanell] = JSON.parse(message.value);
         }
         catch (err) {
             log.error("[trackMqttCurtainDriverCommand] error: ", err.message || JSON.stringify(err));
@@ -34,8 +50,15 @@ function trackMqttCurtainDriverCommand(driverChanell) {
 }
 /** у нас 16 драйверов, будем слушать все команды которые на них уходят */
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].forEach(function (v, i) {
-    trackMqttCurtainDriverCommand(i + 1);
+    trackMqttCurtainDriverCommand(i + 1, "command", CURTAIN_DRIVER_LAST_COMMNAD);
 });
+function handleDriverCommand(driverChanel, command) {
+    if (CURTAIN_DRIVER_LAST_COMMNAD[driverChanel] !== ECommandRollet.stop) {
+        sendStopCommand(driverChanel);
+        return;
+    }
+    sendCurtainDriverCommand(driverChanel, command);
+}
 /**
  * обработка по адресу роллеты
  * @param adressTopic
@@ -46,7 +69,7 @@ function handleAdressTopic(controllerAdressTopic, command) {
         log.warning("[handleAdressTopic]. not fount rollet adress: ".concat(controllerAdressTopic));
         return;
     }
-    if (CURTAIN_DRIVER_LAST_COMMNAD[driverChanel] === command) {
+    if (CURTAIN_DRIVER_LAST_COMMNAD[driverChanel] !== ECommandRollet.stop) {
         sendStopCommand(driverChanel);
         return;
     }
@@ -85,7 +108,7 @@ function createCurtainMatrix(adressInputTopic, upCommandControlTopic, downComman
             adressInputTopic.forEach(function (topic) {
                 handleAdressTopic(topic, ECommandRollet.up);
             });
-        }
+        },
     });
     defineRule("createCurtainMatrix_down_".concat(downCommandControlTopic), {
         asSoonAs: function () {
@@ -95,7 +118,97 @@ function createCurtainMatrix(adressInputTopic, upCommandControlTopic, downComman
             adressInputTopic.forEach(function (topic) {
                 handleAdressTopic(topic, ECommandRollet.down);
             });
-        }
+        },
     });
 }
-createCurtainMatrix(["wb-gpio/EXT2_IN1", "wb-gpio/EXT2_IN2", "wb-gpio/EXT2_IN3", "wb-gpio/EXT2_IN4", "wb-gpio/EXT2_IN5"], "wb-gpio/EXT2_IN6", "wb-gpio/EXT2_IN7");
+/**
+ * управление по 2-м кнопкам одним приводом
+ * @param param0
+ */
+function createTwoSignalControl(_a) {
+    var driverChanel = _a.driverChanel, upCommandControlTopic = _a.upCommandControlTopic, downCommandControlTopic = _a.downCommandControlTopic;
+    defineRule("createTwoSignalControl_up_".concat(upCommandControlTopic), {
+        asSoonAs: function () {
+            return dev[upCommandControlTopic];
+        },
+        then: function (newValue, devName, cellName) {
+            handleDriverCommand(driverChanel, ECommandRollet.up);
+        },
+    });
+    defineRule("ccreateTwoSignalControl_down_".concat(downCommandControlTopic), {
+        asSoonAs: function () {
+            return dev[downCommandControlTopic];
+        },
+        then: function (newValue, devName, cellName) {
+            handleDriverCommand(driverChanel, ECommandRollet.down);
+        },
+    });
+}
+/**
+ * 1-ая балалайка
+ */
+createCurtainMatrix([
+    "wb-gpio/EXT1_IN1",
+    "wb-gpio/EXT1_IN2",
+    "wb-gpio/EXT1_IN3",
+    "wb-gpio/EXT1_IN4",
+    "wb-gpio/EXT1_IN5",
+    "wb-gpio/EXT1_IN6",
+    "wb-gpio/EXT1_IN7",
+    "wb-gpio/EXT1_IN8",
+    "wb-gpio/EXT1_IN9",
+], "wb-gpio/EXT1_IN10", "wb-gpio/EXT1_IN11");
+/**
+ * 2-ая балалайка
+ */
+createCurtainMatrix([
+    "wb-gpio/EXT2_IN1",
+    "wb-gpio/EXT2_IN2",
+    "wb-gpio/EXT2_IN3",
+    "wb-gpio/EXT2_IN4",
+    "wb-gpio/EXT2_IN5",
+    "wb-gpio/EXT2_IN6",
+    "wb-gpio/EXT2_IN7",
+], "wb-gpio/EXT2_IN10", "wb-gpio/EXT2_IN11");
+/**
+ * бассейн
+ */
+[
+    {
+        driverChanel: 1,
+        upCommandControlTopic: "wb-gpio/EXT1_R3A4",
+        downCommandControlTopic: "wb-gpio/EXT1_R3A5",
+    },
+].forEach(createTwoSignalControl);
+//#region Спальня, Чайная, Кабинет
+/**
+ * Контейнер для хранения предидущих команд на приводы штор, нужен для спальни
+ */
+var PREVIUS_COMMAND = {};
+function createToggleSignalControl(driverChanel, toggleControl) {
+    // запоминаем последнюю команду "не стоп" которая была отправлена
+    trackMqttCurtainDriverCommand(driverChanel, "command/previeus", PREVIUS_COMMAND);
+    defineRule("createToggleSignalControl_".concat(toggleControl), {
+        asSoonAs: function () {
+            return dev[toggleControl];
+        },
+        then: function (newValue, devName, cellName) {
+            if (CURTAIN_DRIVER_LAST_COMMNAD[driverChanel] !== ECommandRollet.stop) {
+                sendStopCommand(driverChanel);
+                return;
+            }
+            var prevCommand = PREVIUS_COMMAND[driverChanel];
+            var nextCommand = prevCommand === ECommandRollet.up
+                ? ECommandRollet.down
+                : ECommandRollet.up;
+            if (prevCommand === ECommandRollet.up) {
+            }
+            publish("/devices/curtain_drive/1/".concat(driverChanel, "/command/previeus"), JSON.stringify(nextCommand));
+            sendCurtainDriverCommand(driverChanel, nextCommand);
+        },
+    });
+}
+[{ driverChanel: 1, toggleControl: "wb-gpio/EXT1_R3A6" }].forEach(function (p) {
+    return createToggleSignalControl(p.driverChanel, p.toggleControl);
+});
+//#endregion
