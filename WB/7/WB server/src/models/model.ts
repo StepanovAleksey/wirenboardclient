@@ -6,7 +6,12 @@ export class Command {
     return COMMAND_IS_NEED_ANSWER[this.commandType];
   }
 
-  constructor(public commandType: ECommandType, public payload: Array<number>) {}
+  constructor(
+    public commandType: ECommandType,
+    public payload: Array<number>,
+    public deviceVersionProto: EDeviceDelimiterSerial,
+  ) {}
+
   toString() {
     return JSON.stringify({
       command: this.commandType,
@@ -28,4 +33,12 @@ export class Command {
   isStatusCommand() {
     return this.isEqualType(ECommandType.statusDriver);
   }
+}
+
+/**
+ * разделитель в ответах устройства по serial порту
+ */
+export enum EDeviceDelimiterSerial {
+  delimiterParser = 'delimiterParser',
+  byteLengthParser = 'byteLengthParser',
 }

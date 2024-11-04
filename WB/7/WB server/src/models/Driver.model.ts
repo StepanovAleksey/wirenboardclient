@@ -1,7 +1,7 @@
 import { Observable, Subject, catchError, filter, interval, map, of, tap } from 'rxjs';
 import { ECommandType } from '../const';
 import { SerialBus } from '../serialBus';
-import { Command } from './model';
+import { Command, EDeviceDelimiterSerial } from './model';
 import { IMqttWbClient } from './contracts';
 import { DriverCommandBuilder } from './DriverCommandBuilder';
 
@@ -29,16 +29,14 @@ export class Driver {
     public chanleId: number,
     public serialBus: SerialBus,
     private mqqtWbClient: IMqttWbClient,
+    private deviceDelimiterSerial: EDeviceDelimiterSerial,
   ) {
     this.commandBuilder = new DriverCommandBuilder(this.groupId, this.chanleId);
 
     this.serialBus.subDeviceAnswer$(groupId, chanleId).subscribe((data) => {
       this.lastDriverStatus$.next(data[7]);
       /// по документации 1-ый бит сотояние мотора 0-stop 1-run
-      const statusMotor = data[8] & 0x01;
-      if (!statusMotor) {
-        this.mqqtWbClient.send([this.getBaseTopic(), 'command'].join('/'), ECommandType.stop);
-      }
+      this.mqqtWbClient.send([this.getBaseTopic(), 'isMoved'].join('/'), data[8] & 0x01);
     });
 
     this.updateStatus();
@@ -54,7 +52,13 @@ export class Driver {
     if (!Object.keys(ECommandType).includes(command)) {
       return;
     }
-    this._writeCommand(new Command(command, this.commandBuilder.getBufferCommand(command)));
+    this._writeCommand(
+      new Command(
+        command,
+        this.commandBuilder.getBufferCommand(command),
+        this.deviceDelimiterSerial,
+      ),
+    );
   }
 
   goToPercent(percent = 0) {
@@ -62,7 +66,11 @@ export class Driver {
       return;
     }
     this._writeCommand(
-      new Command(ECommandType.setPercent, this.commandBuilder.getPercentCommand(percent)),
+      new Command(
+        ECommandType.setPercent,
+        this.commandBuilder.getPercentCommand(percent),
+        this.deviceDelimiterSerial,
+      ),
     );
   }
 
@@ -71,7 +79,6 @@ export class Driver {
     this.getTopicPayload$<number>('position').subscribe({
       next: (payload) => {
         this.goToPercent(payload);
-        this.registerCommand('position', payload);
       },
       error(err) {
         console.error(`[Driver] error `, err);
@@ -81,7 +88,6 @@ export class Driver {
     this.getTopicPayload$<ECommandType>('command').subscribe({
       next: (payload: ECommandType) => {
         this.sendCommand(payload);
-        this.registerCommand('command', payload);
       },
       error(err) {
         console.error(`[Driver] error `, err);
@@ -109,7 +115,7 @@ export class Driver {
 
   /** команда на обновление статуса */
   private updateStatus() {
-    interval(500).subscribe(() => {
+    interval(1000).subscribe(() => {
       this.sendCommand(ECommandType.statusDriver);
     });
   }

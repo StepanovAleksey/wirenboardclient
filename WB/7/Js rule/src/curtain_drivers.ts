@@ -3,41 +3,102 @@ declare var dev: any;
 declare var log: any;
 declare var defineRule: any;
 declare var publish: any;
+interface IDevice {
+  driverChanell: number;
+  isMoved: () => number;
 
+  /**
+   * Последняя зарегестрированная команда
+   */
+  lastCommand: () => ECommandRollet;
+
+  /**
+   * последняя активаня команда "не стоп"
+   */
+  lastActiveCommand: () => ECommandRollet;
+}
 /**
  * Матрица соотнесения входов устройств с chanel lavel в драйверах штор.
  * Для "балалайки" т.е. когда входами задаём адреса
  * Все драйверы в 1-й группе
  */
-const DEVICE_DRIVER_MATRIX: Record<string, number> = {
-  "wb-gpio/EXT1_IN1": 1,
-  "wb-gpio/EXT1_IN2": 2,
-  "wb-gpio/EXT1_IN3": 3,
-  "wb-gpio/EXT1_IN4": 4,
-  "wb-gpio/EXT1_IN5": 5,
-  "wb-gpio/EXT1_IN6": 13,
-  "wb-gpio/EXT1_IN7": 14,
-  "wb-gpio/EXT1_IN8": 15,
-  "wb-gpio/EXT1_IN9": 16,
-  "wb-gpio/EXT2_IN1": 1,
-  "wb-gpio/EXT2_IN2": 2,
-  "wb-gpio/EXT2_IN3": 3,
-  "wb-gpio/EXT2_IN4": 4,
-  "wb-gpio/EXT2_IN5": 5,
-  "wb-gpio/EXT2_IN6": 6,
-  "wb-gpio/EXT2_IN7": 7,
+var DEVICE_DRIVER_MATRIX: Record<string, number> = {
+  "wb-gpio/EXT1_R3A1": 1,
 };
+// const DEVICE_DRIVER_MATRIX: Record<string, number> = {
+//   "wb-gpio/EXT1_IN1": 1,
+//   "wb-gpio/EXT1_IN2": 2,
+//   "wb-gpio/EXT1_IN3": 3,
+//   "wb-gpio/EXT1_IN4": 4,
+//   "wb-gpio/EXT1_IN5": 5,
+//   "wb-gpio/EXT1_IN6": 13,
+//   "wb-gpio/EXT1_IN7": 14,
+//   "wb-gpio/EXT1_IN8": 15,
+//   "wb-gpio/EXT1_IN9": 16,
+//   "wb-gpio/EXT2_IN1": 1,
+//   "wb-gpio/EXT2_IN2": 2,
+//   "wb-gpio/EXT2_IN3": 3,
+//   "wb-gpio/EXT2_IN4": 4,
+//   "wb-gpio/EXT2_IN5": 5,
+//   "wb-gpio/EXT2_IN6": 6,
+//   "wb-gpio/EXT2_IN7": 7,
+// };
 
+/**
+ * список команд для приводов
+ */
 enum ECommandRollet {
   up = "up",
   down = "down",
   stop = "stop",
 }
 
-/**
- * Контейнер для хранения последних команд на утсройство
- */
-const CURTAIN_DRIVER_LAST_COMMNAD: Record<number, ECommandRollet> = {};
+function getDriverObj(driverChanell: number): IDevice {
+  let isMoved: number = null;
+
+  let lastCommand: ECommandRollet = null;
+
+  let lastActiveCommand: ECommandRollet = null;
+
+  trackMqttCurtainDriver(driverChanell, "isMoved", (payload: number) => {
+    isMoved = payload;
+  });
+
+  trackMqttCurtainDriver(
+    driverChanell,
+    "command/lastActiveCommand",
+    (payload: ECommandRollet) => {
+      lastActiveCommand = payload;
+    }
+  );
+
+  trackMqttCurtainDriver(
+    driverChanell,
+    "command/on",
+    (payload: ECommandRollet) => {
+      lastCommand = payload;
+      if (lastCommand !== ECommandRollet.stop) {
+        publish(
+          `/devices/curtain_drive/1/${driverChanell}/command/lastActiveCommand`,
+          JSON.stringify(lastCommand)
+        );
+      }
+    }
+  );
+
+  return {
+    isMoved() {
+      return isMoved;
+    },
+    lastCommand() {
+      return lastCommand;
+    },
+    driverChanell,
+    lastActiveCommand() {
+      return lastActiveCommand;
+    },
+  };
+}
 
 /**
  * Подписываемся на последную команду упралвения для устройства
@@ -45,33 +106,45 @@ const CURTAIN_DRIVER_LAST_COMMNAD: Record<number, ECommandRollet> = {};
  * @param topic топик состояние котрого получаем
  * @param mapa карта для хранения текущей команды
  */
-function trackMqttCurtainDriverCommand(
+function trackMqttCurtainDriver(
   driverChanell: number,
   topic: string,
-  mapa: Record<string, ECommandRollet>
+  callback: (payload: any) => void
 ) {
   trackMqtt(
     `/devices/curtain_drive/1/${driverChanell}/${topic}`,
-    function (message: { topic: string; value: any }) {
+    (message: { topic: string; value: any }) => {
       try {
-        mapa[driverChanell] = JSON.parse(message.value);
-      } catch (err: any) {
-        log.error(
-          `[trackMqttCurtainDriverCommand] error: `,
-          err.message || JSON.stringify(err)
-        );
+        callback(JSON.parse(message.value));
+      } catch (err) {
+        log.error("[trackMqttCurtainDriver]", err);
       }
     }
   );
 }
 
-/** у нас 16 драйверов, будем слушать все команды которые на них уходят */
-[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].forEach((v, i) => {
-  trackMqttCurtainDriverCommand(i + 1, "command", CURTAIN_DRIVER_LAST_COMMNAD);
-});
+/**
+ * Список всех драйверов штор
+ * у нас 16 драйверов, будем слушать все команды которые на них уходят
+ */
+const CURTAIN_DRIVERS: Record<number, IDevice> = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+]
+  .map((v) => getDriverObj(v))
+  .reduce((obj, device) => ({ ...obj, [device.driverChanell]: device }), {});
 
+/**
+ * Обработка комманд для 2-х кнопочного управления
+ */
 function handleDriverCommand(driverChanel: number, command: ECommandRollet) {
-  if (CURTAIN_DRIVER_LAST_COMMNAD[driverChanel] !== ECommandRollet.stop) {
+  const driver = CURTAIN_DRIVERS[driverChanel];
+  if (!driver) {
+    log.warning(
+      `[handleDriverCommand]. not fount rollet adress: ${driverChanel}`
+    );
+    return;
+  }
+  if (driver.lastCommand() !== ECommandRollet.stop) {
     sendStopCommand(driverChanel);
     return;
   }
@@ -79,28 +152,28 @@ function handleDriverCommand(driverChanel: number, command: ECommandRollet) {
 }
 
 /**
- * обработка по адресу роллеты
+ * обработка по адресу роллеты для "балалайки"
  * @param adressTopic
  */
 function handleAdressTopic(
   controllerAdressTopic: string,
   command: ECommandRollet
 ) {
-  const driverChanel = DEVICE_DRIVER_MATRIX[controllerAdressTopic];
-  if (!driverChanel) {
+  const driver = CURTAIN_DRIVERS[DEVICE_DRIVER_MATRIX[controllerAdressTopic]];
+  if (!driver) {
     log.warning(
       `[handleAdressTopic]. not fount rollet adress: ${controllerAdressTopic}`
     );
     return;
   }
-  if (CURTAIN_DRIVER_LAST_COMMNAD[driverChanel] !== ECommandRollet.stop) {
-    sendStopCommand(driverChanel);
+  if (driver.isMoved() === 1) {
+    sendStopCommand(driver.driverChanell);
     return;
   }
   if (!dev[controllerAdressTopic]) {
     return;
   }
-  sendCurtainDriverCommand(driverChanel, command);
+  sendCurtainDriverCommand(driver.driverChanell, command);
 }
 
 /**
@@ -195,20 +268,26 @@ function createTwoSignalControl({
  * 1-ая балалайка
  */
 createCurtainMatrix(
-  [
-    "wb-gpio/EXT1_IN1",
-    "wb-gpio/EXT1_IN2",
-    "wb-gpio/EXT1_IN3",
-    "wb-gpio/EXT1_IN4",
-    "wb-gpio/EXT1_IN5",
-    "wb-gpio/EXT1_IN6",
-    "wb-gpio/EXT1_IN7",
-    "wb-gpio/EXT1_IN8",
-    "wb-gpio/EXT1_IN9",
-  ],
-  "wb-gpio/EXT1_IN10",
-  "wb-gpio/EXT1_IN11"
+  ["wb-gpio/EXT1_R3A1"],
+  "wb-gpio/EXT1_R3A2",
+  "wb-gpio/EXT1_R3A3"
 );
+
+// createCurtainMatrix(
+//   [
+//     "wb-gpio/EXT1_IN1",
+//     "wb-gpio/EXT1_IN2",
+//     "wb-gpio/EXT1_IN3",
+//     "wb-gpio/EXT1_IN4",
+//     "wb-gpio/EXT1_IN5",
+//     "wb-gpio/EXT1_IN6",
+//     "wb-gpio/EXT1_IN7",
+//     "wb-gpio/EXT1_IN8",
+//     "wb-gpio/EXT1_IN9",
+//   ],
+//   "wb-gpio/EXT1_IN10",
+//   "wb-gpio/EXT1_IN11"
+// );
 
 /**
  * 2-ая балалайка
@@ -239,40 +318,33 @@ createCurtainMatrix(
 ].forEach(createTwoSignalControl);
 
 //#region Спальня, Чайная, Кабинет
-/**
- * Контейнер для хранения предидущих команд на приводы штор, нужен для спальни
- */
-const PREVIUS_COMMAND: Record<number, ECommandRollet> = {};
-
 function createToggleSignalControl(
   driverChanel: number,
   toggleControl: string
 ) {
-  // запоминаем последнюю команду "не стоп" которая была отправлена
-  trackMqttCurtainDriverCommand(
-    driverChanel,
-    "command/previeus",
-    PREVIUS_COMMAND
-  );
   defineRule(`createToggleSignalControl_${toggleControl}`, {
     asSoonAs: function () {
       return dev[toggleControl];
     },
     then: function (newValue: number, devName: string, cellName: string) {
-      if (CURTAIN_DRIVER_LAST_COMMNAD[driverChanel] !== ECommandRollet.stop) {
+      const driver = CURTAIN_DRIVERS[driverChanel];
+      if (!driver) {
+        log.warning(
+          `[handleDriverCommand]. not fount rollet adress: ${driverChanel}`
+        );
+        return;
+      }
+      if (driver.lastCommand() !== ECommandRollet.stop) {
         sendStopCommand(driverChanel);
         return;
       }
 
-      const prevCommand = PREVIUS_COMMAND[driverChanel];
+      const prevCommand = driver.lastActiveCommand;
       const nextCommand =
-        prevCommand === ECommandRollet.up
+        prevCommand() === ECommandRollet.up
           ? ECommandRollet.down
           : ECommandRollet.up;
-      publish(
-        `/devices/curtain_drive/1/${driverChanel}/command/previeus`,
-        JSON.stringify(nextCommand)
-      );
+
       sendCurtainDriverCommand(driverChanel, nextCommand);
     },
   });

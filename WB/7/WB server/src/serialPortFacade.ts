@@ -1,7 +1,8 @@
-import { SerialPort, SerialPortOpenOptions } from 'serialport';
+import { ByteLengthParser, DelimiterParser, SerialPort, SerialPortOpenOptions } from 'serialport';
 import { SerialBus, serialBus } from './serialBus';
-import { Command } from './models/model';
+import { Command, EDeviceDelimiterSerial } from './models/model';
 import { Subject, filter, interval, takeUntil, tap, timer } from 'rxjs';
+import { Transform } from 'stream';
 
 export class SerialPortFacade {
   private serialPort: SerialPort;
@@ -14,12 +15,24 @@ export class SerialPortFacade {
 
   _lastCommand: Command = null;
 
-  constructor(serialBus: SerialBus, opt: SerialPortOpenOptions<any>) {
+  parser: Transform = null;
+  constructor(
+    serialBus: SerialBus,
+    opt: SerialPortOpenOptions<any>,
+    transform: Transform,
+    deviceProto: EDeviceDelimiterSerial,
+  ) {
     this.serialPort = new SerialPort(opt);
 
-    serialBus.sendData$.subscribe((command) => {
-      this.registerCommand(command);
-    });
+    this.parser = this.serialPort.pipe(transform);
+
+    // this.parser = this.serialPort.pipe(new ByteLengthParser({ length: 10 }));
+
+    serialBus.sendData$
+      .pipe(filter((command) => command.deviceVersionProto === deviceProto))
+      .subscribe((command) => {
+        this.registerCommand(command);
+      });
 
     this.registerSerialPortData();
 
@@ -30,35 +43,29 @@ export class SerialPortFacade {
         filter((command) => !!command),
       )
       .subscribe((command) => {
-        this.serialPort.write(Buffer.from(command.payload), (err => {
-          this.errorHandle(err)
-        }));
         this.runTimeoutWatcher(command);
-        if (!command.isNeedAnswer) {
-          this.sendCommand$.next(null);
-        }
+        this.serialPort.write(Buffer.from(command.payload), (err) => {
+          //console.log('write ', Buffer.from(command.payload));
+          this.errorHandle(err);
+          if (!command.isNeedAnswer) {
+            this.sendCommand$.next(null);
+          }
+        });
       });
 
     this.sendCommand$.pipe(filter((command) => !command)).subscribe(() => {
       this.handleCommandQueue();
     });
   }
+
   private errorHandle(error: any) {
     if (!!error) {
-      console.log('[SerialPortFacade]. Error on write: ', error.message)
+      console.log('[SerialPortFacade]. Error on write: ', error.message);
     }
   }
   private registerSerialPortData() {
-    this.serialPort.on('readable', () => {
-      const answer: number[] = [];
-      let chunk: Buffer;
-      while (null !== (chunk = this.serialPort.read(11))) {
-        answer.push(...Array.from(chunk));
-      }
-      if (!answer.length) {
-        return;
-      }
-      // console.log('answer', answer);
+    this.parser.on('data', (answer) => {
+      //console.log('answer', answer);
       serialBus.onData$.next(answer);
       this.sendCommand$.next(null);
     });
@@ -66,7 +73,7 @@ export class SerialPortFacade {
     this.serialPort.on('open', (err) => {
       this.errorHandle(err);
       if (!err) {
-        console.log("[SerialPortFacade]. Порт успешно открыт")
+        console.log('[SerialPortFacade]. Порт успешно открыт');
       }
     });
   }
@@ -76,6 +83,7 @@ export class SerialPortFacade {
     interval(1000)
       .pipe(takeUntil(this.sendCommand$))
       .subscribe(() => {
+        console.warn('нет ответа ', command);
         this.sendCommand$.next(null);
       });
   }
