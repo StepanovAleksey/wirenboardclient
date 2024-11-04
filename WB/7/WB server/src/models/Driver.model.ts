@@ -1,4 +1,14 @@
-import { Observable, Subject, catchError, filter, interval, map, of, tap } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  catchError,
+  filter,
+  interval,
+  map,
+  of,
+  tap,
+  throttleTime,
+} from 'rxjs';
 import { ECommandType } from '../const';
 import { SerialBus } from '../serialBus';
 import { Command, EDeviceDelimiterSerial } from './model';
@@ -24,6 +34,9 @@ export class Driver {
   /** последнееизвестное положение мотора штор  0-100*/
   lastDriverStatus$ = new Subject<number>();
 
+  /// по документации 1-ый бит сотояние мотора 0-stop 1-run
+  isMoved$ = new Subject<number>();
+
   constructor(
     public groupId: number,
     public chanleId: number,
@@ -36,13 +49,17 @@ export class Driver {
     this.serialBus.subDeviceAnswer$(groupId, chanleId).subscribe((data) => {
       this.lastDriverStatus$.next(data[7]);
       /// по документации 1-ый бит сотояние мотора 0-stop 1-run
-      this.mqqtWbClient.send([this.getBaseTopic(), 'isMoved'].join('/'), data[8] & 0x01);
+      this.isMoved$.next(data[8] & 0x01);
     });
 
     this.updateStatus();
 
     this.lastDriverStatus$.subscribe((d) => {
       mqqtWbClient.send(`${this.getBaseTopic()}/position`, d);
+    });
+
+    this.isMoved$.subscribe((isMoved) => {
+      this.mqqtWbClient.send([this.getBaseTopic(), 'isMoved'].join('/'), isMoved);
     });
 
     this.subCommand();
@@ -93,6 +110,17 @@ export class Driver {
         console.error(`[Driver] error `, err);
       },
     });
+
+    /** если мы встали больше чем на 3 секунды значит штора точно остановилась и должны сказать об этом в MQTT */
+    this.isMoved$
+      .pipe(
+        filter((v) => v === 0),
+        throttleTime(3000),
+        filter((v) => v === 0),
+      )
+      .subscribe(() => {
+        this.mqqtWbClient.send(`${this.getBaseTopic()}/command`, ECommandType.stop);
+      });
   }
 
   private getTopicPayload$<T>(topic: string): Observable<T> {

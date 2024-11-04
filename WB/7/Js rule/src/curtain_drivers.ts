@@ -74,7 +74,7 @@ function getDriverObj(driverChanell: number): IDevice {
 
   trackMqttCurtainDriver(
     driverChanell,
-    "command/on",
+    "command",
     (payload: ECommandRollet) => {
       lastCommand = payload;
       if (lastCommand !== ECommandRollet.stop) {
@@ -166,7 +166,7 @@ function handleAdressTopic(
     );
     return;
   }
-  if (driver.isMoved() === 1) {
+  if (driver.lastCommand() !== ECommandRollet.stop) {
     sendStopCommand(driver.driverChanell);
     return;
   }
