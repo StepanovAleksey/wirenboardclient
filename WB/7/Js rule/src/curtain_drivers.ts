@@ -16,33 +16,38 @@ interface IDevice {
    * последняя активаня команда "не стоп"
    */
   lastActiveCommand: () => ECommandRollet;
+
+  /**
+   * какое сейчас состояние активно
+   */
+  activeState: () => ECommandRollet;
 }
 /**
  * Матрица соотнесения входов устройств с chanel lavel в драйверах штор.
  * Для "балалайки" т.е. когда входами задаём адреса
  * Все драйверы в 1-й группе
  */
-var DEVICE_DRIVER_MATRIX: Record<string, number> = {
-  "wb-gpio/EXT1_R3A1": 1,
-};
-// const DEVICE_DRIVER_MATRIX: Record<string, number> = {
-//   "wb-gpio/EXT1_IN1": 1,
-//   "wb-gpio/EXT1_IN2": 2,
-//   "wb-gpio/EXT1_IN3": 3,
-//   "wb-gpio/EXT1_IN4": 4,
-//   "wb-gpio/EXT1_IN5": 5,
-//   "wb-gpio/EXT1_IN6": 13,
-//   "wb-gpio/EXT1_IN7": 14,
-//   "wb-gpio/EXT1_IN8": 15,
-//   "wb-gpio/EXT1_IN9": 16,
-//   "wb-gpio/EXT2_IN1": 1,
-//   "wb-gpio/EXT2_IN2": 2,
-//   "wb-gpio/EXT2_IN3": 3,
-//   "wb-gpio/EXT2_IN4": 4,
-//   "wb-gpio/EXT2_IN5": 5,
-//   "wb-gpio/EXT2_IN6": 6,
-//   "wb-gpio/EXT2_IN7": 7,
+// var DEVICE_DRIVER_MATRIX: Record<string, number> = {
+//   "wb-gpio/EXT1_R3A1": 1,
 // };
+const DEVICE_DRIVER_MATRIX: Record<string, number> = {
+  "wb-gpio/EXT1_IN1": 1,
+  "wb-gpio/EXT1_IN2": 2,
+  "wb-gpio/EXT1_IN3": 3,
+  "wb-gpio/EXT1_IN4": 4,
+  "wb-gpio/EXT1_IN5": 5,
+  "wb-gpio/EXT1_IN6": 13,
+  "wb-gpio/EXT1_IN7": 14,
+  "wb-gpio/EXT1_IN8": 15,
+  "wb-gpio/EXT1_IN9": 16,
+  "wb-gpio/EXT2_IN1": 1,
+  "wb-gpio/EXT2_IN2": 2,
+  "wb-gpio/EXT2_IN3": 3,
+  "wb-gpio/EXT2_IN4": 4,
+  "wb-gpio/EXT2_IN5": 5,
+  "wb-gpio/EXT2_IN6": 6,
+  "wb-gpio/EXT2_IN7": 7,
+};
 
 /**
  * список команд для приводов
@@ -55,12 +60,15 @@ enum ECommandRollet {
 
 function getDriverObj(driverChanell: number): IDevice {
   let isMoved: number = null;
-
   let lastCommand: ECommandRollet = null;
-
+  let activeState: ECommandRollet = null;
   let lastActiveCommand: ECommandRollet = null;
 
   trackMqttCurtainDriver(driverChanell, "isMoved", (payload: number) => {
+    /** штора ехала и остановилась */
+    if (isMoved === 1 && payload === 0) {
+      activeState = ECommandRollet.stop;
+    }
     isMoved = payload;
   });
 
@@ -76,6 +84,7 @@ function getDriverObj(driverChanell: number): IDevice {
     driverChanell,
     "command",
     (payload: ECommandRollet) => {
+      activeState = payload;
       lastCommand = payload;
       if (lastCommand !== ECommandRollet.stop) {
         publish(
@@ -96,6 +105,9 @@ function getDriverObj(driverChanell: number): IDevice {
     driverChanell,
     lastActiveCommand() {
       return lastActiveCommand;
+    },
+    activeState() {
+      return activeState;
     },
   };
 }
@@ -144,7 +156,7 @@ function handleDriverCommand(driverChanel: number, command: ECommandRollet) {
     );
     return;
   }
-  if (driver.lastCommand() !== ECommandRollet.stop) {
+  if (driver.lastCommand() === command) {
     sendStopCommand(driverChanel);
     return;
   }
@@ -166,7 +178,7 @@ function handleAdressTopic(
     );
     return;
   }
-  if (driver.lastCommand() !== ECommandRollet.stop) {
+  if (driver.lastCommand() === command) {
     sendStopCommand(driver.driverChanell);
     return;
   }
@@ -267,27 +279,27 @@ function createTwoSignalControl({
 /**
  * 1-ая балалайка
  */
-createCurtainMatrix(
-  ["wb-gpio/EXT1_R3A1"],
-  "wb-gpio/EXT1_R3A2",
-  "wb-gpio/EXT1_R3A3"
-);
-
 // createCurtainMatrix(
-//   [
-//     "wb-gpio/EXT1_IN1",
-//     "wb-gpio/EXT1_IN2",
-//     "wb-gpio/EXT1_IN3",
-//     "wb-gpio/EXT1_IN4",
-//     "wb-gpio/EXT1_IN5",
-//     "wb-gpio/EXT1_IN6",
-//     "wb-gpio/EXT1_IN7",
-//     "wb-gpio/EXT1_IN8",
-//     "wb-gpio/EXT1_IN9",
-//   ],
-//   "wb-gpio/EXT1_IN10",
-//   "wb-gpio/EXT1_IN11"
+//   ["wb-gpio/EXT1_R3A1"],
+//   "wb-gpio/EXT1_R3A2",
+//   "wb-gpio/EXT1_R3A3"
 // );
+
+createCurtainMatrix(
+  [
+    "wb-gpio/EXT1_IN1",
+    "wb-gpio/EXT1_IN2",
+    "wb-gpio/EXT1_IN3",
+    "wb-gpio/EXT1_IN4",
+    "wb-gpio/EXT1_IN5",
+    "wb-gpio/EXT1_IN6",
+    "wb-gpio/EXT1_IN7",
+    "wb-gpio/EXT1_IN8",
+    "wb-gpio/EXT1_IN9",
+  ],
+  "wb-gpio/EXT1_IN10",
+  "wb-gpio/EXT1_IN11"
+);
 
 /**
  * 2-ая балалайка
@@ -309,13 +321,13 @@ createCurtainMatrix(
 /**
  * бассейн
  */
-[
-  {
-    driverChanel: 1,
-    upCommandControlTopic: "wb-gpio/EXT1_R3A4",
-    downCommandControlTopic: "wb-gpio/EXT1_R3A5",
-  },
-].forEach(createTwoSignalControl);
+// [
+//   {
+//     driverChanel: 1,
+//     upCommandControlTopic: "wb-gpio/EXT1_R3A4",
+//     downCommandControlTopic: "wb-gpio/EXT1_R3A5",
+//   },
+// ].forEach(createTwoSignalControl);
 
 //#region Спальня, Чайная, Кабинет
 function createToggleSignalControl(
@@ -334,14 +346,14 @@ function createToggleSignalControl(
         );
         return;
       }
-      if (driver.lastCommand() !== ECommandRollet.stop) {
+      if (driver.activeState() !== ECommandRollet.stop) {
         sendStopCommand(driverChanel);
         return;
       }
 
-      const prevCommand = driver.lastActiveCommand;
+      const prevCommand = driver.lastActiveCommand();
       const nextCommand =
-        prevCommand() === ECommandRollet.up
+        prevCommand === ECommandRollet.up
           ? ECommandRollet.down
           : ECommandRollet.up;
 
@@ -349,7 +361,12 @@ function createToggleSignalControl(
     },
   });
 }
-[{ driverChanel: 1, toggleControl: "wb-gpio/EXT1_R3A6" }].forEach((p) =>
-  createToggleSignalControl(p.driverChanel, p.toggleControl)
-);
+[
+  { driverChanel: 11, toggleControl: "wb-gpio/EXT1_IN12" },
+  { driverChanel: 12, toggleControl: "wb-gpio/EXT1_IN13" },
+  { driverChanel: 15, toggleControl: "wb-gpio/EXT1_IN14" },
+  { driverChanel: 13, toggleControl: "wb-gpio/EXT2_IN12" },
+  { driverChanel: 14, toggleControl: "wb-gpio/EXT2_IN13" },
+  { driverChanel: 16, toggleControl: "wb-gpio/EXT2_IN14" },
+].forEach((p) => createToggleSignalControl(p.driverChanel, p.toggleControl));
 //#endregion

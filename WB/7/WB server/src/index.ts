@@ -56,6 +56,8 @@ new SerialPortFacade(
   new Driver(1, 12, serialBus, mqqtWbClient, EDeviceDelimiterSerial.delimiterParser),
   new Driver(1, 13, serialBus, mqqtWbClient, EDeviceDelimiterSerial.delimiterParser),
   new Driver(1, 14, serialBus, mqqtWbClient, EDeviceDelimiterSerial.delimiterParser),
+  new Driver(1, 15, serialBus, mqqtWbClient, EDeviceDelimiterSerial.delimiterParser),
+  new Driver(1, 16, serialBus, mqqtWbClient, EDeviceDelimiterSerial.delimiterParser),
 ];
 
 console.log('севрер запустился');

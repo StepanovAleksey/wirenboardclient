@@ -110,17 +110,6 @@ export class Driver {
         console.error(`[Driver] error `, err);
       },
     });
-
-    /** если мы встали больше чем на 3 секунды значит штора точно остановилась и должны сказать об этом в MQTT */
-    this.isMoved$
-      .pipe(
-        filter((v) => v === 0),
-        throttleTime(3000),
-        filter((v) => v === 0),
-      )
-      .subscribe(() => {
-        this.mqqtWbClient.send(`${this.getBaseTopic()}/command`, ECommandType.stop);
-      });
   }
 
   private getTopicPayload$<T>(topic: string): Observable<T> {
@@ -143,7 +132,7 @@ export class Driver {
 
   /** команда на обновление статуса */
   private updateStatus() {
-    interval(1000).subscribe(() => {
+    interval(5 * 1000).subscribe(() => {
       this.sendCommand(ECommandType.statusDriver);
     });
   }
