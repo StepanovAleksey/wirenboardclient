@@ -13,7 +13,7 @@ import { ECommandType } from '../const';
 import { SerialBus } from '../serialBus';
 import { Command, EDeviceDelimiterSerial } from './model';
 import { IMqttWbClient } from './contracts';
-import { DriverCommandBuilder } from './DriverCommandBuilder';
+import { DriverCommandBuilder } from './DriverCommandBuilder.model';
 
 const TOPIC_TEMPLATE = '/devices/curtain_drive/{groupId}/{chanleId}';
 
