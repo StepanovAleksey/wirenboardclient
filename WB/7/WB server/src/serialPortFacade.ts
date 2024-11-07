@@ -48,7 +48,7 @@ export class SerialPortFacade {
           //console.log('write ', Buffer.from(command.payload));
           this.errorHandle(err);
           if (!command.isNeedAnswer) {
-            this.sendCommand$.next(null);
+            this.clearLastCommand();
           }
         });
       });
@@ -56,6 +56,12 @@ export class SerialPortFacade {
     this.sendCommand$.pipe(filter((command) => !command)).subscribe(() => {
       this.handleCommandQueue();
     });
+  }
+
+  private clearLastCommand() {
+    setTimeout(() => {
+      this.sendCommand$.next(null);
+    }, 10);
   }
 
   private errorHandle(error: any) {
@@ -67,7 +73,7 @@ export class SerialPortFacade {
     this.parser.on('data', (answer) => {
       //console.log('answer', answer);
       serialBus.onData$.next(answer);
-      this.sendCommand$.next(null);
+      this.clearLastCommand();
     });
 
     this.serialPort.on('open', (err) => {
@@ -84,7 +90,7 @@ export class SerialPortFacade {
       .pipe(takeUntil(this.sendCommand$))
       .subscribe(() => {
         console.warn('нет ответа ', command);
-        this.sendCommand$.next(null);
+        this.clearLastCommand();
       });
   }
 
