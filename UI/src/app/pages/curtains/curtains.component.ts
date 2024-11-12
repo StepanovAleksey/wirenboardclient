@@ -31,22 +31,30 @@ export class CurtainsComponent implements OnDestroy {
 
   ECommandType = ECurtainCommandType;
 
-  groups: Array<Group> = [
-    new Group('Гостинная', [
-      this.getNewDevice(1),
-      this.getNewDevice(2),
-      this.getNewDevice(3),
-      this.getNewDevice(4),
-      this.getNewDevice(5),
-    ]),
-    new Group('Кухня', [this.getNewDevice(6), this.getNewDevice(7)]),
-    new Group('Чайная', [this.getNewDevice(8), this.getNewDevice(9)]),
-    new Group('Кабинет', [this.getNewDevice(10), this.getNewDevice(11)]),
-    new Group('Бассейн', [this.getNewDevice(12), this.getNewDevice(13)]),
-    new Group('Спальня', [this.getNewDevice(14), this.getNewDevice(15)]),
-  ];
+  groups: Array<Group> = [];
 
-  constructor(private mqqtServer: MqqtService) {}
+  constructor(private mqqtServer: MqqtService) {
+    console.log(mqqtServer);
+
+    this.groups = [
+      new Group('Гостинная', [
+        this.getNewDevice(1),
+        this.getNewDevice(2),
+        this.getNewDevice(3),
+        this.getNewDevice(4),
+        this.getNewDevice(5),
+      ]),
+      new Group('Кухня', [this.getNewDevice(6), this.getNewDevice(7)]),
+      new Group('Бассейн', [
+        this.getNewDevice(8),
+        this.getNewDevice(9),
+        this.getNewDevice(10),
+      ]),
+      new Group('Спальня', [this.getNewDevice(11), this.getNewDevice(12)]),
+      new Group('Чайная', [this.getNewDevice(13), this.getNewDevice(14)]),
+      new Group('Кабинет', [this.getNewDevice(15), this.getNewDevice(16)]),
+    ];
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();

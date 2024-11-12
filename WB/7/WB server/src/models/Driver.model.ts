@@ -102,22 +102,25 @@ export class Driver {
       },
     });
 
-    this.getTopicPayload$<ECommandType>('command').subscribe({
-      next: (payload: ECommandType) => {
-        this.sendCommand(payload);
-      },
-      error(err) {
-        console.error(`[Driver] error `, err);
-      },
-    });
+    this.getTopicPayload$<ECommandType>('command')
+      .pipe(
+        tap((payload) => {
+          this.registerCommand('command', payload);
+        }),
+      )
+      .subscribe({
+        next: (payload: ECommandType) => {
+          this.sendCommand(payload);
+        },
+        error(err) {
+          console.error(`[Driver] error `, err);
+        },
+      });
   }
 
   private getTopicPayload$<T>(topic: string): Observable<T> {
     return this.mqqtWbClient.subscribe$([this.getBaseTopic(), topic, 'on'].join('/')).pipe(
       map((payload) => JSON.parse(payload)),
-      tap((payload) => {
-        this.registerCommand(topic, payload);
-      }),
       catchError((err) => {
         console.error(`[Driver] err`, err);
         return this.getTopicPayload$(topic);

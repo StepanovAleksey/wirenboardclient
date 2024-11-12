@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, take, takeUntil } from 'rxjs/operators';
 import { ABaseMqttObj } from 'src/app/models/wbDevices';
 import { EMqqtServer, MqqtService } from 'src/app/service/mqqt.service';
 
@@ -25,7 +25,7 @@ export enum ECurtainCommandType {
 }
 export class Curtain extends ABaseMqttObj {
   isSelected = false;
-  position = 0;
+  position = '0';
 
   constructor(
     public chanleId: number,
@@ -37,7 +37,7 @@ export class Curtain extends ABaseMqttObj {
   ) {
     super(EMqqtServer.wb7, 'Штора');
 
-    this.subTopic$<number>(`${this.getBaseTopic()}/position`).subscribe(
+    this.subTopic$<string>(`${this.getBaseTopic()}/position`).subscribe(
       (payload) => {
         this.position = payload;
       },
@@ -53,6 +53,7 @@ export class Curtain extends ABaseMqttObj {
     this.possitionCommand$
       .pipe(
         takeUntil(this.destroy$),
+        debounceTime(200),
         filter(() => this.isSelected),
       )
       .subscribe((position) => this.sendPosition(position));
@@ -74,7 +75,7 @@ export class Curtain extends ABaseMqttObj {
   }
   private subTopic$<T>(topic: string) {
     return this.mqqtService
-      .subscribeTopic$<T>(EMqqtServer.wb7, topic, this)
+      .subscribeTopic$<T>(this.wbId, topic, this)
       .pipe(takeUntil(this.destroy$));
   }
 

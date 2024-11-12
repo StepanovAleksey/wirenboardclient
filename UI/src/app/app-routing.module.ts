@@ -20,11 +20,11 @@ const routes: Routes = [
         title: 'Свет',
         
       },
-      {
-        path: 'watering',
-        component: WateringComponent,
-        title: 'Полив',
-      },
+      // {
+      //   path: 'watering',
+      //   component: WateringComponent,
+      //   title: 'Полив',
+      // },
       {
         path: 'curtains',
         component: CurtainsComponent,

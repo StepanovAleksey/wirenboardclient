@@ -83,8 +83,8 @@ const FirstFloorMenu = new LightingMenuItem(EPath['1st_floor'], [
     [new WB_MDM3_Q('Дежурный', 'wb-mr6c_82', 2)],
   ),
   new WB_MR6C_Q('Дежурный', 'wb-mr6c_82', 4),
-  new CurtainGroup('Штора', [new Curtain(1, 1), new Curtain(1, 2)]),
-  new FrequencyConverter('Вытяжка', 5),
+  // new CurtainGroup('Штора', [new Curtain(1, 1), new Curtain(1, 2)]),
+  // new FrequencyConverter('Вытяжка', 5),
 ]).setParent(baseMenuItem);
 
 const TabmburMenu = new LightingMenuItem(EPath.Tabmbur, [
@@ -144,6 +144,13 @@ const LivingRoomMenu = new LightingMenuItem(EPath.Living_room, [
   new WB_MR6C_Q('Столб LED 1 и 2 этажи', 'wb-mr6c_25', 4),
   new WB_MR6C_Q('Обдув конвектора под большим окном', 'wb-mr6c_25', 5),
   new WB_MR6C_Q('Трек 2, ближе к гостиной', 'wb-mr6c_25', 6),
+  new CurtainGroup('Шторы', [
+    new Curtain(1, 1),
+    new Curtain(1, 2),
+    new Curtain(1, 3),
+    new Curtain(1, 4),
+    new Curtain(1, 5),
+  ]),
 ]).setParent(FirstFloorMenu);
 
 const DiningRoomMenu = new LightingMenuItem(EPath.Dining_room, [

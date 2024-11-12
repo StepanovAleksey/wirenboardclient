@@ -22,9 +22,9 @@ export class AppMenuItem implements MenuItem {
 
 export const MenuItems: MenuItem[] = [
   baseMenuItem,
-  new AppMenuItem('Полив', 'pi pi-calendar', '/main/watering', [
-    EUserRole.Shower,
-  ]),
+  // new AppMenuItem('Полив', 'pi pi-calendar', '/main/watering', [
+  //   EUserRole.Shower,
+  // ]),
   new AppMenuItem('Шторы', 'pi pi-th-large', '/main/curtains'),
 ];
 

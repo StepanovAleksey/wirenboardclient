@@ -3,7 +3,7 @@ import { WB_MR6C_Q } from './WB_MR6C_Q.model';
 
 /** класс для управления катушкой и мощностью канала диммера */
 export class WB_MDM3_Q extends WB_MR6C_Q {
-  public chanelValue: number;
+  public chanelValue: number = 0;
   constructor(
     public label: string,
     protected mqttDeviceAddr: string,

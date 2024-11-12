@@ -10,11 +10,11 @@ export enum EFrequencyStatus {
   Backword = 3,
 }
 
-/** модель для группы света */
+/** модель для преобразователя частотты света */
 export class FrequencyConverter extends ABaseMqttObj {
   public onOffStatus$ = new BehaviorSubject<boolean>(false);
 
-  public currentFrequency = 0;
+  public currentFrequency = 25;
 
   get currentFrequencyPercent() {
     return (this.currentFrequency * 100) / MAX_FREQUENCE;

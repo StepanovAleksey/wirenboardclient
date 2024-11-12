@@ -1,5 +1,5 @@
-<div class="flex h-full overflow-auto mx-2 mt-2">
-    <div class="flex-1">
+<div class="flex h-full overflow-auto px-2 pt-2">
+    <div class="flex-1 flex flex-column gap-1">
         <app-curtains-group
             *ngFor="let group of groups"
             [group]="group"
@@ -36,7 +36,7 @@
                 label="Up"
                 [disabled]="!isAnySelected"
                 styleClass="p-button-success"
-                (click)="sendCommand(ECommandType.down)"
+                (click)="sendCommand(ECommandType.up)"
             ></p-button>
             <p-button
                 label="Stop"
@@ -48,7 +48,7 @@
                 label="Down"
                 [disabled]="!isAnySelected"
                 styleClass="p-button-danger"
-                (click)="sendCommand(ECommandType.up)"
+                (click)="sendCommand(ECommandType.down)"
             ></p-button>
         </div>
     </div>
