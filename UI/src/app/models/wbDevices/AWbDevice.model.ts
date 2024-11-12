@@ -1,4 +1,5 @@
 import { EMqqtServer } from 'src/app/service/mqqt.service';
+import { EDeviceType, IBaseMqttDevice } from '../device.model';
 
 /** типы каналов WB устройств */
 export enum ETypeWbChanel {
@@ -17,6 +18,7 @@ export enum ETypeWbChanel {
   /** отправка команды на штору */
   FREQUENCY_CONVERTER = 't13_frequency_converter',
 }
+
 /**
  * базовый класс для всех mqtt устройств
  */
@@ -36,9 +38,18 @@ export const TOPIC_TEMPLATE: Partial<Record<ETypeWbChanel, string>> = {
 };
 
 /** базовый класс для всех каналов WB устройств */
-export abstract class AWbDevice extends ABaseMqttObj {
-  constructor(public label: string, public typeWbChanel: ETypeWbChanel) {
-    super(EMqqtServer.wb7, label);
+export abstract class AWbDevice<T extends EDeviceType>
+  extends ABaseMqttObj
+  implements IBaseMqttDevice<T>
+{
+  mqttDeviceAddr: string;
+  chanelId: number;
+  type: T;
+
+  constructor(item: IBaseMqttDevice<T>, public typeWbChanel: ETypeWbChanel) {
+    super(EMqqtServer.wb7, item.label);
+    this.mqttDeviceAddr = item.mqttDeviceAddr;
+    this.chanelId = item.chanelId;
   }
 
   public getBaseTopic(

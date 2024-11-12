@@ -1,0 +1,232 @@
+[
+  {
+    "type": "Room",
+    "id": "1st_floor",
+    "label": "1 этаж",
+    "children": [
+      {
+        "label": "Основной",
+        "type": "LightGroup",
+        "coils": [
+          {
+            "label": "Основной",
+            "mqttDeviceAddr": "wb-mr6c_82",
+            "chanelId": 1,
+            "type": "WB_MR6C_Q"
+          },
+          {
+            "label": "Дежурный",
+            "mqttDeviceAddr": "wb-mr6c_82",
+            "chanelId": 2,
+            "type": "WB_MR6C_Q"
+          }
+        ]
+      },
+      {
+        "label": "Дежурный",
+        "type": "SimpleLightGroup",
+        "mainCoils": [
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Основной",
+            "mqttDeviceAddr": "wb-mr6c_82",
+            "chanelId": 1
+          }
+        ],
+        "simpleCoils": [
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Дежурный",
+            "mqttDeviceAddr": "wb-mr6c_82",
+            "chanelId": 2
+          }
+        ]
+      },
+      {
+        "type": "WB_MR6C_Q",
+        "label": "Дежурный",
+        "mqttDeviceAddr": "wb-mr6c_82",
+        "chanelId": 4
+      },
+      {
+        "type": "CurtainGroup",
+        "label": "Штора",
+        "children": [
+          {
+            "type": "Curtain",
+            "groupId": 1,
+            "chanelId": 1
+          },
+          {
+            "type": "Curtain",
+            "groupId": 1,
+            "chanelId": 2
+          },
+          {
+            "type": "Curtain",
+            "groupId": 1,
+            "chanelId": 3
+          },
+          {
+            "type": "Curtain",
+            "groupId": 1,
+            "chanelId": 4
+          },
+          {
+            "type": "Curtain",
+            "groupId": 1,
+            "chanelId": 5
+          }
+        ]
+      },
+      {
+        "type": "Room",
+        "id": "Tabmbur",
+        "label": "Тамбур Прихожая",
+        "children": [
+          {
+            "label": "Основной",
+            "type": "LightGroup",
+            "coils": [
+              {
+                "type": "WB_MR6C_Q",
+                "label": "Основной",
+                "mqttDeviceAddr": "wb-mr6c_13",
+                "chanelId": 1
+              },
+              {
+                "type": "WB_MR6C_Q",
+                "label": "Дежурный",
+                "mqttDeviceAddr": "wb-mr6c_13",
+                "chanelId": 2
+              }
+            ]
+          },
+          {
+            "label": "Дежурный",
+            "type": "SimpleLightGroup",
+            "mainCoils": [
+              {
+                "type": "WB_MR6C_Q",
+                "label": "Основной",
+                "mqttDeviceAddr": "wb-mr6c_82",
+                "chanelId": 1
+              }
+            ],
+            "simpleCoils": [
+              {
+                "type": "WB_MR6C_Q",
+                "label": "Дежурный",
+                "mqttDeviceAddr": "wb-mr6c_82",
+                "chanelId": 2
+              }
+            ]
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Лента около зеркала",
+            "mqttDeviceAddr": "wb-mr6c_13",
+            "chanelId": 3
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Улица козырек",
+            "mqttDeviceAddr": "wb-mr6c_16",
+            "chanelId": 1
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Улица калитка",
+            "mqttDeviceAddr": "wb-mr6c_16",
+            "chanelId": 2
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Улица фасад",
+            "mqttDeviceAddr": "wb-mr6c_16",
+            "chanelId": 3
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Улица столбики",
+            "mqttDeviceAddr": "wb-mr6c_16",
+            "chanelId": 4
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Улица газон",
+            "mqttDeviceAddr": "wb-mr6c_16",
+            "chanelId": 5
+          }
+        ]
+      },
+      {
+        "type": "Room",
+        "id": "Garage",
+        "label": "Гараж",
+        "children": [
+          {
+            "label": "Основной",
+            "type": "LightGroup",
+            "children": [
+              {
+                "type": "WB_MR6C_Q",
+                "label": "Основной",
+                "mqttDeviceAddr": "wb-mr6c_18",
+                "chanelId": 1
+              },
+              {
+                "type": "WB_MR6C_Q",
+                "label": "Дежурный",
+                "mqttDeviceAddr": "wb-mr6c_18",
+                "chanelId": 2
+              }
+            ]
+          },
+          {
+            "label": "Дежурный",
+            "type": "SimpleLightGroup",
+            "children": [
+              {
+                "type": "WB_MR6C_Q",
+                "label": "Основной",
+                "mqttDeviceAddr": "wb-mr6c_18",
+                "chanelId": 1
+              },
+              {
+                "type": "WB_MR6C_Q",
+                "label": "Дежурный",
+                "mqttDeviceAddr": "wb-mr6c_18",
+                "chanelId": 2
+              }
+            ]
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Подсветка столбов 1",
+            "mqttDeviceAddr": "wb-mr6c_18",
+            "chanelId": 3
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Подсветка столбов 3 эл.щит",
+            "mqttDeviceAddr": "wb-mr6c_18",
+            "chanelId": 4
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Навес основной",
+            "mqttDeviceAddr": "wb-mr6c_18",
+            "chanelId": 5
+          },
+          {
+            "type": "WB_MR6C_Q",
+            "label": "Навес гирлянды",
+            "mqttDeviceAddr": "wb-mr6c_16",
+            "chanelId": 6
+          }
+        ]
+      }
+    ]
+  }
+]

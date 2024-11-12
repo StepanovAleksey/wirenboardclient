@@ -3,13 +3,14 @@ import {
   ABaseMqttObj,
   Curtain,
   CurtainGroup,
-  FrequencyConverter,
   SimpleLightGroup,
   WB_MDM3_Q,
   WB_MR6C_Q,
+  LightGroup
 } from './wbDevices';
 import { EPath, PATH_TRANSLATE } from './tags';
-import { LightGroup } from './wbDevices/LightGroup.model';
+
+
 
 export class LightingMenuItem implements MenuItem {
   routerLink = '/main/develop';
@@ -71,6 +72,7 @@ export const baseMenuItem = new LightingMenuItem(EPath.Lighting, []).setIcon(
   'pi pi-sun',
 );
 
+/*
 //#region  1-ый этаж
 const FirstFloorMenu = new LightingMenuItem(EPath['1st_floor'], [
   new LightGroup('Основной', [
@@ -241,3 +243,4 @@ const FireplaceMenu = new LightingMenuItem(EPath.Fireplace, [
   new WB_MR6C_Q('Гирлянды', 'wb-mr6c_51', 6),
 ]).setParent(FirstFloorMenu);
 //#endregion
+*/
