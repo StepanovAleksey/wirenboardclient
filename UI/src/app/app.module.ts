@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
@@ -29,7 +29,7 @@ import { DeveloperPageComponent } from './pages/developer-page/developer-page.co
 import { TreeModule } from 'primeng/tree';
 import { CurtainsComponent } from './pages/curtains/curtains.component';
 import { SliderModule } from 'primeng/slider';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CurtainsGroupComponent } from './pages/curtains/curtains-group/curtains-group.component';
 import { PasswordModule } from 'primeng/password';
 import { LayoutComponent } from './pages/layout/layout.component';
@@ -47,6 +47,8 @@ import { SimpleLightGroupComponent } from './pages/base-page/simple-light-group/
 import { CurtainComponent } from './pages/base-page/curtain/curtain.component';
 import { CoillightSimpleComponent } from './pages/base-page/coillight-simple/coillight-simple.component';
 import { FrequencyConverterComponent } from './pages/base-page/frequency-converter/frequency-converter.component';
+import { RoomService } from './service/room.service';
+import { filter, first, map, tap } from 'rxjs/operators';
 
 @NgModule({
   imports: [
@@ -99,7 +101,28 @@ import { FrequencyConverterComponent } from './pages/base-page/frequency-convert
     CoillightSimpleComponent,
     FrequencyConverterComponent,
   ],
-  providers: [AuthService, DialogService, MqqtService],
+  providers: [
+    AuthService,
+    DialogService,
+    MqqtService,
+    RoomService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: laodApp,
+      multi: true,
+      deps: [RoomService],
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
+
+function laodApp(roomSrv: RoomService) {
+  return () => {
+    return roomSrv.rooms$.pipe(
+      map((r) => !!r.length),
+      filter((v) => v),
+      first(),
+    );
+  };
+}

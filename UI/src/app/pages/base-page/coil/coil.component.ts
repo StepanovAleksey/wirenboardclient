@@ -11,22 +11,22 @@ import { MqqtService } from 'src/app/service/mqqt.service';
 })
 export class CoilComponent implements OnInit, OnDestroy {
   @Input({ required: true }) coil!: WB_MR6C_Q;
-  
-  destrot$ = new Subject<void>();
+
+  destroy$ = new Subject<void>();
 
   constructor(private mqttSrv: MqqtService) {}
 
   ngOnInit(): void {
     this.mqttSrv
       .subscribeTopic$<boolean>(this.coil.wbId, this.coil.getCoilTopic(), this)
-      .pipe(takeUntil(this.destrot$))
+      .pipe(takeUntil(this.destroy$))
       .subscribe((onOffStatus) => {
         this.coil.onOffStatus$.next(onOffStatus);
       });
   }
 
   ngOnDestroy(): void {
-    this.destrot$.next();
+    this.destroy$.next();
     this.mqttSrv.unSubscribeClient(this.coil.wbId, this);
   }
 

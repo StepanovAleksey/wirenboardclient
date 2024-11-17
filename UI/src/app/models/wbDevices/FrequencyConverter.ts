@@ -1,6 +1,11 @@
 import { BehaviorSubject } from 'rxjs';
-import { ABaseMqttObj, ETypeWbChanel } from './AWbDevice.model';
-import { EMqqtServer } from 'src/app/service/mqqt.service';
+import { AWbDevice } from './AWbDevice.model';
+import {
+  EDeviceType,
+  IAllItem,
+  IFrequencyConverter,
+  isCheckType,
+} from '../device.model';
 
 const MAX_FREQUENCE = 50;
 
@@ -11,7 +16,12 @@ export enum EFrequencyStatus {
 }
 
 /** модель для преобразователя частотты света */
-export class FrequencyConverter extends ABaseMqttObj {
+export class FrequencyConverter
+  extends AWbDevice<EDeviceType.FrequencyConverter>
+  implements IFrequencyConverter
+{
+  protected tempalte: string;
+
   public onOffStatus$ = new BehaviorSubject<boolean>(false);
 
   public currentFrequency = 25;
@@ -20,8 +30,8 @@ export class FrequencyConverter extends ABaseMqttObj {
     return (this.currentFrequency * 100) / MAX_FREQUENCE;
   }
 
-  constructor(label: string, private adress: number) {
-    super(EMqqtServer.wb6, label);
+  constructor(item: IFrequencyConverter) {
+    super(item);
   }
 
   public setStatus(status: EFrequencyStatus) {
@@ -29,10 +39,20 @@ export class FrequencyConverter extends ABaseMqttObj {
   }
 
   public getStartStopTopic() {
-    return `/devices/${ETypeWbChanel.FREQUENCY_CONVERTER}_${this.adress}/controls/Start-stop-reverse`;
+    return `/devices/${this.mqttDeviceAddr}/controls/Start-stop-reverse`;
   }
 
   public getCurrentFrequencyTopic() {
-    return `/devices/${ETypeWbChanel.FREQUENCY_CONVERTER}_${this.adress}/controls/Frequency`;
+    return `/devices/${this.mqttDeviceAddr}/controls/Frequency`;
+  }
+
+  static canCreate(item: IAllItem) {
+    return isCheckType<IFrequencyConverter, EDeviceType.FrequencyConverter>(
+      item,
+      EDeviceType.FrequencyConverter,
+    );
+  }
+  static create(item: IAllItem) {
+    return new FrequencyConverter(item as IFrequencyConverter);
   }
 }

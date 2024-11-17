@@ -4,34 +4,26 @@ import {
   isCheckType,
   IWB_MDM3_Q,
 } from '../device.model';
-import { AWbDevice, ETypeWbChanel } from './AWbDevice.model';
+import { AWbDevice } from './AWbDevice.model';
 
 /** класс для управления катушкой и мощностью канала диммера */
 export class WB_MDM3_Q
   extends AWbDevice<EDeviceType.WB_MDM3_Q>
   implements IWB_MDM3_Q
 {
+  protected tempalte = '/devices/{mqttDeviceAddr}/controls/Channel {cNumber}';
   public chanelValue: number = 0;
-  type: EDeviceType.WB_MDM3_Q;
 
   constructor(item: IWB_MDM3_Q) {
-    super(item, ETypeWbChanel.WB_MDM3_CH);
+    super(item);
   }
 
   public getBrightnessTopic() {
-    return this.getBaseTopic(
-      ETypeWbChanel.WB_MDM3_CH,
-      this.mqttDeviceAddr,
-      this.chanelId,
-    );
+    return this.getBaseTopic(this.mqttDeviceAddr, this.chanelId);
   }
 
   public getChangeBrightnessTopic() {
-    return this.getChangeTopic(
-      ETypeWbChanel.WB_MDM3_CH,
-      this.mqttDeviceAddr,
-      this.chanelId,
-    );
+    return this.getChangeTopic(this.mqttDeviceAddr, this.chanelId);
   }
 
   static canCreate(item: IAllItem) {

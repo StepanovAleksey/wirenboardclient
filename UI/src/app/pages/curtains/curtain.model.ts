@@ -7,6 +7,7 @@ export class Group {
   isSelected = false;
   constructor(public name: string, public curtains: Array<Curtain>) {}
 }
+
 const TOPIC_TEMPLATE = '/devices/curtain_drive/{groupId}/{chanleId}';
 /** список комманд  */
 export enum ECurtainCommandType {

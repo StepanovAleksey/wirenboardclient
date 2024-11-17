@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { AWbDevice, ETypeWbChanel } from './AWbDevice.model';
+import { AWbDevice } from './AWbDevice.model';
 import {
   EDeviceType,
   IAllItem,
@@ -12,26 +12,18 @@ export class WB_MR6C_Q
   extends AWbDevice<EDeviceType.WB_MR6C_Q>
   implements IWB_MR6C_Q
 {
+  tempalte = '/devices/{mqttDeviceAddr}/controls/K{cNumber}';
   public onOffStatus$ = new BehaviorSubject<boolean>(false);
-  type: EDeviceType.WB_MR6C_Q;
 
   constructor(item: IWB_MR6C_Q) {
-    super(item, ETypeWbChanel.WB_MR6C_Q);
+    super(item);
   }
 
   public getCoilTopic() {
-    return super.getBaseTopic(
-      ETypeWbChanel.WB_MR6C_Q,
-      this.mqttDeviceAddr,
-      this.chanelId,
-    );
+    return super.getBaseTopic(this.mqttDeviceAddr, this.chanelId);
   }
   public getChangeCoilTopic() {
-    return super.getChangeTopic(
-      ETypeWbChanel.WB_MR6C_Q,
-      this.mqttDeviceAddr,
-      this.chanelId,
-    );
+    return super.getChangeTopic(this.mqttDeviceAddr, this.chanelId);
   }
 
   static canCreate(item: IAllItem) {

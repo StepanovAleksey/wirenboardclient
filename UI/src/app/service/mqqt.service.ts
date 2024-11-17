@@ -55,7 +55,7 @@ export class MqqtService {
 
   /**
    * Подписка на топк
-   * !! Если подписадись надо обязательно отписаться через unSubscribeClient!!
+   * !! Если подписались надо обязательно отписаться через unSubscribeClient!!
    * @param wbDevice
    * @param topic
    * @param objRef ссылка на объект подписчик (нуен для корректной работы отписки от топика)
@@ -64,7 +64,7 @@ export class MqqtService {
   public subscribeTopic$<T>(wbDevice: EMqqtServer, topic: string, objRef: any) {
     this.clients[wbDevice].subscribe(topic, (err) => {
       if (err) {
-        console.warn('Ошибка подписки MQQT', wbDevice, topic);
+        console.error('Ошибка подписки MQQT', wbDevice, topic);
       }
     });
     if (!this.topicSubClients[wbDevice].has(topic)) {

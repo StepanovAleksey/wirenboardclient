@@ -1,12 +1,14 @@
-<div class="h-full flex flex-column overflow-y-auto">
+<div
+    class="h-full flex flex-column overflow-y-auto"
+    *ngIf="activeRoom$ | async as activeRoom"
+>
     <p-breadcrumb class="max-w-full" [model]="hystory"></p-breadcrumb>
-
     <div class="flex-grow-1 overflow-y-auto px-2">
-        <div class="flex mt-2 flex-wrap">
+        <div *ngIf="devices$ | async as devices" class="flex mt-2 flex-wrap">
             <ng-container
                 *ngTemplateOutlet="
                     chanelsTempalteRef;
-                    context: { chanels: menuItem.deviceChanels }
+                    context: { chanels: devices }
                 "
             >
             </ng-container>
@@ -14,7 +16,7 @@
         <div class="grid">
             <div
                 class="col-12 md:col-6 lg:col-3"
-                *ngFor="let childMenu of menuItem.items"
+                *ngFor="let childMenu of childRooms$ | async"
             >
                 <p-panel [toggleable]="true">
                     <ng-template pTemplate="header">
@@ -34,7 +36,7 @@
                         <ng-container
                             *ngTemplateOutlet="
                                 chanelsTempalteRef;
-                                context: { chanels: childMenu.deviceChanels }
+                                context: { chanels: childMenu.children }
                             "
                         >
                         </ng-container>

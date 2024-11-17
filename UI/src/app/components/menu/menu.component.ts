@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { MenuItems } from 'src/app/models/menuItems';
+import { MENU_ITEMS } from 'src/app/models/menuItems';
 
 @Component({
   selector: 'app-menu',
@@ -7,7 +7,7 @@ import { MenuItems } from 'src/app/models/menuItems';
   styleUrls: ['./menu.component.less'],
 })
 export class MenuComponent implements OnInit {
-  MenuItems = MenuItems;
+  MenuItems = MENU_ITEMS;
 
   @Output() expandMenuEvent = new EventEmitter<boolean>();
 

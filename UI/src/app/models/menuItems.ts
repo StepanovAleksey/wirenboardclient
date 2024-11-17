@@ -1,7 +1,7 @@
 import { EPath } from './tags';
 import { EUserRole } from './user.model';
 import { MenuItem } from 'primeng/api';
-import { baseMenuItem } from './lightingMenu';
+import { BASE_ROOM_MENU_ITEM } from './lightingMenu';
 
 export class AppMenuItem implements MenuItem {
   isExpand = false;
@@ -20,17 +20,14 @@ export class AppMenuItem implements MenuItem {
   }
 }
 
-export const MenuItems: MenuItem[] = [
-  baseMenuItem,
-  // new AppMenuItem('Полив', 'pi pi-calendar', '/main/watering', [
-  //   EUserRole.Shower,
-  // ]),
+export const MENU_ITEMS: MenuItem[] = [
+  BASE_ROOM_MENU_ITEM,
   new AppMenuItem('Шторы', 'pi pi-th-large', '/main/curtains'),
 ];
 
 export class MenuHelper {
   static getMenuItemByPath(path: string) {
-    let menus = MenuItems;
+    let menus = MENU_ITEMS;
     while (menus?.length) {
       const menu = menus.find((m) => m.routerLink === path);
       if (menu) {

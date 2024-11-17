@@ -15,10 +15,9 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       {
-        path: 'lighting',
+        path: 'rooms',
         component: BasePageComponent,
-        title: 'Свет',
-        
+        title: 'Команты',
       },
       // {
       //   path: 'watering',
@@ -33,7 +32,7 @@ const routes: Routes = [
       {
         path: '**',
         pathMatch: 'full',
-        redirectTo: 'lighting',
+        redirectTo: 'rooms',
       },
     ],
   },

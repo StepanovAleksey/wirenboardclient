@@ -1,40 +1,13 @@
 import { MenuItem } from 'primeng/api';
-import {
-  ABaseMqttObj,
-  Curtain,
-  CurtainGroup,
-  SimpleLightGroup,
-  WB_MDM3_Q,
-  WB_MR6C_Q,
-  LightGroup
-} from './wbDevices';
+import { ABaseMqttObj } from './wbDevices';
 import { EPath, PATH_TRANSLATE } from './tags';
 
-
-
 export class LightingMenuItem implements MenuItem {
-  routerLink = '/main/develop';
-
   label!: string;
 
   icon: string;
-
-  parent: LightingMenuItem;
-
   expanded = false;
-  items?: LightingMenuItem[];
-
-  get queryParams() {
-    const path = [this.path];
-    let parent = this.parent;
-    while (!!parent) {
-      path.unshift(parent.path);
-      parent = parent.parent;
-    }
-    return {
-      path,
-    };
-  }
+  items?: MenuItem[] = [];
 
   constructor(
     protected path: EPath,
@@ -43,34 +16,18 @@ export class LightingMenuItem implements MenuItem {
     this.label = PATH_TRANSLATE[path];
   }
 
-  public setParent(parent: LightingMenuItem) {
-    parent.items = parent.items || [];
-    parent.items.push(this);
-    this.parent = parent;
-    return this;
-  }
-
   public setIcon(icon: string) {
     this.icon = icon;
     return this;
   }
-
-  protected findChildrenByPath(path: EPath): LightingMenuItem {
-    return this.items.find((item) => item.path === path);
-  }
-
-  public findItemByPath(path: Array<EPath>): LightingMenuItem {
-    let findElem: LightingMenuItem = this;
-    while (path.length && !!findElem) {
-      findElem = findElem.findChildrenByPath(path.shift()) || findElem;
-    }
-    return findElem;
-  }
 }
-
-export const baseMenuItem = new LightingMenuItem(EPath.Lighting, []).setIcon(
-  'pi pi-sun',
-);
+/**
+ * Главный родитель для меню комнат
+ */
+export const BASE_ROOM_MENU_ITEM = new LightingMenuItem(
+  EPath.Lighting,
+  [],
+).setIcon('pi pi-sun');
 
 /*
 //#region  1-ый этаж

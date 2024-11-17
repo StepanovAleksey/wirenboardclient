@@ -1,5 +1,7 @@
+import { MenuItem } from 'primeng/api';
 import {
   CurtainGroup,
+  FrequencyConverter,
   LightGroup,
   SimpleLightGroup,
   WB_MDM3_Q,
@@ -14,6 +16,7 @@ export enum EDeviceType {
   WB_MDM3_Q = 'WB_MDM3_Q',
   CurtainGroup = 'CurtainGroup',
   Curtain = 'Curtain',
+  FrequencyConverter = 'FrequencyConverter',
 }
 
 export interface IBaseDevice<T extends EDeviceType> {
@@ -54,6 +57,9 @@ export interface ILightGroup extends IBaseLabelDevice<EDeviceType.LightGroup> {
   coils: Array<IWB_MR6C_Q>;
 }
 
+export interface IFrequencyConverter
+  extends IBaseMqttDevice<EDeviceType.FrequencyConverter> {}
+
 export type IAllItem =
   | ILightGroup
   | ICurtainDevice
@@ -61,6 +67,7 @@ export type IAllItem =
   | IWB_MR6C_Q
   | IWB_MDM3_Q
   | ICurtainGroup
+  | IFrequencyConverter
   | IRoom;
 
 export interface IRoom extends IBaseLabelDevice<EDeviceType.Room> {
@@ -77,6 +84,9 @@ export class BaseLabelDevice<T extends EDeviceType>
 {
   label: string;
   type: T;
+  constructor(item: BaseLabelDevice<T>) {
+    (this.label = item.label), (this.type = item.type);
+  }
 }
 
 export function isCheckType<TOut extends IAllItem, TType extends EDeviceType>(
@@ -86,17 +96,49 @@ export function isCheckType<TOut extends IAllItem, TType extends EDeviceType>(
   return item.type === type;
 }
 
-export class Room extends BaseLabelDevice<EDeviceType.Room> implements IRoom {
+export class Room
+  extends BaseLabelDevice<EDeviceType.Room>
+  implements IRoom, MenuItem
+{
   id: string;
+
   children: IAllItem[];
 
-  constructor(room: IRoom) {
-    super();
+  routerLink? = 'rooms';
+
+  queryParams = {
+    path: [],
+  };
+
+  get items() {
+    const childRooms = this.children.filter(Room.canCreate);
+    if (!childRooms.length) {
+      return null;
+    }
+    return childRooms as Array<MenuItem>;
+  }
+
+  constructor(room: IRoom, private parent?: Room) {
+    super(room);
+    this.id = room.id;
+    if (parent) {
+      this.queryParams.path.push(...parent.queryParams.path.filter(Boolean));
+    }
+    this.queryParams.path.push(this.id);
+    const EXIST_TYPES = [
+      WB_MR6C_Q,
+      WB_MDM3_Q,
+      Room,
+      CurtainGroup,
+      SimpleLightGroup,
+      LightGroup,
+      FrequencyConverter,
+    ];
     this.children = room.children
       .map((item) => {
         const t = EXIST_TYPES.find((et) => et.canCreate(item));
         if (!!t) {
-          return t.create(item);
+          return t.create(item, this);
         }
         console.warn('Неизвестный тип', item);
         return null;
@@ -108,22 +150,7 @@ export class Room extends BaseLabelDevice<EDeviceType.Room> implements IRoom {
     return isCheckType<IRoom, EDeviceType.Room>(item, EDeviceType.Room);
   }
 
-  static create(item: IAllItem) {
-    return new Room(item as IRoom);
-  }
-}
-
-const EXIST_TYPES = [
-  WB_MR6C_Q,
-  WB_MDM3_Q,
-  Room,
-  CurtainGroup,
-  SimpleLightGroup,
-  LightGroup,
-];
-
-export class DeviceFactoryHelper {
-  static createItem(devices: Array<IAllItem>) {
-    devices.filter((d) => Room.canCreate(d)).map((d) => new Room(d));
+  static create(item: IAllItem, parent?: Room) {
+    return new Room(item as IRoom, parent);
   }
 }

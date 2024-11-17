@@ -14,7 +14,7 @@ export class CurtainComponent {
   constructor(private mqttSrv: MqqtService) {}
 
   sendCommand(command: ECurtainCommandType) {
-    this.curtainGroup.curtains.forEach((curtain) => {
+    this.curtainGroup.children.forEach((curtain) => {
       this.mqttSrv.publishTopic(
         this.curtainGroup.wbId,
         curtain.getCommandTopic(),

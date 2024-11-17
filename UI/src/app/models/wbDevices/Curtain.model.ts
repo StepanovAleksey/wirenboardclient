@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { ABaseMqttObj, ETypeWbChanel, TOPIC_TEMPLATE } from './AWbDevice.model';
+import { ABaseMqttObj } from './AWbDevice.model';
 import { EMqqtServer } from 'src/app/service/mqqt.service';
 import {
   EDeviceType,
@@ -22,7 +22,7 @@ export class Curtain implements ICurtainDevice {
   type: EDeviceType.Curtain;
 
   getCommandTopic() {
-    return TOPIC_TEMPLATE[ETypeWbChanel.CURTAIN_COMMAND]
+    return '/devices/curtain_drive/{groupId}/{chanleId}/command/on'
       .replace('{groupId}', this.groupId.toString())
       .replace('{chanleId}', this.chanelId.toString());
   }
@@ -41,7 +41,7 @@ export class Curtain implements ICurtainDevice {
 
 /** класс для управления группой драверов штор */
 export class CurtainGroup extends ABaseMqttObj implements ICurtainGroup {
-  children: ICurtainDevice[];
+  children: Curtain[];
   type: EDeviceType.CurtainGroup;
 
   constructor(item: ICurtainGroup) {

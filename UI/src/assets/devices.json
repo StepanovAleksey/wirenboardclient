@@ -49,8 +49,14 @@
         "chanelId": 4
       },
       {
+        "type": "FrequencyConverter",
+        "label": "Вытяжка",
+        "mqttDeviceAddr": "t13_frequency_converter_5",
+        "chanelId": 5
+      },
+      {
         "type": "CurtainGroup",
-        "label": "Штора",
+        "label": "Шторы",
         "children": [
           {
             "type": "Curtain",
@@ -168,7 +174,7 @@
           {
             "label": "Основной",
             "type": "LightGroup",
-            "children": [
+            "coils": [
               {
                 "type": "WB_MR6C_Q",
                 "label": "Основной",
@@ -186,13 +192,15 @@
           {
             "label": "Дежурный",
             "type": "SimpleLightGroup",
-            "children": [
+            "mainCoils": [
               {
                 "type": "WB_MR6C_Q",
                 "label": "Основной",
                 "mqttDeviceAddr": "wb-mr6c_18",
                 "chanelId": 1
-              },
+              }
+            ],
+            "simpleCoils": [
               {
                 "type": "WB_MR6C_Q",
                 "label": "Дежурный",
