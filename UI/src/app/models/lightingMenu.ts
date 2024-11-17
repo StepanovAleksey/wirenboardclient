@@ -1,33 +1,14 @@
 import { MenuItem } from 'primeng/api';
-import { ABaseMqttObj } from './wbDevices';
-import { EPath, PATH_TRANSLATE } from './tags';
 
-export class LightingMenuItem implements MenuItem {
-  label!: string;
-
-  icon: string;
-  expanded = false;
-  items?: MenuItem[] = [];
-
-  constructor(
-    protected path: EPath,
-    public deviceChanels: Array<ABaseMqttObj>,
-  ) {
-    this.label = PATH_TRANSLATE[path];
-  }
-
-  public setIcon(icon: string) {
-    this.icon = icon;
-    return this;
-  }
-}
 /**
  * Главный родитель для меню комнат
  */
-export const BASE_ROOM_MENU_ITEM = new LightingMenuItem(
-  EPath.Lighting,
-  [],
-).setIcon('pi pi-sun');
+export const BASE_ROOM_MENU_ITEM: MenuItem = {
+  label: 'Этажи',
+  expanded: true,
+  icon: 'pi pi-sun',
+  items: [],
+};
 
 /*
 //#region  1-ый этаж

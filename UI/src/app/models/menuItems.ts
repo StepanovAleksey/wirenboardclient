@@ -1,4 +1,3 @@
-import { EPath } from './tags';
 import { EUserRole } from './user.model';
 import { MenuItem } from 'primeng/api';
 import { BASE_ROOM_MENU_ITEM } from './lightingMenu';
@@ -6,7 +5,6 @@ import { BASE_ROOM_MENU_ITEM } from './lightingMenu';
 export class AppMenuItem implements MenuItem {
   isExpand = false;
   items: Array<MenuItem>;
-  tagsHistory: Array<EPath> = [];
 
   constructor(
     public label: string = null,

@@ -68,21 +68,37 @@ export class BasePageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((params) => {
         if (params.path) {
-          this.setMenuItem(isArray(params.path) ? params.path : [params.path]);
+          this.setActiveRoom(
+            isArray(params.path) ? params.path : [params.path],
+          );
           return;
         }
         this.activeRoom$.next(EMPTY_ROOM);
+        this.hystory = [
+          {
+            label: 'Этажи',
+            routerLink: 'rooms',
+          },
+        ];
       });
   }
 
-  private setMenuItem(pathIds: Array<string>) {
+  private setActiveRoom(pathIds: Array<string>) {
     let children = this.rooms$.value;
     const paths = pathIds.concat();
-    const hystory = [];
+    const hystory = [
+      {
+        label: 'Этажи',
+        routerLink: 'rooms',
+      },
+    ];
     let room: Room;
     while (paths.length) {
       const path = paths.shift();
       room = children.find((r) => r.id === path);
+      if (!room) {
+        break;
+      }
       hystory.push(room);
       children = children.flatMap((c) => c.children.filter(this.isRoomGuard));
     }

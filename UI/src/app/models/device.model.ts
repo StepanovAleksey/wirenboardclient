@@ -104,7 +104,7 @@ export class Room
 
   children: IAllItem[];
 
-  routerLink? = 'rooms';
+  routerLink = 'rooms';
 
   queryParams = {
     path: [],
