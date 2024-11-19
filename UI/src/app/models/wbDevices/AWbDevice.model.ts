@@ -32,13 +32,12 @@ export abstract class AWbDevice<T extends EDeviceType>
   implements IBaseMqttDevice<T>
 {
   mqttDeviceAddr: string;
-  chanelId: number;
   type: T;
 
   constructor(item: IBaseMqttDevice<T>) {
     super(EMqqtServer.wb7, item.label);
     this.mqttDeviceAddr = item.mqttDeviceAddr;
-    this.chanelId = item.chanelId;
+    this.type = item.type;
   }
 
   protected abstract tempalte: string;

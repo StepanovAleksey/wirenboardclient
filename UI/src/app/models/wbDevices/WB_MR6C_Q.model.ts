@@ -14,9 +14,11 @@ export class WB_MR6C_Q
 {
   tempalte = '/devices/{mqttDeviceAddr}/controls/K{cNumber}';
   public onOffStatus$ = new BehaviorSubject<boolean>(false);
+  chanelId: number;
 
   constructor(item: IWB_MR6C_Q) {
     super(item);
+    this.chanelId = item.chanelId;
   }
 
   public getCoilTopic() {

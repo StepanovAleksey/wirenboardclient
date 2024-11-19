@@ -16,7 +16,7 @@ export class LightGroup extends ABaseMqttObj implements ILightGroup {
   type: EDeviceType.LightGroup;
   constructor(item: ILightGroup) {
     super(EMqqtServer.wb7, item.label);
-
+    this.type = item.type;
     this.coils = item.coils.map((c) => new WB_MR6C_Q(c));
 
     combineLatest(this.coils.map((lg) => lg.onOffStatus$)).subscribe(

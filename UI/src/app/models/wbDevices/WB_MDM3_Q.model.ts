@@ -13,9 +13,18 @@ export class WB_MDM3_Q
 {
   protected tempalte = '/devices/{mqttDeviceAddr}/controls/Channel {cNumber}';
   public chanelValue: number = 0;
+  chanelId: number;
 
   constructor(item: IWB_MDM3_Q) {
     super(item);
+    this.chanelId = item.chanelId;
+  }
+
+  public getCoilTopic() {
+    return super.getBaseTopic(this.mqttDeviceAddr, this.chanelId);
+  }
+  public getChangeCoilTopic() {
+    return super.getChangeTopic(this.mqttDeviceAddr, this.chanelId);
   }
 
   public getBrightnessTopic() {

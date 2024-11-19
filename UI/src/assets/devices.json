@@ -51,8 +51,7 @@
       {
         "type": "FrequencyConverter",
         "label": "Вытяжка",
-        "mqttDeviceAddr": "t13_frequency_converter_5",
-        "chanelId": 5
+        "mqttDeviceAddr": "t13_frequency_converter"
       },
       {
         "type": "CurtainGroup",
@@ -234,6 +233,19 @@
             "chanelId": 6
           }
         ]
+      }
+    ]
+  },
+  {
+    "type": "Room",
+    "id": "2st_floor",
+    "label": "2 этаж",
+    "children": [
+      {
+        "label": "Основной",
+        "mqttDeviceAddr": "wb-mr6c_82",
+        "chanelId": 1,
+        "type": "WB_MDM3_Q"
       }
     ]
   }

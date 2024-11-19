@@ -40,12 +40,15 @@ export interface ICurtainGroup
 export interface IBaseMqttDevice<T extends EDeviceType>
   extends IBaseLabelDevice<T> {
   mqttDeviceAddr: string;
+}
+
+export interface IWB_MR6C_Q extends IBaseMqttDevice<EDeviceType.WB_MR6C_Q> {
   chanelId: number;
 }
 
-export interface IWB_MR6C_Q extends IBaseMqttDevice<EDeviceType.WB_MR6C_Q> {}
-
-export interface IWB_MDM3_Q extends IBaseMqttDevice<EDeviceType.WB_MDM3_Q> {}
+export interface IWB_MDM3_Q extends IBaseMqttDevice<EDeviceType.WB_MDM3_Q> {
+  chanelId: number;
+}
 
 export interface ISimpleLightGroup
   extends IBaseLabelDevice<EDeviceType.SimpleLightGroup> {

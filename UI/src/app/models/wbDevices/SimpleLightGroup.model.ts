@@ -23,7 +23,7 @@ export class SimpleLightGroup
 
   constructor(item: ISimpleLightGroup) {
     super(EMqqtServer.wb7, item.label);
-
+    this.type = item.type;
     this.mainCoils = item.mainCoils.map((c) => new WB_MR6C_Q(c));
     this.simpleCoils = item.simpleCoils.map((c) => new WB_MR6C_Q(c));
 
