@@ -4,8 +4,10 @@
 
 export const environment = {
   production: false,
-  wb7MqqtAddr: '10.147.17.223',
-  wb6MqqtAddr: '10.147.17.184',
+  // wb7MqqtAddr: '10.147.17.223',
+  wb7MqqtAddr: '10.147.17.184',
+  // wb6MqqtAddr: '10.147.17.184',
+  wb6MqqtAddr: '10.147.17.185',
 };
 
 /*

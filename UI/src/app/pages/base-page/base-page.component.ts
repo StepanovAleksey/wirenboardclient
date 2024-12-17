@@ -112,14 +112,21 @@ export class BasePageComponent implements OnInit, OnDestroy {
   }
 
   offGroup(menuItem: Room) {
+    this.switchOnOffGroup(menuItem, 0);
+  }
+  onnGroup(menuItem: Room) {
+    this.switchOnOffGroup(menuItem, 1);
+  }
+
+  private switchOnOffGroup(menuItem: Room, value: number) {
     menuItem.children.filter(this.isCoilGuard).forEach((coil) => {
-      this.mqttSrv.publishTopic(coil.wbId, coil.getChangeCoilTopic(), 0);
+      this.mqttSrv.publishTopic(coil.wbId, coil.getChangeCoilTopic(), value);
     });
     menuItem.children
       .filter(this.isLightGroupGuard)
       .flatMap((groups) => groups.coils)
       .forEach((coil) => {
-        this.mqttSrv.publishTopic(coil.wbId, coil.getChangeCoilTopic(), 0);
+        this.mqttSrv.publishTopic(coil.wbId, coil.getChangeCoilTopic(), value);
       });
   }
 
