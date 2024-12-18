@@ -3,9 +3,9 @@ function getFrequencyValueByPercent(percent: number) {
 }
 /** команды на включение частотника */
 enum EStartStopCommand {
-  Stop = 0,
   Forward = 1,
-  Backward = 2,
+  Stop = 2,
+  Backward = 3,
 }
 
 /** проверка что частотник запустил нагрузку */
@@ -38,9 +38,9 @@ function PowerFrequencyHandler(
   let timeoutId: number = null;
   let lastFreqValue = 0;
   /** состояние старт/стоп  */
-  const startStopTopic = `${powerFreqController}/startStop`;
+  const startStopTopic = `${powerFreqController}/Start-stop-reverse`;
   /** управление частостой */
-  const freqValueTopic = `${powerFreqController}/freq`;
+  const freqValueTopic = `${powerFreqController}/Frequency`;
 
   /** обработка нажатия на кнопку*/
   function forvardCommand() {
@@ -71,7 +71,7 @@ function PowerFrequencyHandler(
   }
 
   defineRule(`PowerFrequencyHandler_${inputControl}`, {
-    whenChanged: dev[inputControl],
+    whenChanged: inputControl,
     then: function (newValue: number) {
       if (newValue) {
         forvardCommand();
@@ -81,3 +81,4 @@ function PowerFrequencyHandler(
     },
   });
 }
+PowerFrequencyHandler("wb-gpio/EXT3_IN8", "t13_frequency_converter_5");
