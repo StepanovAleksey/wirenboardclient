@@ -8,44 +8,56 @@ enum EStartStopCommand {
   Backward = 3,
 }
 
-/** проверка что частотник запустил нагрузку */
-function isRun(controllerTopic: string) {
-  return dev[controllerTopic] !== EStartStopCommand.Stop;
-}
-
-function setStop(controllerTopic: string) {
-  dev[controllerTopic] = EStartStopCommand.Stop;
-}
-function setRun(controllerTopic: string) {
-  dev[controllerTopic] = EStartStopCommand.Forward;
-}
-function setFreq(controllerTopic: string, value: number) {
-  dev[controllerTopic] = value;
-}
-
 const PERCENT_FRIQ_VALUE = [
   getFrequencyValueByPercent(0.5),
   getFrequencyValueByPercent(0.75),
   getFrequencyValueByPercent(1),
 ];
 
-const LONG_PRESS_TIME_MS = 2_000;
-/** Управление частотником, по одному сигналу */
+const LONG_PRESS_TIME_MS = 1_000;
+
+/** Управление частотником, по одному сигналу
+ * @param inputControl контрол управления частотой и выкллючением/включением
+ * @param powerFreqController адрес частотника
+ * @param openCloseControl контрол вытяжки (геркон)
+ */
 function PowerFrequencyHandler(
   inputControl: string,
-  powerFreqController: string
+  powerFreqController: string,
+  openCloseControl: string
 ) {
   let timeoutId: number = null;
   let lastFreqValue = 0;
+  let lastCommand = EStartStopCommand.Forward;
   /** состояние старт/стоп  */
   const startStopTopic = `${powerFreqController}/Start-stop-reverse`;
+
   /** управление частостой */
   const freqValueTopic = `${powerFreqController}/Frequency`;
+
+  /** проверка что частотник запустил нагрузку */
+  function isRun() {
+    return dev[startStopTopic] !== EStartStopCommand.Stop;
+  }
+
+  function setStop() {
+    lastCommand = EStartStopCommand.Stop;
+    dev[startStopTopic] = EStartStopCommand.Stop;
+  }
+
+  function setRun() {
+    lastCommand = EStartStopCommand.Forward;
+    dev[startStopTopic] = EStartStopCommand.Forward;
+  }
+
+  function setFreq(value: number) {
+    dev[freqValueTopic] = value;
+  }
 
   /** обработка нажатия на кнопку*/
   function forvardCommand() {
     timeoutId = setTimeout(() => {
-      setStop(startStopTopic);
+      setStop();
       timeoutId = null;
     }, LONG_PRESS_TIME_MS);
   }
@@ -58,21 +70,24 @@ function PowerFrequencyHandler(
     /** таймер не отработал, значит держали меньше @constant LONG_PRESS_TIME_MS */
     clearTimeout(timeoutId);
     timeoutId = null;
-    if (isRun(startStopTopic)) {
+    if (isRun()) {
       lastFreqValue++;
     } else {
       /** включаем вытяжку */
-      setRun(startStopTopic);
+      setRun();
     }
     if (lastFreqValue >= PERCENT_FRIQ_VALUE.length) {
       lastFreqValue = 0;
     }
-    setFreq(freqValueTopic, PERCENT_FRIQ_VALUE[lastFreqValue]);
+    setFreq(PERCENT_FRIQ_VALUE[lastFreqValue]);
   }
 
   defineRule(`PowerFrequencyHandler_${inputControl}`, {
     whenChanged: inputControl,
     then: function (newValue: number) {
+      if (dev[openCloseControl]) {
+        return;
+      }
       if (newValue) {
         forvardCommand();
       } else {
@@ -80,5 +95,21 @@ function PowerFrequencyHandler(
       }
     },
   });
+
+  defineRule(`PowerFrequencyHandler_${openCloseControl}`, {
+    whenChanged: openCloseControl,
+    then: function (newValue: number) {
+      if (!newValue) {
+        dev[startStopTopic] = lastCommand;
+        setFreq(PERCENT_FRIQ_VALUE[lastFreqValue]);
+      } else {
+        dev[startStopTopic] = EStartStopCommand.Stop;
+      }
+    },
+  });
 }
-PowerFrequencyHandler("wb-gpio/EXT3_IN8", "t13_frequency_converter_5");
+PowerFrequencyHandler(
+  "wb-gpio/EXT3_IN7",
+  "t13_frequency_converter_5",
+  "wb-mr6c_28/Input 6"
+);
