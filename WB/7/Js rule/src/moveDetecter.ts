@@ -42,5 +42,12 @@ cretaeMoveDetectionRules(
   "wb-msw-v4_91/Current Motion",
   "wb-mr6c_54/K4",
   22,
-  60
+  10
 );
+cretaeMoveDetectionRules(
+  "wb-msw-v3_15/Current Motion",
+  "wb-mr6c_29/K1",
+  22,
+  10
+);
+
