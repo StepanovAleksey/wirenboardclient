@@ -24,7 +24,7 @@ const LONG_PRESS_TIME_MS = 1_000;
 function PowerFrequencyHandler(
   inputControl: string,
   powerFreqController: string,
-  openCloseControl: string
+  openCloseControl?: string
 ) {
   let timeoutId: number = null;
   let lastFreqValue = 0;
@@ -85,7 +85,7 @@ function PowerFrequencyHandler(
   defineRule(`PowerFrequencyHandler_${inputControl}`, {
     whenChanged: inputControl,
     then: function (newValue: number) {
-      if (dev[openCloseControl]) {
+      if (openCloseControl && dev[openCloseControl]) {
         return;
       }
       if (newValue) {
@@ -95,18 +95,19 @@ function PowerFrequencyHandler(
       }
     },
   });
-
-  defineRule(`PowerFrequencyHandler_${openCloseControl}`, {
-    whenChanged: openCloseControl,
-    then: function (newValue: number) {
-      if (!newValue) {
-        dev[startStopTopic] = lastCommand;
-        setFreq(PERCENT_FRIQ_VALUE[lastFreqValue]);
-      } else {
-        dev[startStopTopic] = EStartStopCommand.Stop;
-      }
-    },
-  });
+  if (openCloseControl) {
+    defineRule(`PowerFrequencyHandler_${openCloseControl}`, {
+      whenChanged: openCloseControl,
+      then: function (newValue: number) {
+        if (!newValue) {
+          dev[startStopTopic] = lastCommand;
+          setFreq(PERCENT_FRIQ_VALUE[lastFreqValue]);
+        } else {
+          dev[startStopTopic] = EStartStopCommand.Stop;
+        }
+      },
+    });
+  }
 }
 PowerFrequencyHandler(
   "wb-gpio/EXT3_IN7",
